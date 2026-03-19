@@ -1,0 +1,175 @@
+(() => {
+	"use strict";
+
+	const KEY = "edreamscars_saved_posts_v1";
+	let toastEl = null;
+	let toastTimer = null;
+
+	function ensureToast() {
+		if (toastEl) return toastEl;
+		toastEl = document.getElementById("toast");
+		if (!toastEl) {
+			toastEl = document.createElement("div");
+			toastEl.id = "toast";
+			toastEl.className = "toast";
+			toastEl.setAttribute("role", "status");
+			toastEl.setAttribute("aria-live", "polite");
+			toastEl.setAttribute("aria-atomic", "true");
+			document.body.appendChild(toastEl);
+		}
+		return toastEl;
+	}
+
+	function toast(msg) {
+		const el = ensureToast();
+		el.textContent = msg;
+		el.classList.add("is-visible");
+		window.clearTimeout(toastTimer);
+		toastTimer = window.setTimeout(
+			() => el.classList.remove("is-visible"),
+			1400,
+		);
+	}
+
+	function safeParse(json, fallback) {
+		try {
+			return JSON.parse(json);
+		} catch {
+			return fallback;
+		}
+	}
+
+	function storageAvailable() {
+		try {
+			const x = "__t__";
+			localStorage.setItem(x, x);
+			localStorage.removeItem(x);
+			return true;
+		} catch {
+			return false;
+		}
+	}
+
+	function getSaved() {
+		if (!storageAvailable()) return [];
+		const raw = localStorage.getItem(KEY);
+		const arr = safeParse(raw, []);
+		return Array.isArray(arr) ? arr : [];
+	}
+
+	function setSaved(arr) {
+		if (!storageAvailable()) return;
+		localStorage.setItem(KEY, JSON.stringify(arr));
+	}
+
+	function setBtnState(btn, pressed) {
+		btn.classList.toggle("is-active", pressed);
+		btn.setAttribute("aria-pressed", pressed ? "true" : "false");
+	}
+
+	function hydrateSaveButtons() {
+		const saved = new Set(getSaved().map(String));
+		document
+			.querySelectorAll('button[data-action="save"][data-id]')
+			.forEach((btn) => {
+				const id = btn.getAttribute("data-id");
+				setBtnState(btn, saved.has(String(id)));
+			});
+	}
+
+	async function shareUrl(url, title) {
+		const u = url || window.location.href;
+		const t = title || document.title || "EdreamsCars";
+
+		if (navigator.share) {
+			try {
+				await navigator.share({ title: t, url: u });
+				toast("Compartido");
+				return;
+			} catch {}
+		}
+
+		if (navigator.clipboard && window.isSecureContext) {
+			try {
+				await navigator.clipboard.writeText(u);
+				toast("Enlace copiado");
+				return;
+			} catch {}
+		}
+
+		// Fallback muy básico
+		prompt("Copia este enlace:", u);
+	}
+
+	async function copyCurrentUrl() {
+		const u = window.location.href;
+		if (navigator.clipboard && window.isSecureContext) {
+			try {
+				await navigator.clipboard.writeText(u);
+				toast("Enlace copiado");
+				return;
+			} catch {}
+		}
+		prompt("Copia este enlace:", u);
+	}
+
+	// Init
+	hydrateSaveButtons();
+
+	// Delegación global (archive)
+	document.addEventListener("click", async (e) => {
+		const btn = e.target.closest("[data-action]");
+		if (!btn) return;
+
+		const action = btn.getAttribute("data-action");
+
+		if (action === "save") {
+			const id = btn.getAttribute("data-id");
+			if (!id) return;
+
+			const saved = getSaved().map(String);
+			const idx = saved.indexOf(String(id));
+
+			if (idx >= 0) {
+				saved.splice(idx, 1);
+				setSaved(saved);
+				setBtnState(btn, false);
+				toast("Eliminado de guardados");
+			} else {
+				saved.unshift(String(id));
+				setSaved(saved);
+				setBtnState(btn, true);
+				toast("Guardado");
+			}
+			return;
+		}
+
+		if (action === "share") {
+			const url = btn.getAttribute("data-url") || window.location.href;
+			await shareUrl(url, document.title);
+			return;
+		}
+
+		if (action === "copy") {
+			await copyCurrentUrl();
+			return;
+		}
+	});
+
+	// Compat single.php actual (si aún tienes ids)
+	const copyBtn = document.getElementById("copy-button");
+	if (copyBtn) {
+		copyBtn.addEventListener("click", (e) => {
+			e.preventDefault();
+			copyCurrentUrl();
+		});
+	}
+
+	const shareBtn = document.getElementById("share-button");
+	if (shareBtn) {
+		shareBtn.addEventListener("click", (e) => {
+			e.preventDefault();
+			shareUrl(window.location.href, document.title);
+		});
+	}
+})();

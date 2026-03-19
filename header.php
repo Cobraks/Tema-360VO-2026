@@ -1,0 +1,450 @@
+<?php
+
+/**
+ * Header template
+ * 360vo-theme
+ */
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+/**
+ * Context helper seguro:
+ * - Si existe plugin (helper global), usarlo.
+ * - Si no, fallback a get_field('option') para no romper staging.
+ */
+if (!function_exists('theme360_ctx_get')) {
+    function theme360_ctx_get($key, $default = '')
+    {
+        if (function_exists('gv360_get_variable')) {
+            return gv360_get_variable($key, $default);
+        }
+
+        if (function_exists('get_field')) {
+            $map = array(
+                'email'         => 'correo_y_telefono_correo_principal',
+                'phone_primary' => 'correo_y_telefono_telefono_principal',
+                'instagram_url' => 'social_insta',
+                'facebook_url'  => 'social_face',
+                'twitter_url'   => 'social_twitter',
+                'youtube_url'   => 'social_youtube',
+                'tiktok_url'    => 'social_tiktok',
+            );
+
+            if (isset($map[$key])) {
+                $v = get_field($map[$key], 'option');
+                if (is_scalar($v) && trim((string) $v) !== '') {
+                    $v = trim((string) $v);
+
+                    // Normalización ligera en fallback (usuario -> URL)
+                    if (in_array($key, array('instagram_url', 'facebook_url', 'twitter_url', 'youtube_url', 'tiktok_url'), true)) {
+                        if (!preg_match('#^https?://#i', $v)) {
+                            $base = array(
+                                'instagram_url' => 'https://www.instagram.com/%s',
+                                'facebook_url'  => 'https://www.facebook.com/%s',
+                                'twitter_url'   => 'https://www.twitter.com/%s',
+                                'youtube_url'   => 'https://www.youtube.com/%s',
+                                'tiktok_url'    => 'https://www.tiktok.com/%s',
+                            );
+                            $v = sprintf($base[$key], ltrim($v, '@/'));
+                        }
+                    }
+
+                    return $v;
+                }
+            }
+        }
+
+        return $default;
+    }
+}
+
+/**
+ * Repeater social legacy helper
+ */
+if (!function_exists('theme360_social_repeater_name')) {
+    function theme360_social_repeater_name()
+    {
+        if (function_exists('have_rows')) {
+            if (have_rows('social_add_social', 'option')) {
+                return 'social_add_social';
+            }
+            if (have_rows('add_social', 'option')) {
+                return 'add_social';
+            }
+        }
+        return '';
+    }
+}
+
+$email_principal    = trim((string) theme360_ctx_get('email', ''));
+$telefono_principal = trim((string) theme360_ctx_get('phone_primary', ''));
+$telefono_e164      = trim((string) theme360_ctx_get('phone_e164', ''));
+$telefono_display   = trim((string) theme360_ctx_get('phone_display', $telefono_principal));
+
+$insta_url   = trim((string) theme360_ctx_get('instagram_url', ''));
+$face_url    = trim((string) theme360_ctx_get('facebook_url', ''));
+$twitter_url = trim((string) theme360_ctx_get('twitter_url', ''));
+$youtube_url = trim((string) theme360_ctx_get('youtube_url', ''));
+$tiktok_url  = trim((string) theme360_ctx_get('tiktok_url', ''));
+
+$social_repeater = theme360_social_repeater_name();
+
+$has_social = (
+    $insta_url !== '' ||
+    $face_url !== '' ||
+    $twitter_url !== '' ||
+    $youtube_url !== '' ||
+    $tiktok_url !== '' ||
+    ($social_repeater !== '')
+);
+
+// Lógica logo/header
+$custom_logo_id    = (int) get_theme_mod('custom_logo');
+$logo              = $custom_logo_id ? wp_get_attachment_image_src($custom_logo_id, 'full') : false;
+$logo_shape        = (string) get_theme_mod('th360_logo_shape', 'square');
+$header_logo_class = ' site-header--logo-' . sanitize_html_class($logo_shape);
+
+// Theme color dinámico (seguro)
+$theme_color = sanitize_hex_color((string) get_theme_mod('th360_custom_color', ''));
+if (!$theme_color) {
+    $theme_color = '#006579';
+}
+
+$site_name = (string) get_bloginfo('name');
+
+/**
+ * ---------------------------------------------------------
+ * Logo SVG inline desde ACF Options (logo_svg)
+ * Prioridad: logo_svg (ACF) > custom_logo (WP) > texto
+ * ---------------------------------------------------------
+ */
+if (!function_exists('theme360_get_logo_svg_option')) {
+    function theme360_get_logo_svg_option(): string
+    {
+        $raw = '';
+
+        // Prefer plugin variable system if available
+        if (function_exists('gv360_get_variable')) {
+            $raw = (string) gv360_get_variable('logo_svg', '');
+            $raw = trim($raw);
+            if ($raw !== '') return $raw;
+        }
+
+        if (function_exists('get_field')) {
+            // 1) Campo directo en options
+            $raw = (string) get_field('logo_svg', 'option');
+            $raw = trim($raw);
+            if ($raw !== '') return $raw;
+
+            // 2) Si estuviera dentro de un group "personalizacion"
+            $grp = get_field('personalizacion', 'option');
+            if (is_array($grp) && !empty($grp['logo_svg']) && is_string($grp['logo_svg'])) {
+                $raw = trim($grp['logo_svg']);
+                if ($raw !== '') return $raw;
+            }
+
+            // 3) Alternativa de nombre (por si ACF lo guarda así)
+            $raw = (string) get_field('personalizacion_logo_svg', 'option');
+            $raw = trim($raw);
+            if ($raw !== '') return $raw;
+        }
+
+        return '';
+    }
+}
+
+if (!function_exists('theme360_prepare_inline_logo_svg')) {
+    function theme360_prepare_inline_logo_svg(string $svg): string
+    {
+        $svg = trim($svg);
+        if ($svg === '') return '';
+
+        // Defensa en profundidad: sanitizar también al imprimir
+        if (function_exists('th360_allowed_svg_html')) {
+            $svg = wp_kses($svg, th360_allowed_svg_html());
+        } else {
+            $svg = wp_kses($svg, [
+                'svg' => [
+                    'xmlns' => true,
+                    'viewbox' => true,
+                    'version' => true,
+                    'id' => true,
+                    'class' => true,
+                    'width' => true,
+                    'height' => true,
+                    'role' => true,
+                    'aria-hidden' => true,
+                    'aria-labelledby' => true,
+                    'focusable' => true,
+                    'data-name' => true,
+                ],
+                'path' => [
+                    'd' => true,
+                    'class' => true,
+                    'fill' => true,
+                    'stroke' => true,
+                    'stroke-width' => true,
+                    'stroke-linecap' => true,
+                    'stroke-linejoin' => true,
+                    'transform' => true,
+                ],
+                'g' => [
+                    'class' => true,
+                    'transform' => true,
+                    'fill' => true,
+                    'stroke' => true,
+                    'stroke-width' => true,
+                ],
+                'title' => [],
+                'desc'  => [],
+                'defs'  => [],
+            ]);
+        }
+
+        if ($svg === '') return '';
+
+        // Evitar IDs duplicados (tu SVG trae id="Capa_1" y el header + mobile lo duplican)
+        $svg = preg_replace('/<svg\b([^>]*)\sid=("|\')[^"\']*\2([^>]*)>/i', '<svg$1$3>', $svg, 1);
+
+        // A11y: el <a> ya tiene label, el svg puede ir aria-hidden
+        $svg = preg_replace_callback('/<svg\b([^>]*)>/i', function ($m) {
+            $attrs = $m[1];
+
+            if (!preg_match('/\baria-hidden\s*=/i', $attrs)) {
+                $attrs .= ' aria-hidden="true"';
+            }
+            if (!preg_match('/\bfocusable\s*=/i', $attrs)) {
+                $attrs .= ' focusable="false"';
+            }
+
+            return '<svg' . $attrs . '>';
+        }, $svg, 1);
+
+        return $svg;
+    }
+}
+
+$logo_svg_raw  = theme360_get_logo_svg_option();
+$logo_svg_safe = ($logo_svg_raw !== '') ? theme360_prepare_inline_logo_svg($logo_svg_raw) : '';
+
+?>
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+
+<head>
+    <meta charset="<?php bloginfo('charset'); ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Theme / PWA-ish -->
+    <meta name="theme-color" content="<?php echo esc_attr($theme_color); ?>">
+    <meta name="color-scheme" content="light">
+
+    <!-- iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="<?php echo esc_attr($site_name); ?>">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+    <!-- Windows tiles -->
+    <meta name="msapplication-TileColor" content="<?php echo esc_attr($theme_color); ?>">
+
+    <?php wp_head(); ?>
+</head>
+
+<body <?php body_class(); ?>>
+    <?php if (function_exists('wp_body_open')) wp_body_open(); ?>
+
+    <header class="site-header<?php echo esc_attr($header_logo_class); ?>">
+        <?php echo '<!-- additional_header_class = ' . esc_html($header_logo_class) . ' -->'; ?>
+
+        <div class="wrapper-header flex justify-between items-center">
+            <button class="menu-button" type="button" title="<?php esc_attr_e('Menú principal', '360vo-theme'); ?>">
+                <span class="menu-button-line"></span>
+                <span class="menu-button-line"></span>
+                <span class="menu-button-line"></span>
+            </button>
+
+            <?php if ($logo_svg_safe !== '') : ?>
+                <a
+                    href="<?php echo esc_url(home_url('/')); ?>"
+                    class="site-header__logo"
+                    rel="home"
+                    aria-label="<?php echo esc_attr($site_name); ?>">
+                    <?php echo $logo_svg_safe; ?>
+                </a>
+
+            <?php elseif (has_custom_logo() && is_array($logo) && !empty($logo[0])) : ?>
+                <a
+                    href="<?php echo esc_url(home_url('/')); ?>"
+                    class="site-header__logo"
+                    rel="home"
+                    aria-label="<?php echo esc_attr($site_name); ?>">
+                    <img
+                        src="<?php echo esc_url(untrailingslashit($logo[0])); ?>"
+                        alt="<?php echo esc_attr($site_name); ?>"
+                        width="400"
+                        height="70"
+                        class="site-header__logo-img"
+                        decoding="async"
+                        loading="eager"
+                        fetchpriority="high">
+                </a>
+
+            <?php else : ?>
+                <a
+                    href="<?php echo esc_url(home_url('/')); ?>"
+                    class="site-header__logo site-header__logo--text"
+                    rel="home">
+                    <?php echo esc_html($site_name); ?>
+                </a>
+            <?php endif; ?>
+
+            <?php
+            wp_nav_menu(array(
+                'theme_location'  => 'primary',
+                'container'       => 'nav',
+                'container_class' => 'site-navigation',
+                'link_before'     => '<div class="item-navegacion__container"><span class="item-navegacion">',
+                'link_after'      => '</span></div>',
+            ));
+            ?>
+
+            <div class="site-header__contact-buttons flex">
+                <?php if ($email_principal !== '') : ?>
+                    <a
+                        class="site-header__contact-button site-header__contact-button--email button--round-s border flex items-center justify-center"
+                        href="<?php echo esc_url('mailto:' . antispambot($email_principal)); ?>"
+                        aria-label="<?php esc_attr_e('Enviar correo electrónico', '360vo-theme'); ?>">
+                        <span class="site-header__contact-button-icon site-header__contact-button-icon--email"><?php echo E360VO_Icon::get('email_new', array('class' => 'flex justify-center items-center')); ?></span>
+                        <span class="site-header__contact-button-text"><?php echo esc_html($email_principal); ?></span>
+                    </a>
+                <?php endif; ?>
+
+                <?php if ($telefono_principal !== '') : ?>
+                    <a
+                        class="site-header__contact-button site-header__contact-button--phone button--round-s border flex items-center justify-center"
+                        href="<?php echo esc_url('tel:' . preg_replace('/\s+/', '', ($telefono_e164 !== '' ? $telefono_e164 : $telefono_principal))); ?>"
+                        aria-label="<?php echo esc_attr(sprintf(__('Llamar a %s', '360vo-theme'), $site_name)); ?>">
+                        <span class="site-header__contact-button-icon site-header__contact-button-icon--phone"><?php echo E360VO_Icon::get('call_new', array('class' => 'flex justify-center items-center')); ?></span>
+                        <span class="site-header__contact-button-text"><?php echo esc_html($telefono_display); ?></span>
+                    </a>
+                <?php endif; ?>
+            </div>
+        </div>
+    </header>
+
+    <nav class="mobile-nav initially-hidden">
+        <div class="mobile-nav-header wrapper-padding flex items-center justify-between">
+            <?php if ($logo_svg_safe !== '') : ?>
+                <a
+                    href="<?php echo esc_url(home_url('/')); ?>"
+                    class="menu-mobile__logo site-header__logo--mobile"
+                    rel="home"
+                    aria-label="<?php echo esc_attr($site_name); ?>">
+                    <?php echo $logo_svg_safe; ?>
+                </a>
+            <?php elseif (has_custom_logo() && is_array($logo) && !empty($logo[0])) : ?>
+                <a
+                    href="<?php echo esc_url(home_url('/')); ?>"
+                    class="menu-mobile__logo site-header__logo--mobile"
+                    rel="home"
+                    aria-label="<?php echo esc_attr($site_name); ?>">
+                    <img
+                        src="<?php echo esc_url(untrailingslashit($logo[0])); ?>"
+                        alt="<?php echo esc_attr($site_name); ?>"
+                        width="400"
+                        height="70"
+                        class="site-header__logo-img site-header__logo-img--mobile"
+                        decoding="async"
+                        loading="lazy">
+                </a>
+            <?php else : ?>
+                <a
+                    href="<?php echo esc_url(home_url('/')); ?>"
+                    class="menu-mobile__logo site-header__logo--text site-header__logo--mobile"
+                    rel="home">
+                    <?php echo esc_html($site_name); ?>
+                </a>
+            <?php endif; ?>
+            <button class="close-button" type="button" title="<?php esc_attr_e('Cerrar menú', '360vo-theme'); ?>">
+                <span class="close-button-line"></span>
+                <span class="close-button-line"></span>
+                <span class="close-button-line"></span>
+            </button>
+        </div>
+
+        <div class="mobile-nav-content wrapper-padding">
+            <?php
+            wp_nav_menu(array(
+                'theme_location' => 'primary',
+                'container'      => false,
+                'items_wrap'     => '<ul>%3$s</ul>',
+            ));
+            ?>
+        </div>
+
+        <?php if ($has_social) : ?>
+            <div class="mobile-nav-footer wrapper-padding flex items-center justify-center">
+
+
+                <ul class="footer__social__list">
+                    <?php if ($insta_url !== '') : ?>
+                        <li><a aria-label="Instagram" href="<?php echo esc_url($insta_url); ?>" target="_blank" rel="noopener noreferrer"><i class="icon-instagram"></i></a></li>
+                    <?php endif; ?>
+
+                    <?php if ($face_url !== '') : ?>
+                        <li><a aria-label="Facebook" href="<?php echo esc_url($face_url); ?>" target="_blank" rel="noopener noreferrer"><?php echo E360VO_Icon::get('facebook', array('class' => 'flex justify-center  items-center')); ?></a></li></a></li>
+                    <?php endif; ?>
+
+                    <?php if ($twitter_url !== '') : ?>
+                        <li><a aria-label="Twitter" href="<?php echo esc_url($twitter_url); ?>" target="_blank" rel="noopener noreferrer">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512">
+                                    <path opacity="1" fill="#1E3050" d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z" />
+                                </svg>
+                            </a></li>
+                    <?php endif; ?>
+
+                    <?php if ($youtube_url !== '') : ?>
+                        <li><a aria-label="Youtube" href="<?php echo esc_url($youtube_url); ?>" target="_blank" rel="noopener noreferrer">
+                                <svg aria-hidden="true" height="16" width="16" viewBox="0 0 18 18">
+                                    <path d="M7.2,11.6V6.4L12,9.1L7.2,11.6z M17.8,5.3c0,0-0.2-1.2-0.7-1.8c-0.7-0.7-1.4-0.7-1.8-0.8C12.8,2.6,9,2.6,9,2.6s-3.8,0-6.3,0.2c-0.3,0-1.1,0-1.8,0.8C0.4,4.1,0.2,5.3,0.2,5.3S0,6.8,0,8.2v1.5c0,1.5,0.2,2.9,0.2,2.9s0.2,1.2,0.7,1.8c0.7,0.7,1.6,0.7,2,0.8c1.4,0.1,5.9,0.2,6.1,0.2c0,0,3.8,0,6.3-0.2c0.3,0,1.1,0,1.8-0.8c0.5-0.5,0.7-1.8,0.7-1.8S18,11.2,18,9.8V8.2C18,6.8,17.8,5.3,17.8,5.3z" />
+                                </svg>
+                            </a></li>
+                    <?php endif; ?>
+
+                    <?php if ($tiktok_url !== '') : ?>
+                        <li><a aria-label="TikTok" href="<?php echo esc_url($tiktok_url); ?>" target="_blank" rel="noopener noreferrer">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="20" height="20">
+                                    <path d="M41,4H9C6.243,4,4,6.243,4,9v32c0,2.757,2.243,5,5,5h32c2.757,0,5-2.243,5-5V9C46,6.243,43.757,4,41,4z M37.006,22.323 c-0.227,0.021-0.457,0.035-0.69,0.035c-2.623,0-4.928-1.349-6.269-3.388c0,5.349,0,11.435,0,11.537c0,4.709-3.818,8.527-8.527,8.527 s-8.527-3.818-8.527-8.527s3.818-8.527,8.527-8.527c0.178,0,0.352,0.016,0.527,0.027v4.202c-0.175-0.021-0.347-0.053-0.527-0.053 c-2.404,0-4.352,1.948-4.352,4.352s1.948,4.352,4.352,4.352s4.527-1.894,4.527-4.298c0-0.095,0.042-19.594,0.042-19.594h4.016 c0.378,3.591,3.277,6.425,6.901,6.685V22.323z" />
+                                </svg>
+                            </a></li>
+                    <?php endif; ?>
+
+                    <?php if ($social_repeater !== '' && function_exists('have_rows') && have_rows($social_repeater, 'option')) : ?>
+                        <?php while (have_rows($social_repeater, 'option')) : the_row(); ?>
+                            <?php
+                            $social_network_name = (string) get_sub_field('nombre_rs');
+                            $social_network_link = (string) get_sub_field('link_red_social');
+                            $social_network_icon = get_sub_field('icono_red_social');
+                            ?>
+                            <li>
+                                <?php if (!empty($social_network_icon)) : ?>
+                                    <a href="<?php echo esc_url($social_network_link); ?>" target="_blank" rel="noopener noreferrer">
+                                        <img src="<?php echo esc_url($social_network_icon); ?>" alt="<?php echo esc_attr($social_network_name); ?>" width="18" height="18">
+                                    </a>
+                                <?php else : ?>
+                                    <a href="<?php echo esc_url($social_network_link); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html($social_network_name); ?></a>
+                                <?php endif; ?>
+                            </li>
+                        <?php endwhile; ?>
+                    <?php endif; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
+    </nav>
+
+    <?php
+    get_template_part('template-parts/navigation/breadcrumbs');
+    theme360_breadcrumbs();
+    ?>

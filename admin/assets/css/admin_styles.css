@@ -1,0 +1,201 @@
+:root {
+  --wrapper-padding: 1rem;
+  --altura-header: 4rem;
+  --altura-header-sticky: 4rem;
+  --altura-breadcrumbs: calc(var(--altura-header) / 1.618);
+  --altura-breadcrumbs-sticky: calc(var(--altura-header-sticky) / 1.618);
+
+  --altura-breadcrumbsYheader: calc(var(--altura-header) + var(--altura-breadcrumbs));
+  --altura-WpAdminBar: 2.875rem;
+  --altura-WpAdminBaryHeader: calc(var(--altura-WpAdminBar) + var(--altura-header));
+  --altura-barraInferior: 5rem;
+
+  --fs-400: 12rem;
+  --ff-primary: 'Open Sans', sans-serif;
+  --ff-secondary: 'Lora', serif;
+
+  --espacioPadding: 1.5rem;
+  --tarjetaMargin: 1rem;
+  --paddingTarjeta: 1rem;
+  --espacioTarjeta: 1rem;
+  --posicionTop: 1.5rem;
+
+  --atc-primary: rgb(61, 73, 255);
+  --background-breadcrumb: var(--neutral90);
+  --color-breadcrumb: var(--primary50);
+  --separador-breadcrumb: var(--neutral60);
+  --espaciado: 1rem;
+  --bodySize: 1rem;
+}
+
+/* =========================================
+   Icono menú admin Gestión 360 (SVG plugin)
+   ========================================= */
+#adminmenu .toplevel_page_gestion_360 .wp-menu-image::before {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 20px;
+  margin: 0 auto 0;
+  background: url("https://www.stoic-archimedes.31-170-100-104.plesk.page/wp-content/plugins/gestion-de-vehiculos-360vo/public/assets/images/logo-360vo.svg") center/contain no-repeat;
+}
+
+#adminmenu .toplevel_page_gestion_360 .dashicons-before::before,
+#adminmenu .toplevel_page_gestion_360 .wp-menu-image.dashicons-before::before {
+  content: "";
+}
+
+#adminmenu .wp-has-current-submenu .wp-submenu .wp-submenu-head, #adminmenu li.current a.menu-top, #adminmenu li.wp-has-current-submenu a.wp-has-current-submenu {
+ background: var(--wp-admin-theme-color-darker-20);
+}
+
+/* =========================================
+   GV360 admin styles
+   ========================================= */
+#show_add_modelo_button {
+  margin-left: auto;
+  display: flex;
+  width: fit-content;
+  margin-bottom: 24px;
+  align-items: center;
+  margin-right: 16px;
+}
+
+#add_modelo_form {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+#add_modelo_form button {
+  margin-top: 16px;
+  width: 100%;
+  background: var(--primary99);
+  color: var(--primary30);
+  border: solid 1px var(--primary50);
+  border-radius: 8px;
+  height: 34px;
+  font-size: 14px;
+}
+
+/* =========================================
+   Escritorio WP (widgets dashboard)
+   ========================================= */
+.postbox {
+  border: 1px solid var(--neutral80);
+  background-color: #f9f9f9;
+  border-radius: 10px;
+}
+
+.postbox-header {
+  border-radius: 10px 10px 0 0;
+  background: var(--neutral95);
+  border: none;
+}
+
+.postbox h2.hndle {
+  color: var(--neutral40);
+  border-radius: 10px;
+}
+
+.postbox .inside {
+  color: #333;
+}
+
+.postbox a {
+  color: var(--primary40);
+}
+
+/* =========================================
+   Admin bar
+   ========================================= */
+#wpadminbar #wp-admin-bar-my-account.with-avatar #wp-admin-bar-user-actions > li {
+  margin-left: 0 !important;
+}
+
+#wp-admin-bar-flamingo-inbound-messages .ab-item,
+#wp-admin-bar-coche .ab-item {
+  display: flex !important;
+  align-items: center;
+}
+
+#wp-admin-bar-flamingo-inbound-messages .update-plugins {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #d63638;
+  color: #fff;
+  border-radius: 50% !important;
+  width: 24px !important;
+  height: 24px !important;
+  font-size: 10px !important;
+  font-weight: bold !important;
+  margin-right: 5px !important;
+  animation: notification-bounce 1s infinite;
+}
+
+#wp-admin-bar-flamingo-inbound-messages .plugin-count {
+  font-weight: bold !important;
+  font-size: 14px !important;
+}
+
+.avatar.photo {
+  display: none !important;
+}
+
+@keyframes notification-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+/* =========================================
+   Taxonomías coche: ocultar padre
+   ========================================= */
+.taxonomy-carroceria .form-field.term-parent-wrap,
+.taxonomy-marca .form-field.term-parent-wrap,
+.taxonomy-modelo .form-field.term-parent-wrap {
+  display: none;
+}
+
+
+#wp-admin-bar-flamingo-inbound-messages .ab-item,
+#wp-admin-bar-coche .ab-item {
+  display: flex !important;
+  align-items: center;
+}
+
+
+.update-plugins {
+display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #d63638;
+  color: #fff;
+  border-radius: 50% !important;
+  width: 24px !important;
+  height: 24px !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  margin-right: 5px !important;
+  animation: notification-bounce 1s infinite;
+}
+
+.plugin-count {
+  font-weight: 600 !important;
+  font-size: 14px !important;
+}
+
+
+/* Animación sutil para el contador de notificaciones */
+@keyframes notification-bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-2px);
+    }
+}

@@ -1,0 +1,102 @@
+.logged-in div.content-wrapper {
+  margin-top: calc(var(--altura-breadcrumbsYheader));
+}
+
+
+
+.logged-in header.site-header {
+  top: var(--altura-WpAdminBar);
+}
+
+.logged-in header.site-header.scrolled_logged-in {
+  top: 0;
+}
+
+
+.logged-in .mobile-nav {
+  top: var(--altura-WpAdminBar);
+  height: calc(100% - var(--altura-header) - var(--altura-WpAdminBar) + var(--altura-barraInferior));
+}
+
+.logged-in .mobile-nav.scrolled_logged-in {
+  height: 100%;
+  top:0;
+}
+
+
+
+.logged-in .nav-breadcrumb {
+  top: calc(var(--altura-header) + var(--altura-WpAdminBar));
+}
+
+.logged-in .nav-breadcrumb.scrolled_logged-in {
+  top: var(--altura-header);
+  transition: all .3s ease-in-out;
+}
+
+.logged-in .nav-breadcrumb.hidden.scrolled_logged-in {
+  top: calc(var(--altura-header) - var(--altura-breadcrumbs));
+}
+
+/* Sticky logged-in (añade AdminBar) */
+.logged-in #toc-container {
+  top: calc(var(--altura-breadcrumbsYheader) + var(--altura-WpAdminBar) + 1rem);
+}
+
+
+.logged-in .custom-page__content h2,
+.logged-in .custom-page__content h3,
+.logged-in .custom-page__content h4,
+.logged-in .custom-page__content h5,
+.logged-in .custom-page__content h6 {
+  scroll-margin-top: calc(var(--altura-breadcrumbsYheader) + var(--altura-WpAdminBar) + 1.25rem);
+}
+
+@media (min-width:601px) { 
+ .logged-in header.site-header,
+  .logged-in header.site-header.scrolled_logged-in {
+    top:2.875rem;
+    top: var(--altura-WpAdminBar);
+}
+
+.logged-in .nav-breadcrumb.hidden.scrolled_logged-in {
+  top: var(--altura-header);
+  top: calc(var(--altura-header) + var(--altura-WpAdminBar) - var(--altura-breadcrumbs));
+}
+
+.logged-in .nav-breadcrumb,
+.logged-in .nav-breadcrumb.scrolled_logged-in {
+  top: var(--altura-WpAdminBaryHeader); 
+}
+
+.logged-in .mobile-nav,
+.logged-in .mobile-nav.scrolled_logged-in {
+  top: var(--altura-WpAdminBar);
+  height: calc(100% - var(--altura-WpAdminBar));
+}
+
+}
+
+@media (min-width:1080px) { 
+
+
+.logged-in header.site-header,
+.logged-in header.site-header.scrolled_logged-in {
+  top: var(--altura-WpAdminBar);
+}
+
+.logged-in .nav-breadcrumb,
+.logged-in .nav-breadcrumb.scrolled_logged-in {
+  top: calc(var(--altura-header) + var(--altura-WpAdminBar));
+  
+}
+.logged-in .nav-breadcrumb.hidden {
+top: var(--altura-header);
+
+}
+
+.logged-in .nav-breadcrumb.hidden.scrolled_logged-in {
+  top: calc(var(--altura-header) + var(--altura-WpAdminBar) - var(--altura-breadcrumbs));
+}
+
+}

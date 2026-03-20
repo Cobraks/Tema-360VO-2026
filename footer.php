@@ -209,16 +209,80 @@ $tiktok_url  = trim((string) theme360_ctx_get('tiktok_url', ''));
 
 $social_repeater = theme360_social_repeater_name();
 
-$has_social = (
-  $insta_url !== '' ||
-  $face_url !== '' ||
-  $twitter_url !== '' ||
-  $youtube_url !== '' ||
-  $tiktok_url !== '' ||
-  ($social_repeater !== '')
-);
-
 $mostrar_redes_sociales = in_array(strtolower((string) theme360_ctx_get('show_footer_social', '1')), array('1', 'true', 'yes', 'on'), true);
+
+$social_links = array();
+
+$add_social_link = static function (array &$items, string $url, string $label, string $type, string $icon = ''): void {
+  $clean_url = trim($url);
+  if ($clean_url === '') {
+    return;
+  }
+
+  $items[] = array(
+    'label' => $label,
+    'url'   => $clean_url,
+    'type'  => $type,
+    'icon'  => $icon,
+  );
+};
+
+$add_social_link($social_links, $insta_url, 'Instagram', 'icon-font', 'icon-instagram');
+$add_social_link($social_links, $face_url, 'Facebook', 'theme-icon', 'facebook');
+$add_social_link($social_links, $twitter_url, 'Twitter', 'svg', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true"><path opacity="1" fill="currentColor" d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"></path></svg>');
+$add_social_link($social_links, $youtube_url, 'YouTube', 'svg', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" aria-hidden="true"><path fill="currentColor" d="M7.2,11.6V6.4L12,9.1L7.2,11.6z M17.8,5.3c0,0-0.2-1.2-0.7-1.8c-0.7-0.7-1.4-0.7-1.8-0.8C12.8,2.6,9,2.6,9,2.6 s-3.8,0-6.3,0.2c-0.3,0-1.1,0-1.8,0.8C0.4,4.1,0.2,5.3,0.2,5.3S0,6.8,0,8.2v1.5c0,1.5,0.2,2.9,0.2,2.9s0.2,1.2,0.7,1.8 c0.7,0.7,1.6,0.7,2,0.8c1.4,0.1,5.9,0.2,6.1,0.2c0,0,3.8,0,6.3-0.2c0.3,0,1.1,0,1.8-0.8c0.5-0.5,0.7-1.8,0.7-1.8S18,11.2,18,9.8V8.2 C18,6.8,17.8,5.3,17.8,5.3z"></path></svg>');
+$add_social_link($social_links, $tiktok_url, 'TikTok', 'svg', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" aria-hidden="true"><path fill="currentColor" d="M41,4H9C6.243,4,4,6.243,4,9v32c0,2.757,2.243,5,5,5h32c2.757,0,5-2.243,5-5V9C46,6.243,43.757,4,41,4z M37.006,22.323 c-0.227,0.021-0.457,0.035-0.69,0.035c-2.623,0-4.928-1.349-6.269-3.388c0,5.349,0,11.435,0,11.537c0,4.709-3.818,8.527-8.527,8.527 s-8.527-3.818-8.527-8.527s3.818-8.527,8.527-8.527c0.178,0,0.352,0.016,0.527,0.027v4.202c-0.175-0.021-0.347-0.053-0.527-0.053 c-2.404,0-4.352,1.948-4.352,4.352s1.948,4.352,4.352,4.352s4.527-1.894,4.527-4.298c0-0.095,0.042-19.594,0.042-19.594h4.016 c0.378,3.591,3.277,6.425,6.901,6.685V22.323z"></path></svg>');
+
+if ($social_repeater !== '' && function_exists('have_rows') && have_rows($social_repeater, 'option')) {
+  while (have_rows($social_repeater, 'option')) {
+    the_row();
+
+    $social_network_name = trim((string) get_sub_field('nombre_rs'));
+    $social_network_link = trim((string) get_sub_field('link_red_social'));
+    $social_network_icon = get_sub_field('icono_red_social');
+
+    if ($social_network_link === '') {
+      continue;
+    }
+
+    if (!empty($social_network_icon)) {
+      $social_links[] = array(
+        'label' => $social_network_name !== '' ? $social_network_name : __('Red social', '360vo-theme'),
+        'url'   => $social_network_link,
+        'type'  => 'image',
+        'icon'  => (string) $social_network_icon,
+      );
+      continue;
+    }
+
+    $social_links[] = array(
+      'label' => $social_network_name !== '' ? $social_network_name : __('Red social', '360vo-theme'),
+      'url'   => $social_network_link,
+      'type'  => 'text',
+      'icon'  => $social_network_name,
+    );
+  }
+}
+
+$render_social_icon = static function (array $social_item): string {
+  switch ($social_item['type']) {
+    case 'icon-font':
+      return '<i class="' . esc_attr($social_item['icon']) . '" aria-hidden="true"></i>';
+
+    case 'theme-icon':
+      return E360VO_Icon::get($social_item['icon'], array('aria-hidden' => 'true'));
+
+    case 'svg':
+      return $social_item['icon'];
+
+    case 'image':
+      return '<img src="' . esc_url($social_item['icon']) . '" alt="" loading="lazy" width="20" height="20">';
+
+    case 'text':
+    default:
+      return '<span class="ft-social__text">' . esc_html($social_item['icon'] !== '' ? $social_item['icon'] : $social_item['label']) . '</span>';
+  }
+};
 
 $api_key_maps = theme360_get_maps_api_key();
 $url_mapa = '';
@@ -238,7 +302,7 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
 </button>
 
 <footer>
-  <section class="footer-section flex <?php echo $mostrar_redes_sociales ? 'footer-section--has-social' : ''; ?>">
+  <section class="footer-section flex">
 
     <div class="footer-section__item footer-section__item--horario">
       <h3 class="footer-section__title"><?php echo E360VO_Icon::get('reloj'); ?><?php esc_html_e('Horario', '360vo-theme'); ?></h3>
@@ -302,44 +366,6 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
       </div>
     </div>
 
-    <?php if ($mostrar_redes_sociales && $has_social) : ?>
-      <div class="footer-section__item footer-section__item--social">
-        <h3 class="footer-section__title"><?php esc_html_e('¡Síguenos!', '360vo-theme'); ?></h3>
-        <ul class="footer__social__list flex">
-          <?php if ($insta_url !== '') : ?><li><a class="flex items-center justify-center" aria-label="Instagram" href="<?php echo esc_url($insta_url); ?>" target="_blank" rel="noopener noreferrer"><i class="icon-instagram"></i></a></li><?php endif; ?>
-          <?php if ($face_url !== '') : ?><li><a aria-label="Facebook" href="<?php echo esc_url($face_url); ?>" target="_blank" rel="noopener noreferrer"><?php echo E360VO_Icon::get('facebook', array('class' => 'flex justify-center  items-center')); ?></a></li><?php endif; ?>
-          <?php if ($twitter_url !== '') : ?><li><a aria-label="Twitter" href="<?php echo esc_url($twitter_url); ?>" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512">
-                  <path opacity="1" fill="#1E3050" d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"></path>
-                </svg></a></li><?php endif; ?>
-          <?php if ($youtube_url !== '') : ?><li><a aria-label="Youtube" href="<?php echo esc_url($youtube_url); ?>" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true" height="16" width="16" viewBox="0 0 18 18">
-                  <path d="M7.2,11.6V6.4L12,9.1L7.2,11.6z M17.8,5.3c0,0-0.2-1.2-0.7-1.8c-0.7-0.7-1.4-0.7-1.8-0.8C12.8,2.6,9,2.6,9,2.6 s-3.8,0-6.3,0.2c-0.3,0-1.1,0-1.8,0.8C0.4,4.1,0.2,5.3,0.2,5.3S0,6.8,0,8.2v1.5c0,1.5,0.2,2.9,0.2,2.9s0.2,1.2,0.7,1.8 c0.7,0.7,1.6,0.7,2,0.8c1.4,0.1,5.9,0.2,6.1,0.2c0,0,3.8,0,6.3-0.2c0.3,0,1.1,0,1.8-0.8c0.5-0.5,0.7-1.8,0.7-1.8S18,11.2,18,9.8V8.2 C18,6.8,17.8,5.3,17.8,5.3z"></path>
-                </svg></a></li><?php endif; ?>
-          <?php if ($tiktok_url !== '') : ?><li><a aria-label="TikTok" href="<?php echo esc_url($tiktok_url); ?>" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="20" height="20">
-                  <path d="M41,4H9C6.243,4,4,6.243,4,9v32c0,2.757,2.243,5,5,5h32c2.757,0,5-2.243,5-5V9C46,6.243,43.757,4,41,4z M37.006,22.323 c-0.227,0.021-0.457,0.035-0.69,0.035c-2.623,0-4.928-1.349-6.269-3.388c0,5.349,0,11.435,0,11.537c0,4.709-3.818,8.527-8.527,8.527 s-8.527-3.818-8.527-8.527s3.818-8.527,8.527-8.527c0.178,0,0.352,0.016,0.527,0.027v4.202c-0.175-0.021-0.347-0.053-0.527-0.053 c-2.404,0-4.352,1.948-4.352,4.352s1.948,4.352,4.352,4.352s4.527-1.894,4.527-4.298c0-0.095,0.042-19.594,0.042-19.594h4.016 c0.378,3.591,3.277,6.425,6.901,6.685V22.323z"></path>
-                </svg></a></li><?php endif; ?>
-
-          <?php if ($social_repeater !== '' && function_exists('have_rows') && have_rows($social_repeater, 'option')) : ?>
-            <?php while (have_rows($social_repeater, 'option')) : the_row(); ?>
-              <?php
-              $social_network_name = (string) get_sub_field('nombre_rs');
-              $social_network_link = (string) get_sub_field('link_red_social');
-              $social_network_icon = get_sub_field('icono_red_social');
-              ?>
-              <li>
-                <?php if (!empty($social_network_icon)) : ?>
-                  <a href="<?php echo esc_url($social_network_link); ?>" target="_blank" rel="noopener noreferrer">
-                    <img src="<?php echo esc_url($social_network_icon); ?>" alt="<?php echo esc_attr($social_network_name); ?>" width="18" height="18">
-                  </a>
-                <?php else : ?>
-                  <a href="<?php echo esc_url($social_network_link); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html($social_network_name); ?></a>
-                <?php endif; ?>
-              </li>
-            <?php endwhile; ?>
-          <?php endif; ?>
-        </ul>
-      </div>
-    <?php endif; ?>
-
     <div class="footer-section__item footer-section__item--mapa">
       <div class="map-container" data-map>
         <div class="map-placeholder flex items-center justify-center" aria-hidden="true">
@@ -366,52 +392,164 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
   </section>
 
   <?php
-  $menu_ids       = array('footer_menu_1', 'footer_menu_2', 'footer_menu_3');
-  $locations      = get_nav_menu_locations();
-  $has_menu_items = false;
+  $menu_ids           = array('footer_menu_1', 'footer_menu_2', 'footer_menu_3');
+  $locations          = get_nav_menu_locations();
+  $footer_menu_blocks = array();
 
   foreach ($menu_ids as $menu_id) {
-    if (!empty($locations[$menu_id])) {
-      $menu_obj = wp_get_nav_menu_object($locations[$menu_id]);
-      if ($menu_obj) {
-        $menu_items = wp_get_nav_menu_items($menu_obj->term_id);
-        if (!empty($menu_items)) {
-          $has_menu_items = true;
-          break;
-        }
-      }
+    if (empty($locations[$menu_id])) {
+      continue;
     }
+
+    $menu_obj = wp_get_nav_menu_object($locations[$menu_id]);
+    if (!$menu_obj) {
+      continue;
+    }
+
+    $menu_items = wp_get_nav_menu_items($menu_obj->term_id);
+    if (empty($menu_items)) {
+      continue;
+    }
+
+    $footer_menu_blocks[] = array(
+      'location' => $menu_id,
+      'title'    => $menu_obj->name,
+    );
   }
+
+  $blog_page_id     = (int) get_option('page_for_posts');
+  $blog_archive_url = $blog_page_id ? get_permalink($blog_page_id) : get_post_type_archive_link('post');
+  if (!$blog_archive_url) {
+    $blog_archive_url = home_url('/');
+  }
+
+  $latest_posts = get_posts(array(
+    'post_type'           => 'post',
+    'post_status'         => 'publish',
+    'posts_per_page'      => 3,
+    'orderby'             => 'date',
+    'order'               => 'DESC',
+    'ignore_sticky_posts' => true,
+    'no_found_rows'       => true,
+    'suppress_filters'    => false,
+  ));
+  $show_footer_top  = !empty($footer_menu_blocks) || (!empty($latest_posts)) || ($mostrar_redes_sociales && !empty($social_links));
   ?>
 
-  <?php if ($has_menu_items) : ?>
-    <section class="footer__top">
-      <nav class="footer__paginas">
-        <div class="footer__paginas__container">
-          <?php
-          foreach ($menu_ids as $menu_id) {
-            if (!empty($locations[$menu_id])) {
-              $menu_obj = wp_get_nav_menu_object($locations[$menu_id]);
-              if ($menu_obj) {
-                $menu_items = wp_get_nav_menu_items($menu_obj->term_id);
-                if (!empty($menu_items)) {
-                  echo '<div class="footer__paginas__menu">';
-                  echo '<h4>' . esc_html($menu_obj->name) . '</h4>';
-                  wp_nav_menu(array(
-                    'theme_location' => $menu_id,
-                    'menu_class'     => '',
-                    'container'      => false,
-                    'items_wrap'     => '<ul>%3$s</ul>',
-                    'fallback_cb'    => false,
-                  ));
-                  echo '</div>';
-                }
-              }
-            }
-          }
-          ?>
+  <?php if ($show_footer_top) : ?>
+    <section class="ft-top" aria-labelledby="footer-discover-title">
+      <div class="ft-top__inner">
+        <div class="ft-top__menus">
+          <div class="ft-top__heading">
+            <h3 id="footer-discover-title" class="ft-top__title"><?php esc_html_e('Enlaces destacados', '360vo-theme'); ?></h3>
+          </div>
+
+          <?php if (!empty($footer_menu_blocks)) : ?>
+            <nav class="ft-menus" aria-label="<?php esc_attr_e('Navegación destacada del footer', '360vo-theme'); ?>">
+              <div class="ft-menus__grid">
+                <?php foreach ($footer_menu_blocks as $menu_block) : ?>
+                  <section class="ft-menus__block">
+                    <h4 class="ft-menus__title"><?php echo esc_html($menu_block['title']); ?></h4>
+                    <?php
+                    wp_nav_menu(array(
+                      'theme_location' => $menu_block['location'],
+                      'menu_class'     => 'ft-menus__list',
+                      'container'      => false,
+                      'items_wrap'     => '<ul class="ft-menus__list">%3$s</ul>',
+                      'fallback_cb'    => false,
+                    ));
+                    ?>
+                  </section>
+                <?php endforeach; ?>
+              </div>
+            </nav>
+          <?php endif; ?>
+
+          <?php if ($mostrar_redes_sociales && !empty($social_links)) : ?>
+            <div class="ft-social" aria-label="<?php esc_attr_e('Redes sociales', '360vo-theme'); ?>">
+              <div class="ft-social__intro">
+                <p class="ft-social__title"><?php esc_html_e('Síguenos', '360vo-theme'); ?></p>
+              </div>
+
+              <ul class="ft-social__list" role="list">
+                <?php foreach ($social_links as $social_item) : ?>
+                  <li class="ft-social__item">
+                    <a
+                      class="ft-social__link"
+                      href="<?php echo esc_url($social_item['url']); ?>"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="<?php echo esc_attr($social_item['label']); ?>">
+                      <span class="ft-social__icon"><?php echo $render_social_icon($social_item); ?></span>
+                      <span class="ft-social__label"><?php echo esc_html($social_item['label']); ?></span>
+                    </a>
+                  </li>
+                <?php endforeach; ?>
+              </ul>
+            </div>
+          <?php endif; ?>
         </div>
-      </nav>
+
+        <aside class="ft-latest" aria-labelledby="footer-latest-title">
+          <div class="ft-latest__header">
+            <h3 id="footer-latest-title" class="ft-latest__title"><?php esc_html_e('Últimas noticias del blog', '360vo-theme'); ?></h3>
+            <?php if ($blog_archive_url) : ?>
+              <a href="<?php echo esc_url($blog_archive_url); ?>" class="ft-latest__more">
+                <span><?php esc_html_e('Ir al blog', '360vo-theme'); ?></span>
+                <span class="ft-latest__more-icon" aria-hidden="true"><?php echo E360VO_Icon::get('arrow_outward'); ?></span>
+              </a>
+            <?php endif; ?>
+          </div>
+
+          <?php if (!empty($latest_posts)) : ?>
+            <div class="ft-latest__grid">
+              <?php foreach ($latest_posts as $recent_post) : ?>
+                <?php
+                $post_id          = (int) $recent_post->ID;
+                $post_permalink   = get_permalink($post_id);
+                $post_title       = get_the_title($post_id);
+                $thumbnail_id     = (int) get_post_thumbnail_id($post_id);
+                $thumbnail_alt    = trim((string) get_post_meta($thumbnail_id, '_wp_attachment_image_alt', true));
+                $post_categories  = get_the_category($post_id);
+                $primary_category = !empty($post_categories) ? $post_categories[0]->name : '';
+                ?>
+                <article class="ft-latest__card">
+                  <a href="<?php echo esc_url($post_permalink); ?>" class="ft-latest__link">
+                    <div class="ft-latest__media">
+                      <?php if ($thumbnail_id) : ?>
+                        <?php echo wp_get_attachment_image($thumbnail_id, 'medium_large', false, array('class' => 'ft-latest__image', 'loading' => 'lazy', 'alt' => $thumbnail_alt !== '' ? $thumbnail_alt : $post_title)); ?>
+                      <?php else : ?>
+                        <div class="ft-latest__image ft-latest__image--placeholder" aria-hidden="true">
+                          <span><?php echo esc_html(mb_substr($post_title, 0, 1)); ?></span>
+                        </div>
+                      <?php endif; ?>
+                    </div>
+
+                    <div class="ft-latest__content">
+                      <div class="ft-latest__meta">
+                        <?php if ($primary_category !== '') : ?>
+                          <span class="ft-latest__category"><?php echo esc_html($primary_category); ?></span>
+                        <?php endif; ?>
+                        <span class="ft-latest__meta-detail"><?php echo esc_html(get_the_date(get_option('date_format'), $post_id)); ?></span>
+                      </div>
+
+                      <div class="ft-latest__title-row">
+                        <h4 class="ft-latest__card-title"><?php echo esc_html($post_title); ?></h4>
+                      </div>
+                    </div>
+                  </a>
+                </article>
+              <?php endforeach; ?>
+            </div>
+          <?php else : ?>
+            <div class="ft-latest__empty">
+              <p class="ft-latest__empty-title"><?php esc_html_e('Muy pronto, nuevas publicaciones.', '360vo-theme'); ?></p>
+              <p class="ft-latest__empty-text"><?php esc_html_e('Mientras tanto, puedes visitar el blog completo para descubrir todo el contenido disponible.', '360vo-theme'); ?></p>
+            </div>
+          <?php endif; ?>
+
+        </aside>
+      </div>
     </section>
   <?php endif; ?>
 

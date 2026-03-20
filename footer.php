@@ -442,7 +442,7 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
         <div class="ft-top__menus">
           <div class="ft-top__heading">
             <span class="ft-top__eyebrow"><?php esc_html_e('Explora', '360vo-theme'); ?></span>
-            <h3 id="footer-discover-title" class="ft-top__title"><?php esc_html_e('Enlaces destacados', '360vo-theme'); ?></h3>
+            <h3 id="footer-discover-title" class="ft-top__title"><?php esc_html_e('Localidades y páginas clave', '360vo-theme'); ?></h3>
           </div>
 
           <?php if (!empty($footer_menu_blocks)) : ?>
@@ -495,7 +495,7 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
         <aside class="ft-latest" aria-labelledby="footer-latest-title">
           <div class="ft-latest__header">
             <span class="ft-latest__eyebrow"><?php esc_html_e('Blog', '360vo-theme'); ?></span>
-            <h3 id="footer-latest-title" class="ft-latest__title"><?php esc_html_e('Últimos artículos', '360vo-theme'); ?></h3>
+            <h3 id="footer-latest-title" class="ft-latest__title"><?php esc_html_e('Artículos recientes', '360vo-theme'); ?></h3>
           </div>
 
           <?php if (!empty($latest_posts)) : ?>
@@ -505,8 +505,6 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
                 $post_id          = (int) $recent_post->ID;
                 $post_permalink   = get_permalink($post_id);
                 $post_title       = get_the_title($post_id);
-                $post_excerpt     = get_the_excerpt($post_id);
-                $excerpt_text     = $post_excerpt !== '' ? $post_excerpt : wp_trim_words(wp_strip_all_tags((string) get_post_field('post_content', $post_id)), 22, '…');
                 $thumbnail_id     = (int) get_post_thumbnail_id($post_id);
                 $thumbnail_alt    = trim((string) get_post_meta($thumbnail_id, '_wp_attachment_image_alt', true));
                 $reading_time     = max(1, (int) calcular_tiempo_lectura((string) get_post_field('post_content', $post_id)));
@@ -534,9 +532,10 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
                         <span><?php echo esc_html(sprintf(_n('%s min de lectura', '%s min de lectura', $reading_time, '360vo-theme'), number_format_i18n($reading_time))); ?></span>
                       </div>
 
-                      <h4 class="ft-latest__card-title"><?php echo esc_html($post_title); ?></h4>
-                      <p class="ft-latest__excerpt"><?php echo esc_html(wp_trim_words($excerpt_text, 18, '…')); ?></p>
-                      <span class="ft-latest__cta"><?php esc_html_e('Leer artículo', '360vo-theme'); ?></span>
+                      <div class="ft-latest__title-row">
+                        <h4 class="ft-latest__card-title"><?php echo esc_html($post_title); ?></h4>
+                        <span class="ft-latest__arrow" aria-hidden="true">↗</span>
+                      </div>
                     </div>
                   </a>
                 </article>

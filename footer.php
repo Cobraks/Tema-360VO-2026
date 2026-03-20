@@ -508,8 +508,6 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
                 $post_id          = (int) $recent_post->ID;
                 $post_permalink   = get_permalink($post_id);
                 $post_title       = get_the_title($post_id);
-                $post_excerpt     = get_the_excerpt($post_id);
-                $excerpt_text     = $post_excerpt !== '' ? $post_excerpt : wp_trim_words(wp_strip_all_tags((string) get_post_field('post_content', $post_id)), 18, '…');
                 $thumbnail_id     = (int) get_post_thumbnail_id($post_id);
                 $thumbnail_alt    = trim((string) get_post_meta($thumbnail_id, '_wp_attachment_image_alt', true));
                 $post_categories  = get_the_category($post_id);
@@ -538,7 +536,6 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
                       <div class="ft-latest__title-row">
                         <h4 class="ft-latest__card-title"><?php echo esc_html($post_title); ?></h4>
                       </div>
-                      <p class="ft-latest__excerpt"><?php echo esc_html(wp_trim_words($excerpt_text, 12, '…')); ?></p>
                     </div>
                   </a>
                 </article>

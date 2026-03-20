@@ -441,7 +441,7 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
       <div class="ft-top__inner">
         <div class="ft-top__menus">
           <div class="ft-top__heading">
-            <p id="footer-discover-title" class="ft-top__eyebrow"><?php esc_html_e('Navegación útil', '360vo-theme'); ?></p>
+            <h3 id="footer-discover-title" class="ft-top__title"><?php esc_html_e('Enlaces destacados', '360vo-theme'); ?></h3>
           </div>
 
           <?php if (!empty($footer_menu_blocks)) : ?>

@@ -535,7 +535,7 @@ footer.footer {
   position: relative;
   overflow: clip;
   padding: clamp(2.25rem, 4vw, 4rem) var(--wrapper-padding);
-  background: linear-gradient(180deg, #e7e0d6 0%, #ded5c9 100%);
+  background: none;
   border-top: 1px solid rgba(84, 67, 45, 0.12);
 }
 
@@ -559,50 +559,33 @@ footer.footer {
 .ft-top__menus,
 .ft-latest {
   position: relative;
-  border-radius: 1.25rem;
   overflow: hidden;
 }
 
 .ft-top__menus {
-  padding: 1.45rem 1.5rem 1.35rem;
-  border: 1px solid rgba(118, 98, 73, 0.12);
-  background: rgba(255, 255, 255, 0.78);
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
 }
 
 .ft-latest {
   padding: 1.35rem 1.4rem 1.25rem;
   border: 1px solid rgba(118, 98, 73, 0.12);
+  border-radius: 1.25rem;
   background: rgba(255, 255, 255, 0.78);
 }
 
 .ft-top__heading,
 .ft-latest__header {
-  margin-bottom: 1rem;
+  margin-bottom: 1.15rem;
 }
 
-.ft-top__eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin: 0;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--primary25) 88%, white);
-}
-
-.ft-top__eyebrow::before {
-  content: "";
-  width: 2.5rem;
-  height: 1px;
-  background: currentColor;
-  opacity: 0.45;
-}
-
+.ft-top__title,
 .ft-latest__title {
   margin: 0;
   font-size: clamp(1.15rem, 1.02rem + 0.55vw, 1.65rem);
+  font-weight: 700;
   line-height: 1.08;
   letter-spacing: -0.02em;
   color: var(--primary10);
@@ -620,7 +603,7 @@ footer.footer {
 .ft-menus__grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: 1.65rem;
 }
 
 .ft-menus__block {
@@ -695,7 +678,7 @@ footer.footer {
 }
 
 .ft-social {
-  margin-top: 1.35rem;
+  margin-top: 1.5rem;
   padding-top: 0;
   border-top: none;
   display: flex;
@@ -794,7 +777,7 @@ footer.footer {
   gap: 0.9rem;
   align-items: start;
   min-height: 100%;
-  padding: 0.85rem 0;
+  padding: 1rem 0;
   border-radius: 0;
   border: none;
   background: transparent;
@@ -852,7 +835,7 @@ footer.footer {
 .ft-latest__meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.3rem 0.55rem;
+  gap: 0.35rem 0.6rem;
   font-size: 0.64rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -875,13 +858,13 @@ footer.footer {
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.65rem;
+  gap: 0.75rem;
 }
 
 .ft-latest__card-title {
   margin: 0;
-  font-size: 0.95rem;
-  line-height: 1.32;
+  font-size: 0.98rem;
+  line-height: 1.3;
   font-weight: 700;
   color: var(--primary10);
   text-wrap: pretty;
@@ -899,10 +882,10 @@ footer.footer {
 }
 
 .ft-latest__excerpt {
-  margin: 0;
+  margin: 0.1rem 0 0;
   color: color-mix(in srgb, var(--neutral20) 80%, white);
-  font-size: 0.88rem;
-  line-height: 1.45;
+  font-size: 0.89rem;
+  line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -911,8 +894,8 @@ footer.footer {
 }
 
 .ft-latest__footer {
-  margin-top: 0.75rem;
-  padding-top: 0.25rem;
+  margin-top: 0.95rem;
+  padding-top: 0.5rem;
   border-top: none;
   display: flex;
   justify-content: flex-end;
@@ -2261,7 +2244,6 @@ max-width: 320px;
     gap: 0.55rem;
   }
 
-  .ft-top__menus,
   .ft-latest {
     padding-top: 1.6rem;
     padding-bottom: 1.5rem;

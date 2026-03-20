@@ -537,7 +537,6 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
 
                       <div class="ft-latest__title-row">
                         <h4 class="ft-latest__card-title"><?php echo esc_html($post_title); ?></h4>
-                        <span class="ft-latest__arrow" aria-hidden="true"><?php echo E360VO_Icon::get('arrow_outward'); ?></span>
                       </div>
                       <p class="ft-latest__excerpt"><?php echo esc_html(wp_trim_words($excerpt_text, 12, '…')); ?></p>
                     </div>

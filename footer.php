@@ -441,8 +441,7 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
       <div class="ft-top__inner">
         <div class="ft-top__menus">
           <div class="ft-top__heading">
-            <span class="ft-top__eyebrow"><?php esc_html_e('Explora', '360vo-theme'); ?></span>
-            <h3 id="footer-discover-title" class="ft-top__title"><?php esc_html_e('Localidades y páginas clave', '360vo-theme'); ?></h3>
+            <p id="footer-discover-title" class="ft-top__eyebrow"><?php esc_html_e('Explora', '360vo-theme'); ?></p>
           </div>
 
           <?php if (!empty($footer_menu_blocks)) : ?>
@@ -469,7 +468,6 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
           <?php if ($mostrar_redes_sociales && !empty($social_links)) : ?>
             <div class="ft-social" aria-label="<?php esc_attr_e('Redes sociales', '360vo-theme'); ?>">
               <div class="ft-social__intro">
-                <span class="ft-social__eyebrow"><?php esc_html_e('Conecta', '360vo-theme'); ?></span>
                 <p class="ft-social__title"><?php esc_html_e('Síguenos', '360vo-theme'); ?></p>
               </div>
 
@@ -494,7 +492,6 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
 
         <aside class="ft-latest" aria-labelledby="footer-latest-title">
           <div class="ft-latest__header">
-            <span class="ft-latest__eyebrow"><?php esc_html_e('Blog', '360vo-theme'); ?></span>
             <h3 id="footer-latest-title" class="ft-latest__title"><?php esc_html_e('Artículos recientes', '360vo-theme'); ?></h3>
           </div>
 

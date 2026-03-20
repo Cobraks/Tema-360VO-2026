@@ -534,22 +534,50 @@ footer.footer {
 .ft-top {
   position: relative;
   overflow: clip;
+<<<<<<< ours
+<<<<<<< ours
   padding: clamp(3rem, 6vw, 5.5rem) var(--wrapper-padding);
   background:
     radial-gradient(circle at top left, color-mix(in srgb, var(--primary98) 78%, transparent) 0, transparent 38%),
     linear-gradient(180deg, #f7f3ee 0%, #f5f1eb 100%);
   border-top: 1px solid #E8E5DF;
+=======
+=======
+>>>>>>> theirs
+  padding: clamp(2.5rem, 5vw, 5rem) var(--wrapper-padding);
+  background:
+    radial-gradient(circle at top left, rgba(12, 86, 118, 0.1) 0%, rgba(12, 86, 118, 0) 28%),
+    linear-gradient(180deg, #f1e8dc 0%, #ebe1d4 100%);
+  border-top: 1px solid rgba(84, 67, 45, 0.12);
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
 }
 
 .ft-top::after {
   content: "";
   position: absolute;
   inset: auto 0 0 auto;
+<<<<<<< ours
+<<<<<<< ours
   width: min(26rem, 42vw);
   aspect-ratio: 1;
   border-radius: 999px;
   background: radial-gradient(circle, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 72%);
   transform: translate(28%, 38%);
+=======
+=======
+>>>>>>> theirs
+  width: min(28rem, 44vw);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 72%);
+  transform: translate(24%, 30%);
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
   pointer-events: none;
 }
 
@@ -557,14 +585,43 @@ footer.footer {
   position: relative;
   z-index: 1;
   display: grid;
+<<<<<<< ours
+<<<<<<< ours
   gap: 2rem;
   max-width: 1600px;
   margin-inline: auto;
+=======
+=======
+>>>>>>> theirs
+  gap: 1.5rem;
+  max-width: 1600px;
+  margin-inline: auto;
+  padding: clamp(1rem, 1vw + 0.85rem, 1.5rem);
+  border-radius: 2rem;
+  background:
+    radial-gradient(circle at top right, rgba(62, 196, 255, 0.18) 0%, rgba(62, 196, 255, 0) 28%),
+    linear-gradient(135deg, #0d2031 0%, #123349 40%, #0f5067 100%);
+  box-shadow: 0 28px 80px rgba(38, 28, 17, 0.2);
+}
+
+.ft-top__inner::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: calc(2rem - 1px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
 }
 
 .ft-top__menus,
 .ft-latest {
   position: relative;
+<<<<<<< ours
+<<<<<<< ours
   border: 1px solid rgba(114, 95, 73, 0.12);
   border-radius: 1.75rem;
   background: rgba(255, 255, 255, 0.78);
@@ -574,11 +631,35 @@ footer.footer {
 
 .ft-top__menus {
   padding: clamp(1.5rem, 2vw, 2.25rem);
+=======
+  border-radius: 1.6rem;
+  overflow: hidden;
+}
+
+.ft-top__menus {
+  padding: clamp(1.35rem, 2vw, 2rem);
+  border: 1px solid rgba(118, 98, 73, 0.14);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 243, 236, 0.96) 100%);
+  box-shadow: 0 20px 50px rgba(7, 17, 26, 0.16);
+}
+
+.ft-latest {
+  padding: clamp(1.35rem, 2vw, 2rem);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background:
+    radial-gradient(circle at top right, rgba(52, 175, 224, 0.18) 0%, rgba(52, 175, 224, 0) 30%),
+    linear-gradient(180deg, rgba(8, 20, 32, 0.96) 0%, rgba(13, 31, 46, 0.96) 100%);
+  box-shadow: 0 24px 54px rgba(7, 17, 26, 0.28);
+>>>>>>> theirs
 }
 
 .ft-top__heading,
 .ft-latest__header {
+<<<<<<< ours
   margin-bottom: 1.75rem;
+=======
+  margin-bottom: 1.35rem;
+>>>>>>> theirs
 }
 
 .ft-top__eyebrow,
@@ -608,13 +689,19 @@ footer.footer {
 .ft-top__title,
 .ft-latest__title {
   margin: 0;
+<<<<<<< ours
   font-size: clamp(1.75rem, 1.45rem + 1vw, 2.4rem);
   line-height: 1.08;
+=======
+  font-size: clamp(1.45rem, 1.2rem + 1vw, 2.15rem);
+  line-height: 1.04;
+>>>>>>> theirs
   letter-spacing: -0.03em;
   color: var(--primary10);
   text-wrap: balance;
 }
 
+<<<<<<< ours
 .ft-top__description,
 .ft-latest__description,
 .ft-social__title {
@@ -685,6 +772,202 @@ footer.footer {
   line-height: 1.45;
   text-decoration: none;
   transition: color 0.22s ease, transform 0.22s ease;
+=======
+  border-radius: 1.6rem;
+  overflow: hidden;
+}
+
+.ft-top__menus {
+  padding: clamp(1.35rem, 2vw, 2rem);
+  border: 1px solid rgba(118, 98, 73, 0.14);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 243, 236, 0.96) 100%);
+  box-shadow: 0 20px 50px rgba(7, 17, 26, 0.16);
+}
+
+.ft-latest {
+  padding: clamp(1.35rem, 2vw, 2rem);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background:
+    radial-gradient(circle at top right, rgba(52, 175, 224, 0.18) 0%, rgba(52, 175, 224, 0) 30%),
+    linear-gradient(180deg, rgba(8, 20, 32, 0.96) 0%, rgba(13, 31, 46, 0.96) 100%);
+  box-shadow: 0 24px 54px rgba(7, 17, 26, 0.28);
+}
+
+.ft-top__heading,
+.ft-latest__header {
+  margin-bottom: 1.35rem;
+}
+
+.ft-top__eyebrow,
+.ft-social__eyebrow,
+.ft-latest__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--primary30);
+}
+
+.ft-top__eyebrow::before,
+.ft-social__eyebrow::before,
+.ft-latest__eyebrow::before {
+  content: "";
+  width: 2.5rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.45;
+}
+
+.ft-top__title,
+.ft-latest__title {
+  margin: 0;
+  font-size: clamp(1.45rem, 1.2rem + 1vw, 2.15rem);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  color: var(--primary10);
+  text-wrap: balance;
+}
+
+.ft-social__title {
+  margin: 0;
+  color: var(--primary10);
+  font-size: 1rem;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.ft-menus__grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.ft-menus__block {
+  position: relative;
+  display: grid;
+  gap: 0.9rem;
+  padding: 1.35rem 1.2rem 1.2rem;
+  border: 1px solid rgba(114, 95, 73, 0.1);
+  border-radius: 1.25rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(245, 239, 231, 0.88) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.ft-menus__block::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary30), rgba(46, 196, 255, 0.2));
+}
+
+.ft-menus__title {
+  margin: 0;
+  padding-top: 0.15rem;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--primary10);
+}
+
+.ft-menus__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.ft-menus__list li {
+  margin: 0;
+}
+
+.ft-menus__list a {
+  position: relative;
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+=======
+.ft-social__title {
+  margin: 0;
+  color: var(--primary10);
+  font-size: 1rem;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.ft-menus__grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.ft-menus__block {
+  position: relative;
+  display: grid;
+  gap: 0.9rem;
+  padding: 1.35rem 1.2rem 1.2rem;
+  border: 1px solid rgba(114, 95, 73, 0.1);
+  border-radius: 1.25rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(245, 239, 231, 0.88) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.ft-menus__block::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary30), rgba(46, 196, 255, 0.2));
+}
+
+.ft-menus__title {
+  margin: 0;
+  padding-top: 0.15rem;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--primary10);
+}
+
+.ft-menus__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.ft-menus__list li {
+  margin: 0;
+}
+
+.ft-menus__list a {
+  position: relative;
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+>>>>>>> theirs
+  gap: 0.55rem;
+  padding: 0.65rem 0.7rem;
+  border-radius: 0.9rem;
+  color: color-mix(in srgb, var(--neutral20) 86%, white);
+  font-size: 0.96rem;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: color 0.22s ease, transform 0.22s ease, background-color 0.22s ease, box-shadow 0.22s ease;
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
   text-wrap: pretty;
 }
 
@@ -702,6 +985,16 @@ footer.footer {
 .ft-menus__list a:focus-visible {
   color: var(--primary20);
   transform: translateX(4px);
+<<<<<<< ours
+<<<<<<< ours
+=======
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 10px 24px rgba(23, 38, 52, 0.08);
+>>>>>>> theirs
+=======
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 10px 24px rgba(23, 38, 52, 0.08);
+>>>>>>> theirs
 }
 
 .ft-menus__list a:hover::before,
@@ -712,16 +1005,38 @@ footer.footer {
 }
 
 .ft-social {
+<<<<<<< ours
+<<<<<<< ours
   margin-top: 1.5rem;
   padding-top: 1.5rem;
   border-top: 1px solid rgba(114, 95, 73, 0.12);
   display: grid;
   gap: 1rem;
+=======
+=======
+>>>>>>> theirs
+  margin-top: 1.4rem;
+  padding-top: 1.35rem;
+  border-top: 1px solid rgba(114, 95, 73, 0.12);
+  display: grid;
+  gap: 0.95rem;
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
 }
 
 .ft-social__intro {
   display: grid;
+<<<<<<< ours
+<<<<<<< ours
   gap: 0.35rem;
+=======
+  gap: 0.4rem;
+>>>>>>> theirs
+=======
+  gap: 0.4rem;
+>>>>>>> theirs
 }
 
 .ft-social__list {
@@ -730,7 +1045,15 @@ footer.footer {
   padding: 0;
   display: flex;
   flex-wrap: wrap;
+<<<<<<< ours
+<<<<<<< ours
   gap: 0.75rem;
+=======
+  gap: 0.65rem;
+>>>>>>> theirs
+=======
+  gap: 0.65rem;
+>>>>>>> theirs
 }
 
 .ft-social__item {
@@ -740,12 +1063,27 @@ footer.footer {
 .ft-social__link {
   display: inline-flex;
   align-items: center;
+<<<<<<< ours
+<<<<<<< ours
   gap: 0.8rem;
   min-height: 3.5rem;
   padding: 0.75rem 1rem 0.75rem 0.85rem;
   border-radius: 999px;
   border: 1px solid rgba(114, 95, 73, 0.14);
   background: rgba(255, 255, 255, 0.8);
+=======
+=======
+>>>>>>> theirs
+  gap: 0.7rem;
+  min-height: 3.15rem;
+  padding: 0.55rem 0.9rem 0.55rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(114, 95, 73, 0.14);
+  background: rgba(255, 255, 255, 0.78);
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
   color: var(--primary15);
   text-decoration: none;
   transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, background-color 0.22s ease, color 0.22s ease;
@@ -764,10 +1102,23 @@ footer.footer {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+<<<<<<< ours
+<<<<<<< ours
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 999px;
   background: linear-gradient(180deg, rgba(24, 80, 168, 0.08) 0%, rgba(24, 80, 168, 0.14) 100%);
+=======
+=======
+>>>>>>> theirs
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(24, 80, 168, 0.1) 0%, rgba(24, 80, 168, 0.18) 100%);
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
 }
 
 .ft-social__icon svg,
@@ -789,10 +1140,16 @@ footer.footer {
   font-weight: 600;
 }
 
+<<<<<<< ours
+<<<<<<< ours
 .ft-latest {
   padding: clamp(1.5rem, 2vw, 2.25rem);
 }
 
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
 .ft-latest__grid {
   display: grid;
   gap: 1rem;
@@ -804,6 +1161,8 @@ footer.footer {
 
 .ft-latest__link {
   display: grid;
+<<<<<<< ours
+<<<<<<< ours
   grid-template-columns: minmax(0, 132px) minmax(0, 1fr);
   gap: 1rem;
   align-items: stretch;
@@ -812,6 +1171,21 @@ footer.footer {
   border-radius: 1.35rem;
   border: 1px solid rgba(114, 95, 73, 0.12);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(249, 247, 243, 0.9) 100%);
+=======
+=======
+>>>>>>> theirs
+  grid-template-columns: minmax(0, 142px) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: stretch;
+  min-height: 100%;
+  padding: 0.8rem;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
   text-decoration: none;
   color: inherit;
   transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
@@ -820,15 +1194,33 @@ footer.footer {
 .ft-latest__link:hover,
 .ft-latest__link:focus-visible {
   transform: translateY(-3px);
+<<<<<<< ours
+<<<<<<< ours
   border-color: rgba(24, 80, 168, 0.18);
   box-shadow: 0 20px 35px rgba(31, 41, 55, 0.08);
+=======
+  border-color: rgba(87, 198, 247, 0.32);
+  box-shadow: 0 24px 35px rgba(0, 0, 0, 0.22);
+>>>>>>> theirs
+=======
+  border-color: rgba(87, 198, 247, 0.32);
+  box-shadow: 0 24px 35px rgba(0, 0, 0, 0.22);
+>>>>>>> theirs
 }
 
 .ft-latest__media {
   overflow: hidden;
   border-radius: 1rem;
   min-height: 100%;
+<<<<<<< ours
+<<<<<<< ours
   background: linear-gradient(135deg, #ebe3d7 0%, #d7e4f6 100%);
+=======
+  background: linear-gradient(135deg, #2a4254 0%, #0f7aa5 100%);
+>>>>>>> theirs
+=======
+  background: linear-gradient(135deg, #2a4254 0%, #0f7aa5 100%);
+>>>>>>> theirs
 }
 
 .ft-latest__image {
@@ -842,7 +1234,15 @@ footer.footer {
 .ft-latest__link:hover .ft-latest__image,
 .ft-latest__link:focus-visible .ft-latest__image {
   transform: scale(1.05);
+<<<<<<< ours
+<<<<<<< ours
   filter: saturate(1.05);
+=======
+  filter: saturate(1.08);
+>>>>>>> theirs
+=======
+  filter: saturate(1.08);
+>>>>>>> theirs
 }
 
 .ft-latest__image--placeholder {
@@ -852,7 +1252,15 @@ footer.footer {
   min-height: 100%;
   font-size: clamp(2rem, 3vw, 3rem);
   font-weight: 700;
+<<<<<<< ours
+<<<<<<< ours
   color: rgba(64, 53, 41, 0.82);
+=======
+  color: rgba(255, 255, 255, 0.86);
+>>>>>>> theirs
+=======
+  color: rgba(255, 255, 255, 0.86);
+>>>>>>> theirs
 }
 
 .ft-latest__content {
@@ -870,7 +1278,15 @@ footer.footer {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+<<<<<<< ours
+<<<<<<< ours
   color: color-mix(in srgb, var(--neutral35) 80%, white);
+=======
+  color: rgba(214, 230, 239, 0.78);
+>>>>>>> theirs
+=======
+  color: rgba(214, 230, 239, 0.78);
+>>>>>>> theirs
 }
 
 .ft-latest__meta span {
@@ -886,21 +1302,49 @@ footer.footer {
 
 .ft-latest__card-title {
   margin: 0;
+<<<<<<< ours
+<<<<<<< ours
   font-size: 1.08rem;
   line-height: 1.28;
   font-weight: 700;
   color: var(--primary10);
+=======
+=======
+>>>>>>> theirs
+  font-size: 1.05rem;
+  line-height: 1.28;
+  font-weight: 700;
+  color: #fff;
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
   text-wrap: balance;
 }
 
 .ft-latest__excerpt {
   margin: 0;
+<<<<<<< ours
+<<<<<<< ours
   color: color-mix(in srgb, var(--neutral20) 78%, white);
   font-size: 0.95rem;
   line-height: 1.55;
   text-wrap: pretty;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+=======
+=======
+>>>>>>> theirs
+  color: rgba(221, 232, 238, 0.84);
+  font-size: 0.92rem;
+  line-height: 1.55;
+  text-wrap: pretty;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -910,9 +1354,23 @@ footer.footer {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
+<<<<<<< ours
+<<<<<<< ours
   font-size: 0.9rem;
   font-weight: 700;
   color: var(--primary20);
+=======
+=======
+>>>>>>> theirs
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #7fdcff;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
 }
 
 .ft-latest__cta::after {
@@ -926,7 +1384,15 @@ footer.footer {
 }
 
 .ft-latest__footer {
+<<<<<<< ours
+<<<<<<< ours
   margin-top: 1.5rem;
+=======
+  margin-top: 1.1rem;
+>>>>>>> theirs
+=======
+  margin-top: 1.1rem;
+>>>>>>> theirs
 }
 
 .ft-latest__more {
@@ -935,8 +1401,18 @@ footer.footer {
   gap: 0.5rem;
   padding: 0.95rem 1.2rem;
   border-radius: 999px;
+<<<<<<< ours
+<<<<<<< ours
   background: var(--primary20);
   color: #fff;
+=======
+  background: linear-gradient(135deg, #24a6d0 0%, #31c4f3 100%);
+  color: #072133;
+>>>>>>> theirs
+=======
+  background: linear-gradient(135deg, #24a6d0 0%, #31c4f3 100%);
+  color: #072133;
+>>>>>>> theirs
   text-decoration: none;
   font-weight: 700;
   transition: transform 0.22s ease, box-shadow 0.22s ease, background-color 0.22s ease;
@@ -945,8 +1421,67 @@ footer.footer {
 .ft-latest__more:hover,
 .ft-latest__more:focus-visible {
   transform: translateY(-2px);
+<<<<<<< ours
+<<<<<<< ours
   background: var(--primary15);
   box-shadow: 0 18px 28px rgba(24, 37, 57, 0.16);
+=======
+=======
+>>>>>>> theirs
+  box-shadow: 0 18px 28px rgba(2, 11, 18, 0.28);
+}
+
+.ft-latest__empty {
+  padding: 1.25rem;
+  border-radius: 1.25rem;
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.ft-latest__empty-title {
+  margin: 0 0 0.45rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.ft-latest__empty-text {
+  margin: 0;
+  color: rgba(221, 232, 238, 0.8);
+  line-height: 1.6;
+}
+
+.ft-latest .ft-latest__title,
+.ft-latest .ft-latest__eyebrow,
+.ft-latest .ft-latest__eyebrow::before {
+  color: #dff6ff;
+}
+
+.ft-latest__card:first-child .ft-latest__link {
+  grid-template-columns: 1fr;
+  gap: 0;
+  padding: 0;
+}
+
+.ft-latest__card:first-child .ft-latest__media {
+  min-height: 220px;
+  border-radius: 1.25rem 1.25rem 0 0;
+}
+
+.ft-latest__card:first-child .ft-latest__content {
+  padding: 1rem 1rem 1.1rem;
+}
+
+.ft-latest__card:first-child .ft-latest__card-title {
+  font-size: 1.2rem;
+}
+
+.ft-latest__card:first-child .ft-latest__excerpt {
+  -webkit-line-clamp: 3;
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
 }
 
 @media (max-width:640px) {
@@ -957,6 +1492,23 @@ footer.footer {
   .ft-latest__media {
     min-height: 180px;
   }
+<<<<<<< ours
+<<<<<<< ours
+=======
+=======
+>>>>>>> theirs
+
+  .ft-social__label {
+    display: none;
+  }
+
+  .ft-social__link {
+    padding-right: 0.6rem;
+  }
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
 }
 
 

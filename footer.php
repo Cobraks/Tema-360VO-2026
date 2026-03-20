@@ -399,6 +399,7 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
   foreach ($menu_ids as $menu_id) {
     if (empty($locations[$menu_id])) {
       continue;
+<<<<<<< ours
     }
 
     $menu_obj = wp_get_nav_menu_object($locations[$menu_id]);
@@ -411,10 +412,26 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
       continue;
     }
 
+=======
+    }
+
+    $menu_obj = wp_get_nav_menu_object($locations[$menu_id]);
+    if (!$menu_obj) {
+      continue;
+    }
+
+    $menu_items = wp_get_nav_menu_items($menu_obj->term_id);
+    if (empty($menu_items)) {
+      continue;
+    }
+
+>>>>>>> theirs
     $footer_menu_blocks[] = array(
       'location' => $menu_id,
       'title'    => $menu_obj->name,
     );
+<<<<<<< ours
+<<<<<<< ours
   }
 
   $blog_page_id     = (int) get_option('page_for_posts');
@@ -422,6 +439,31 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
   $latest_posts     = array_filter(get_latest_posts(3), static function ($post) {
     return $post instanceof stdClass && !empty($post->ID);
   });
+=======
+=======
+>>>>>>> theirs
+  }
+
+  $blog_page_id     = (int) get_option('page_for_posts');
+  $blog_archive_url = $blog_page_id ? get_permalink($blog_page_id) : get_post_type_archive_link('post');
+  if (!$blog_archive_url) {
+    $blog_archive_url = home_url('/');
+  }
+
+  $latest_posts = get_posts(array(
+    'post_type'           => 'post',
+    'post_status'         => 'publish',
+    'posts_per_page'      => 3,
+    'orderby'             => 'date',
+    'order'               => 'DESC',
+    'ignore_sticky_posts' => true,
+    'no_found_rows'       => true,
+    'suppress_filters'    => false,
+  ));
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
   $show_footer_top  = !empty($footer_menu_blocks) || (!empty($latest_posts)) || ($mostrar_redes_sociales && !empty($social_links));
   ?>
 
@@ -431,8 +473,16 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
         <div class="ft-top__menus">
           <div class="ft-top__heading">
             <span class="ft-top__eyebrow"><?php esc_html_e('Explora', '360vo-theme'); ?></span>
+<<<<<<< ours
+<<<<<<< ours
             <h3 id="footer-discover-title" class="ft-top__title"><?php esc_html_e('Accede rápido a las páginas clave y al contenido más reciente.', '360vo-theme'); ?></h3>
             <p class="ft-top__description"><?php esc_html_e('Hemos reorganizado esta zona para que navegar por localidades, servicios y novedades del blog sea mucho más ágil.', '360vo-theme'); ?></p>
+=======
+            <h3 id="footer-discover-title" class="ft-top__title"><?php esc_html_e('Enlaces destacados', '360vo-theme'); ?></h3>
+>>>>>>> theirs
+=======
+            <h3 id="footer-discover-title" class="ft-top__title"><?php esc_html_e('Enlaces destacados', '360vo-theme'); ?></h3>
+>>>>>>> theirs
           </div>
 
           <?php if (!empty($footer_menu_blocks)) : ?>
@@ -460,7 +510,15 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
             <div class="ft-social" aria-label="<?php esc_attr_e('Redes sociales', '360vo-theme'); ?>">
               <div class="ft-social__intro">
                 <span class="ft-social__eyebrow"><?php esc_html_e('Conecta', '360vo-theme'); ?></span>
+<<<<<<< ours
+<<<<<<< ours
                 <p class="ft-social__title"><?php esc_html_e('Síguenos en nuestros canales.', '360vo-theme'); ?></p>
+=======
+                <p class="ft-social__title"><?php esc_html_e('Síguenos', '360vo-theme'); ?></p>
+>>>>>>> theirs
+=======
+                <p class="ft-social__title"><?php esc_html_e('Síguenos', '360vo-theme'); ?></p>
+>>>>>>> theirs
               </div>
 
               <ul class="ft-social__list" role="list">
@@ -482,6 +540,8 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
           <?php endif; ?>
         </div>
 
+<<<<<<< ours
+<<<<<<< ours
         <?php if (!empty($latest_posts)) : ?>
           <aside class="ft-latest" aria-labelledby="footer-latest-title">
             <div class="ft-latest__header">
@@ -490,6 +550,20 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
               <p class="ft-latest__description"><?php esc_html_e('Contenido fresco para ayudar a tus usuarios a descubrir consejos, tendencias y oportunidades de compra.', '360vo-theme'); ?></p>
             </div>
 
+=======
+=======
+>>>>>>> theirs
+        <aside class="ft-latest" aria-labelledby="footer-latest-title">
+          <div class="ft-latest__header">
+            <span class="ft-latest__eyebrow"><?php esc_html_e('Blog', '360vo-theme'); ?></span>
+            <h3 id="footer-latest-title" class="ft-latest__title"><?php esc_html_e('Últimos artículos', '360vo-theme'); ?></h3>
+          </div>
+
+          <?php if (!empty($latest_posts)) : ?>
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
             <div class="ft-latest__grid">
               <?php foreach ($latest_posts as $recent_post) : ?>
                 <?php
@@ -533,6 +607,8 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
                 </article>
               <?php endforeach; ?>
             </div>
+<<<<<<< ours
+<<<<<<< ours
 
             <?php if ($blog_archive_url) : ?>
               <div class="ft-latest__footer">
@@ -544,6 +620,29 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
             <?php endif; ?>
           </aside>
         <?php endif; ?>
+=======
+=======
+>>>>>>> theirs
+          <?php else : ?>
+            <div class="ft-latest__empty">
+              <p class="ft-latest__empty-title"><?php esc_html_e('Muy pronto, nuevas publicaciones.', '360vo-theme'); ?></p>
+              <p class="ft-latest__empty-text"><?php esc_html_e('Mientras tanto, puedes visitar el blog completo para descubrir todo el contenido disponible.', '360vo-theme'); ?></p>
+            </div>
+          <?php endif; ?>
+
+          <?php if ($blog_archive_url) : ?>
+            <div class="ft-latest__footer">
+              <a href="<?php echo esc_url($blog_archive_url); ?>" class="ft-latest__more">
+                <span><?php esc_html_e('Ir al blog', '360vo-theme'); ?></span>
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          <?php endif; ?>
+        </aside>
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
       </div>
     </section>
   <?php endif; ?>

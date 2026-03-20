@@ -666,8 +666,13 @@ footer.footer {
 
 .ft-menus__list a::before {
   content: "";
+  flex: 0 0 0.4rem;
   width: 0.4rem;
   height: 0.4rem;
+  min-width: 0.4rem;
+  min-height: 0.4rem;
+  aspect-ratio: 1 / 1;
+  display: block;
   border-radius: 999px;
   background: color-mix(in srgb, var(--primary30) 55%, white);
   transition: transform 0.22s ease, background-color 0.22s ease;
@@ -677,6 +682,9 @@ footer.footer {
 .ft-menus__list a:focus-visible {
   color: var(--primary20);
   transform: translateX(3px);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 .ft-menus__list a:hover::before,
@@ -733,8 +741,9 @@ footer.footer {
 .ft-social__link:hover,
 .ft-social__link:focus-visible {
   color: var(--primary20);
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 1);
   border-color: rgba(24, 80, 168, 0.18);
+  transform: translateY(-1px);
 }
 
 .ft-social__icon {
@@ -744,19 +753,22 @@ footer.footer {
   width: 1.95rem;
   height: 1.95rem;
   border-radius: 999px;
-  background: rgba(20, 103, 140, 0.08);
+  background: none;
+  line-height: 0;
 }
 
 .ft-social__icon svg,
 .ft-social__icon img,
 .ft-social__icon i {
-  width: 1.2rem;
-  height: 1.2rem;
+  width: 100%;
+  height: auto;
   font-size: 1.2rem;
   color: currentColor;
 }
 
 .ft-social__icon img {
+  width: 100%;
+  height: auto;
   object-fit: contain;
 }
 
@@ -787,18 +799,18 @@ footer.footer {
   min-height: 100%;
   padding: 1rem 0;
   border-radius: 1rem;
-  border: 1px solid transparent;
+  border: none;
   background: transparent;
   text-decoration: none;
   color: inherit;
-  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
 }
 
 .ft-latest__link:hover,
 .ft-latest__link:focus-visible {
   color: var(--primary10);
   background: rgba(255, 255, 255, 0.74);
-  border-color: rgba(114, 95, 73, 0.1);
+  transform: translateX(4px);
 }
 
 .ft-latest__media {
@@ -847,7 +859,6 @@ footer.footer {
   flex-wrap: wrap;
   gap: 0.35rem 0.6rem;
   font-size: 0.64rem;
-  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: color-mix(in srgb, var(--neutral35) 76%, white);
@@ -856,12 +867,6 @@ footer.footer {
 .ft-latest__meta span {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-}
-
-.ft-latest__meta-detail:not(:last-child)::after {
-  content: "•";
-  opacity: 0.5;
 }
 
 .ft-latest__category {
@@ -869,6 +874,11 @@ footer.footer {
   border-radius: 999px;
   background: rgba(24, 80, 168, 0.08);
   color: var(--primary20);
+  font-weight: 600;
+}
+
+.ft-latest__meta-detail {
+  color: color-mix(in srgb, var(--neutral35) 88%, white);
 }
 
 .ft-latest__title-row {
@@ -890,14 +900,28 @@ footer.footer {
 .ft-latest__arrow {
   flex: 0 0 auto;
   color: var(--primary30);
-  font-size: 0.95rem;
+  width: 1rem;
+  height: 1rem;
   transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.ft-latest__arrow svg {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .ft-latest__link:hover .ft-latest__arrow,
 .ft-latest__link:focus-visible .ft-latest__arrow {
   color: var(--primary20);
   transform: translateX(2px);
+}
+
+.ft-latest__link:hover .ft-latest__card-title,
+.ft-latest__link:focus-visible .ft-latest__card-title {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 .ft-latest__excerpt {
@@ -922,14 +946,28 @@ footer.footer {
   background: rgba(255, 255, 255, 0.88);
   color: var(--primary10);
   text-decoration: none;
-  font-weight: 700;
-  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+  font-weight: 500;
+  transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+
+.ft-latest__more-icon {
+  width: 1rem;
+  height: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ft-latest__more-icon svg {
+  width: 100%;
+  height: auto;
 }
 
 .ft-latest__more:hover,
 .ft-latest__more:focus-visible {
-  border-color: rgba(24, 80, 168, 0.18);
   background: rgba(255, 255, 255, 1);
+  color: var(--primary20);
+  transform: translateY(-1px);
 }
 
 .ft-latest__empty {

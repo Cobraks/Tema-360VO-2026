@@ -496,7 +496,7 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
             <?php if ($blog_archive_url) : ?>
               <a href="<?php echo esc_url($blog_archive_url); ?>" class="ft-latest__more">
                 <span><?php esc_html_e('Ir al blog', '360vo-theme'); ?></span>
-                <span aria-hidden="true">→</span>
+                <span class="ft-latest__more-icon" aria-hidden="true"><?php echo E360VO_Icon::get('arrow_outward'); ?></span>
               </a>
             <?php endif; ?>
           </div>
@@ -512,7 +512,6 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
                 $excerpt_text     = $post_excerpt !== '' ? $post_excerpt : wp_trim_words(wp_strip_all_tags((string) get_post_field('post_content', $post_id)), 18, '…');
                 $thumbnail_id     = (int) get_post_thumbnail_id($post_id);
                 $thumbnail_alt    = trim((string) get_post_meta($thumbnail_id, '_wp_attachment_image_alt', true));
-                $reading_time     = max(1, (int) calcular_tiempo_lectura((string) get_post_field('post_content', $post_id)));
                 $post_categories  = get_the_category($post_id);
                 $primary_category = !empty($post_categories) ? $post_categories[0]->name : '';
                 ?>
@@ -534,12 +533,11 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
                           <span class="ft-latest__category"><?php echo esc_html($primary_category); ?></span>
                         <?php endif; ?>
                         <span class="ft-latest__meta-detail"><?php echo esc_html(get_the_date(get_option('date_format'), $post_id)); ?></span>
-                        <span class="ft-latest__meta-detail"><?php echo esc_html(sprintf(_n('%s min de lectura', '%s min de lectura', $reading_time, '360vo-theme'), number_format_i18n($reading_time))); ?></span>
                       </div>
 
                       <div class="ft-latest__title-row">
                         <h4 class="ft-latest__card-title"><?php echo esc_html($post_title); ?></h4>
-                        <span class="ft-latest__arrow" aria-hidden="true">↗</span>
+                        <span class="ft-latest__arrow" aria-hidden="true"><?php echo E360VO_Icon::get('arrow_outward'); ?></span>
                       </div>
                       <p class="ft-latest__excerpt"><?php echo esc_html(wp_trim_words($excerpt_text, 12, '…')); ?></p>
                     </div>

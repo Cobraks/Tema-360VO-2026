@@ -610,14 +610,16 @@ footer.footer {
 
 .ft-menus__grid {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1.65rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
 }
 
 .ft-menus__block {
   position: relative;
-  flex: 1 1 14rem;
-  min-width: min(100%, 14rem);
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
   padding: 0;
 }
 
@@ -642,6 +644,7 @@ footer.footer {
   list-style: none;
   display: grid;
   gap: 0.22rem;
+  justify-items: start;
 }
 
 .ft-menus__list li {
@@ -651,7 +654,8 @@ footer.footer {
 .ft-menus__list a {
   position: relative;
   display: inline-flex;
-  width: 100%;
+  width: fit-content;
+  max-width: 100%;
   align-items: center;
   gap: 0.55rem;
   padding: 0.4rem 0;
@@ -662,6 +666,21 @@ footer.footer {
   text-decoration: none;
   transition: color 0.2s ease, transform 0.2s ease;
   text-wrap: pretty;
+}
+
+@media (min-width:768px) {
+  .ft-top__inner--2blocks .ft-menus__grid,
+  .ft-top__inner--3blocks .ft-menus__grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1.4rem 1.8rem;
+  }
+
+  .ft-top__inner--2blocks .ft-menus__block,
+  .ft-top__inner--3blocks .ft-menus__block {
+    flex: 1 1 16rem;
+    min-width: min(100%, 16rem);
+  }
 }
 
 .ft-menus__list a::before {
@@ -2250,9 +2269,21 @@ max-width: 320px;
 }
 
   .ft-top__inner {
-    grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.82fr);
+    grid-template-columns: minmax(0, 1.25fr) minmax(320px, 1fr);
     align-items: start;
     gap: 1.5rem;
+  }
+
+  .ft-top__inner--1block {
+    grid-template-columns: minmax(0, 0.95fr) minmax(320px, 1.2fr);
+  }
+
+  .ft-top__inner--2blocks {
+    grid-template-columns: minmax(0, 1.1fr) minmax(320px, 1.3fr);
+  }
+
+  .ft-top__inner--3blocks {
+    grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.9fr);
   }
 
   .ft-social__list {
@@ -2438,7 +2469,16 @@ text-align: right;
       } /*??*/
 
 
-      .ft-menus__grid {
+      .ft-top__inner--2blocks {
+        grid-template-columns: minmax(0, 1.12fr) minmax(340px, 1.42fr);
+      }
+
+      .ft-top__inner--3blocks {
+        grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.9fr);
+      }
+
+      .ft-top__inner--2blocks .ft-menus__grid,
+      .ft-top__inner--3blocks .ft-menus__grid {
         flex-wrap: nowrap;
       }
 
@@ -2504,6 +2544,10 @@ max-width: 400px;
 
   .ft-top__inner {
     gap: 1.5rem;
+  }
+
+  .ft-top__inner--2blocks {
+    grid-template-columns: minmax(0, 1.05fr) minmax(360px, 1.5fr);
   }
 }
 @media (min-width: 1900px) {

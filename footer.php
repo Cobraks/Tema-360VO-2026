@@ -433,12 +433,17 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
     'no_found_rows'       => true,
     'suppress_filters'    => false,
   ));
+  $footer_menu_block_count = count($footer_menu_blocks);
+  $footer_top_inner_class  = sprintf(
+    'ft-top__inner ft-top__inner--%s',
+    $footer_menu_block_count === 1 ? '1block' : $footer_menu_block_count . 'blocks'
+  );
   $show_footer_top  = !empty($footer_menu_blocks) || (!empty($latest_posts)) || ($mostrar_redes_sociales && !empty($social_links));
   ?>
 
   <?php if ($show_footer_top) : ?>
     <section class="ft-top" aria-labelledby="footer-discover-title">
-      <div class="ft-top__inner">
+      <div class="<?php echo esc_attr($footer_top_inner_class); ?>">
         <div class="ft-top__menus">
           <div class="ft-top__heading">
             <h3 id="footer-discover-title" class="ft-top__title"><?php esc_html_e('Enlaces destacados', '360vo-theme'); ?></h3>

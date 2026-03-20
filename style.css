@@ -570,15 +570,23 @@ footer.footer {
 }
 
 .ft-latest {
-  padding: 1.35rem 1.4rem 1.25rem;
-  border: 1px solid rgba(118, 98, 73, 0.12);
-  border-radius: 1.25rem;
-  background: rgba(255, 255, 255, 0.78);
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
 }
 
 .ft-top__heading,
 .ft-latest__header {
   margin-bottom: 1.15rem;
+}
+
+.ft-latest__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .ft-top__title,
@@ -778,17 +786,19 @@ footer.footer {
   align-items: start;
   min-height: 100%;
   padding: 1rem 0;
-  border-radius: 0;
-  border: none;
+  border-radius: 1rem;
+  border: 1px solid transparent;
   background: transparent;
   text-decoration: none;
   color: inherit;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .ft-latest__link:hover,
 .ft-latest__link:focus-visible {
   color: var(--primary10);
+  background: rgba(255, 255, 255, 0.74);
+  border-color: rgba(114, 95, 73, 0.1);
 }
 
 .ft-latest__media {
@@ -849,9 +859,16 @@ footer.footer {
   gap: 0.45rem;
 }
 
-.ft-latest__meta span:not(:last-child)::after {
+.ft-latest__meta-detail:not(:last-child)::after {
   content: "•";
   opacity: 0.5;
+}
+
+.ft-latest__category {
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(24, 80, 168, 0.08);
+  color: var(--primary20);
 }
 
 .ft-latest__title-row {
@@ -874,11 +891,13 @@ footer.footer {
   flex: 0 0 auto;
   color: var(--primary30);
   font-size: 0.95rem;
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .ft-latest__link:hover .ft-latest__arrow,
 .ft-latest__link:focus-visible .ft-latest__arrow {
   color: var(--primary20);
+  transform: translateX(2px);
 }
 
 .ft-latest__excerpt {
@@ -893,19 +912,11 @@ footer.footer {
   text-wrap: pretty;
 }
 
-.ft-latest__footer {
-  margin-top: 0.95rem;
-  padding-top: 0.5rem;
-  border-top: none;
-  display: flex;
-  justify-content: flex-end;
-}
-
 .ft-latest__more {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.65rem 0.9rem;
+  padding: 0.55rem 0.8rem;
   border-radius: 999px;
   border: 1px solid rgba(114, 95, 73, 0.12);
   background: rgba(255, 255, 255, 0.88);
@@ -2244,10 +2255,6 @@ max-width: 320px;
     gap: 0.55rem;
   }
 
-  .ft-latest {
-    padding-top: 1.6rem;
-    padding-bottom: 1.5rem;
-  }
 }
 
 

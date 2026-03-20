@@ -493,6 +493,12 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
         <aside class="ft-latest" aria-labelledby="footer-latest-title">
           <div class="ft-latest__header">
             <h3 id="footer-latest-title" class="ft-latest__title"><?php esc_html_e('Últimas noticias del blog', '360vo-theme'); ?></h3>
+            <?php if ($blog_archive_url) : ?>
+              <a href="<?php echo esc_url($blog_archive_url); ?>" class="ft-latest__more">
+                <span><?php esc_html_e('Ir al blog', '360vo-theme'); ?></span>
+                <span aria-hidden="true">→</span>
+              </a>
+            <?php endif; ?>
           </div>
 
           <?php if (!empty($latest_posts)) : ?>
@@ -524,11 +530,11 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
 
                     <div class="ft-latest__content">
                       <div class="ft-latest__meta">
-                        <span><?php echo esc_html(get_the_date(get_option('date_format'), $post_id)); ?></span>
                         <?php if ($primary_category !== '') : ?>
-                          <span><?php echo esc_html($primary_category); ?></span>
+                          <span class="ft-latest__category"><?php echo esc_html($primary_category); ?></span>
                         <?php endif; ?>
-                        <span><?php echo esc_html(sprintf(_n('%s min de lectura', '%s min de lectura', $reading_time, '360vo-theme'), number_format_i18n($reading_time))); ?></span>
+                        <span class="ft-latest__meta-detail"><?php echo esc_html(get_the_date(get_option('date_format'), $post_id)); ?></span>
+                        <span class="ft-latest__meta-detail"><?php echo esc_html(sprintf(_n('%s min de lectura', '%s min de lectura', $reading_time, '360vo-theme'), number_format_i18n($reading_time))); ?></span>
                       </div>
 
                       <div class="ft-latest__title-row">
@@ -548,14 +554,6 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
             </div>
           <?php endif; ?>
 
-          <?php if ($blog_archive_url) : ?>
-            <div class="ft-latest__footer">
-              <a href="<?php echo esc_url($blog_archive_url); ?>" class="ft-latest__more">
-                <span><?php esc_html_e('Ir al blog', '360vo-theme'); ?></span>
-                <span aria-hidden="true">→</span>
-              </a>
-            </div>
-          <?php endif; ?>
         </aside>
       </div>
     </section>

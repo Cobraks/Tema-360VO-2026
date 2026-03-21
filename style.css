@@ -1429,6 +1429,8 @@ border: none !important;
 .button--footer.button--correo {
    color: var(--primary30);
 background: white;
+
+font-size: 1rem;
 }
 
 

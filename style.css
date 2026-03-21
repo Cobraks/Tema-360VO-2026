@@ -567,6 +567,10 @@ footer.footer {
   border: none;
   border-radius: 0;
   background: transparent;
+
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .ft-latest {
@@ -579,6 +583,8 @@ footer.footer {
 .ft-top__heading,
 .ft-latest__header {
   margin-bottom: 1.15rem;
+
+  width: 100%;
 }
 
 .ft-latest__header {

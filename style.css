@@ -550,6 +550,7 @@ footer.footer {
   gap: 1.25rem;
   margin-inline: auto;
   padding: 0;
+<<<<<<< ours
 }
 
 .ft-top__inner::before {
@@ -587,6 +588,39 @@ footer.footer {
   width: 100%;
 }
 
+=======
+}
+
+.ft-top__inner::before {
+  display: none;
+}
+
+.ft-top__menus,
+.ft-latest {
+  position: relative;
+  overflow: hidden;
+}
+
+.ft-top__menus {
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.ft-latest {
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.ft-top__heading,
+.ft-latest__header {
+  margin-bottom: 1.15rem;
+}
+
+>>>>>>> theirs
 .ft-latest__header {
   display: flex;
   align-items: center;

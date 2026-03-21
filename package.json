@@ -1,0 +1,9 @@
+{
+  "name": "tema-360vo-2026",
+  "private": true,
+  "scripts": {
+    "build:assets": "node scripts/build-assets.mjs build",
+    "watch:assets": "node scripts/build-assets.mjs watch",
+    "prepare": "npm run build:assets"
+  }
+}

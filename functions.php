@@ -24,17 +24,6 @@ require_once THEME_DIR . '/classes/Autoloader.php';
 E360VO_Autoloader::register();
 
 /**
- * Generar minificados al activar el tema
- */
-add_action('after_switch_theme', 'th360_generar_min_assets');
-function th360_generar_min_assets()
-{
-    if (class_exists('E360VO_AssetMinifier')) {
-        E360VO_AssetMinifier::maybe_minify_all();
-    }
-}
-
-/**
  * Debug (manual)
  * Descomenta el hook si necesitas inspeccionar scripts/estilos.
  */
@@ -195,71 +184,6 @@ function get_latest_posts($num_posts = 5)
     ];
 
     return wp_get_recent_posts($args, OBJECT);
-}
-
-/**
- * ---------------------------------------------------------
- * Minificador y registro de assets
- * ---------------------------------------------------------
- */
-if (class_exists('E360VO_AssetMinifier')) {
-    // 1) Arrancar el minificador
-    E360VO_AssetMinifier::init();
-
-    // 2) Registrar style.css
-    E360VO_AssetMinifier::register(
-        '360vo-theme-style',
-        THEME_DIR . '/style.css',
-        THEME_DIR . '/style.min.css',
-        'css'
-    );
-
-    // 3) Registrar JS principal del tema
-    E360VO_AssetMinifier::register(
-        '360vo-funciones-tema',
-        THEME_DIR . '/public/assets/js/funciones_tema.js',
-        THEME_DIR . '/public/assets/js/funciones_tema.min.js',
-        'js'
-    );
-
-    // 4) Registrar critical
-    E360VO_AssetMinifier::register(
-        '360vo-critical',
-        THEME_DIR . '/public/assets/css/critical.css',
-        THEME_DIR . '/public/assets/css/critical.min.css',
-        'css'
-    );
-
-    // 5) Registrar pages
-    E360VO_AssetMinifier::register(
-        '360vo-pages',
-        THEME_DIR . '/public/assets/css/pages.css',
-        THEME_DIR . '/public/assets/css/pages.min.css',
-        'css'
-    );
-
-    E360VO_AssetMinifier::register(
-        '360vo-logged-in',
-        THEME_DIR . '/public/assets/css/logged-in.css',
-        THEME_DIR . '/public/assets/css/logged-in.min.css',
-        'css'
-    );
-
-    // Blog UI (home/category/single)
-    E360VO_AssetMinifier::register(
-        '360vo-blog',
-        THEME_DIR . '/public/assets/css/blog.css',
-        THEME_DIR . '/public/assets/css/blog.min.css',
-        'css'
-    );
-
-    E360VO_AssetMinifier::register(
-        '360vo-blog-js',
-        THEME_DIR . '/public/assets/js/blog.js',
-        THEME_DIR . '/public/assets/js/blog.min.js',
-        'js'
-    );
-
 }
 
 /**

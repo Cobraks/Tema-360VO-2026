@@ -14,7 +14,7 @@
 
   /* --fs-400: 12rem; */
 
-  --ff-primary: "Source Sans 3", "Source Sans 3 Fallback", sans-serif;
+  --ff-primary: "Source Sans 3", Arial, "Segoe UI", sans-serif;
 
   --ff-secondary: "Lora", serif;
 
@@ -35,30 +35,6 @@
   --color-accent: var(--action50);
   
 }
-
-@font-face {
-  font-family: "Source Sans 3";
-  src: url("./public/assets/fonts/source-sans-3-latin-400-normal.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Source Sans 3";
-  src: url("./public/assets/fonts/source-sans-3-latin-600-normal.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Source Sans 3 Fallback";
-  src: local("Arial");
-  size-adjust: 95%;
-}
-
-
 
 /* =========================================================
    Utilities mínimas (mini-tailwind) - seguras

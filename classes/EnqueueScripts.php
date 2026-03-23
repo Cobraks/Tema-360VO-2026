@@ -11,6 +11,9 @@ class E360VO_EnqueueScripts
     {
         add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts'], 100);
 
+        // Preload de las fuentes crÃ­ticas que se usan above-the-fold
+        add_action('wp_head', [$this, 'print_font_preloads'], 5);
+
         // Async preload para style.css
         add_filter('style_loader_tag', [$this, 'filter_style_loader_tag'], 10, 4);
 
@@ -33,6 +36,27 @@ class E360VO_EnqueueScripts
         if (!is_readable($file)) return;
 
         echo "<style id='360vo-critical-inline'>\n" . file_get_contents($file) . "\n</style>\n";
+    }
+
+    public function print_font_preloads()
+    {
+        static $printed = false;
+        if ($printed) return;
+        $printed = true;
+
+        $fonts = [
+            '/public/assets/fonts/source-sans-3-latin-400-normal.woff2',
+            '/public/assets/fonts/source-sans-3-latin-600-normal.woff2',
+        ];
+
+        foreach ($fonts as $font) {
+            $file = THEME_DIR . $font;
+            if (!is_readable($file)) {
+                continue;
+            }
+
+            echo '<link rel="preload" href="' . esc_url(THEME_URI . $font) . '" as="font" type="font/woff2" crossorigin>' . "\n";
+        }
     }
 
     public function enqueue_scripts()

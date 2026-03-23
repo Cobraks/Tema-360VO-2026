@@ -14,8 +14,8 @@
 
   /* --fs-400: 12rem; */
 
-  --ff-primary: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --ff-primary: "Source Sans 3", "Source Sans 3 Fallback", sans-serif;
+
   --ff-secondary: "Lora", serif;
 
   /* tokens legacy potencialmente usados por plugin/otros templates (NO tocamos aún) */
@@ -34,6 +34,28 @@
   --color_hover_breadcrumbs: var(--primary40);
   --color-accent: var(--action50);
   
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  src: url("./public/assets/fonts/source-sans-3-latin-400-normal.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  src: url("./public/assets/fonts/source-sans-3-latin-600-normal.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Source Sans 3 Fallback";
+  src: local("Arial");
+  size-adjust: 95%;
 }
 
 

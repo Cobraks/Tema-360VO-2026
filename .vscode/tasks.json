@@ -3,8 +3,12 @@
   "tasks": [
     {
       "label": "Watch assets",
-      "type": "npm",
-      "script": "watch:assets",
+      "type": "process",
+      "command": "node",
+      "args": [
+        "scripts/build-assets.mjs",
+        "watch"
+      ],
       "isBackground": true,
       "runOptions": {
         "runOn": "folderOpen"
@@ -31,8 +35,12 @@
     },
     {
       "label": "Build assets",
-      "type": "npm",
-      "script": "build:assets",
+      "type": "process",
+      "command": "node",
+      "args": [
+        "scripts/build-assets.mjs",
+        "build"
+      ],
       "group": "build",
       "presentation": {
         "reveal": "always",

@@ -13,6 +13,19 @@ class E360VO_AssetHelper
         return true;
     }
 
+    protected static function is_minified_asset_fresh(string $orig_file, string $min_file): bool
+    {
+        if (!file_exists($min_file)) {
+            return false;
+        }
+
+        if (!file_exists($orig_file)) {
+            return true;
+        }
+
+        return filemtime($min_file) >= filemtime($orig_file);
+    }
+
     /**
      * Devuelve la URL y versión (filemtime) de un asset, priorizando .min si existe.
      *
@@ -28,7 +41,7 @@ class E360VO_AssetHelper
         $min_file = $dir . '.min.' . $type;
         $orig_file = $dir . '.' . $type;
 
-        if (self::should_use_minified_assets() && file_exists($min_file)) {
+        if (self::should_use_minified_assets() && self::is_minified_asset_fresh($orig_file, $min_file)) {
             return [
                 'url'     => $uri . '.min.' . $type,
                 'version' => filemtime($min_file)

@@ -4,6 +4,7 @@
   "scripts": {
     "build:assets": "node scripts/build-assets.mjs build",
     "watch:assets": "node scripts/build-assets.mjs watch",
-    "prepare": "npm run build:assets"
+    "setup:hooks": "node scripts/install-git-hooks.mjs",
+    "prepare": "node scripts/install-git-hooks.mjs && npm run build:assets"
   }
 }

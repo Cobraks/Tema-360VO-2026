@@ -1,9 +1,0 @@
-#!/bin/sh
-set -e
-
-REPO_ROOT="$(git rev-parse --show-toplevel)"
-cd "$REPO_ROOT"
-
-node scripts/build-assets.mjs build
-
-git add -- style.min.css admin/assets/css/*.min.css public/assets/css/*.min.css public/assets/js/*.min.js

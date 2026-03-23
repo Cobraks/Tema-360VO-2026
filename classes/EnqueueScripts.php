@@ -73,7 +73,10 @@ class E360VO_EnqueueScripts
         // ---------------------------------------------------------
         if (is_404()) {
             $css_404 = E360VO_AssetHelper::get_asset_info('/public/assets/css/custom-404', 'css');
-            wp_enqueue_style('360vo-404', $css_404['url'], ['360vo-theme-style'], $css_404['version']);
+
+            if (file_exists(THEME_DIR . '/public/assets/css/custom-404.css') || file_exists(THEME_DIR . '/public/assets/css/custom-404.min.css')) {
+                wp_enqueue_style('360vo-404', $css_404['url'], ['360vo-theme-style'], $css_404['version']);
+            }
         }
 
         // ---------------------------------------------------------

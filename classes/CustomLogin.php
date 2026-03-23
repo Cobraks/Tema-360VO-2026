@@ -14,7 +14,8 @@ class E360VO_CustomLogin
 
     public function enqueue_styles()
     {
-        wp_enqueue_style('custom-login', THEME_URI . '/public/assets/css/custom-login.css', [], THEME_VERSION);
+        $style = E360VO_AssetHelper::get_asset_info('/public/assets/css/custom-login', 'css');
+        wp_enqueue_style('custom-login', $style['url'], [], $style['version']);
     }
 
     public function add_custom_logo()

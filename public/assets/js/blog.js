@@ -77,6 +77,27 @@
 			});
 	}
 
+	function initNewsletterFloatingLabels() {
+		document
+			.querySelectorAll(
+				".panel--subscribe .wpcf7-form label input[type='email']",
+			)
+			.forEach((input) => {
+				const label = input.closest("label");
+				if (!label) return;
+
+				input.setAttribute("placeholder", " ");
+
+				const sync = () => {
+					label.classList.toggle("has-value", input.value.trim() !== "");
+				};
+
+				input.addEventListener("input", sync);
+				input.addEventListener("blur", sync);
+				sync();
+			});
+	}
+
 	async function shareUrl(url, title) {
 		const u = url || window.location.href;
 		const t = title || document.title || "EdreamsCars";
@@ -115,6 +136,7 @@
 
 	// Init
 	hydrateSaveButtons();
+	initNewsletterFloatingLabels();
 
 	// Delegación global (archive)
 	document.addEventListener("click", async (e) => {

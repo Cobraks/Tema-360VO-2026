@@ -115,9 +115,7 @@ $related = new WP_Query($related_args);
 
                 <div class="post-tools" role="group" aria-label="Acciones">
                     <button class="icon-btn" type="button" data-action="save" data-id="<?php echo (int) $post_id; ?>" aria-pressed="false" aria-label="Guardar artículo" title="Guardar">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                            <path d="M6 3h12a1 1 0 011 1v17l-7-4-7 4V4a1 1 0 011-1z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
-                        </svg>
+                        <?php echo E360VO_Icon::get('bookmark_add', ['aria-hidden' => 'true', 'width' => 24, 'height' => 24]); ?>
                     </button>
 
                     <button class="icon-btn" type="button" data-action="copy" data-url="<?php echo esc_url($permalink); ?>" aria-label="Copiar enlace" title="Copiar enlace">
@@ -128,11 +126,7 @@ $related = new WP_Query($related_args);
                     </button>
 
                     <button class="icon-btn" type="button" data-action="share" data-url="<?php echo esc_url($permalink); ?>" aria-label="Compartir artículo" title="Compartir">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                            <path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                            <path d="M16 6l-4-4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            <path d="M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                        </svg>
+                        <?php echo E360VO_Icon::get('share', ['aria-hidden' => 'true', 'width' => 24, 'height' => 24]); ?>
                     </button>
                 </div>
             </div>
@@ -192,10 +186,11 @@ $related = new WP_Query($related_args);
                     $prev = get_previous_post();
                     $next = get_next_post();
                     if ($prev || $next) :
-                        ?>
-                        <div style="flex-basis:100%;height:0"></div>
-                        <?php if ($prev) : ?><a class="btn btn--primary" href="<?php echo esc_url(get_permalink($prev)); ?>">← Anterior</a><?php endif; ?>
-                        <?php if ($next) : ?><a class="btn btn--primary" href="<?php echo esc_url(get_permalink($next)); ?>">Siguiente →</a><?php endif; ?>
+                    ?>
+                        <nav class="post-footer__nav" aria-label="Navegación entre artículos">
+                            <?php if ($prev) : ?><a class="btn btn--primary" href="<?php echo esc_url(get_permalink($prev)); ?>">← Anterior</a><?php endif; ?>
+                            <?php if ($next) : ?><a class="btn btn--primary" href="<?php echo esc_url(get_permalink($next)); ?>">Siguiente →</a><?php endif; ?>
+                        </nav>
                     <?php endif; ?>
                 </footer>
             </article>
@@ -204,31 +199,31 @@ $related = new WP_Query($related_args);
 
                 <section class="panel panel--subscribe" aria-label="Recibe novedades">
                     <h2 class="panel__title">Recibe novedades</h2>
-                    <p class="panel__text">Un email cuando publiquemos una guía nueva. Sin spam.</p>
+                    <p class="panel__text">Un email cuando publiquemos contenido nuevo. Sin spam.</p>
 
                     <?php
-                    $newsletter_shortcode = (string) apply_filters('th360_newsletter_shortcode', '');
-                    if ($newsletter_shortcode !== '' && function_exists('do_shortcode')) {
+                    $newsletter_shortcode = (string) apply_filters('th360_newsletter_shortcode', '[contact-form-7 id="04d14f1" title="Newsletter"]');
+                    if (
+                        $newsletter_shortcode !== ''
+                        && function_exists('do_shortcode')
+                        && function_exists('shortcode_exists')
+                        && shortcode_exists('contact-form-7')
+                    ) {
                         echo do_shortcode($newsletter_shortcode);
                     } else {
                     ?>
-                        <form class="panel__form" action="#" method="post" novalidate>
-                            <label class="sr-only" for="side-sub-email">Email</label>
-                            <input id="side-sub-email" class="panel__input" type="email" placeholder="Tu email" autocomplete="email" inputmode="email" required>
-                            <button class="btn btn--primary btn--full" type="submit">Suscribirme</button>
-                        </form>
                         <p class="panel__note">
-                            Para activarlo: crea un formulario en Contact Form 7 y conéctalo con el filtro <code>th360_newsletter_shortcode</code>.
+                            Activa Contact Form 7 para mostrar el formulario de suscripción.
                         </p>
                     <?php } ?>
                 </section>
 
                 <?php if ($related->have_posts()) : ?>
                     <section class="panel" aria-label="Más artículos">
-                        <h2 class="panel__title">Más guías</h2>
-                        <p class="panel__text">Lecturas relacionadas para seguir aprendiendo.</p>
+                        <h2 class="panel__title">Más artículos</h2>
+                        <p class="panel__text">Lecturas relacionadas para seguir profundizando.</p>
 
-                        <div class="grid" style="grid-template-columns:1fr">
+                        <div class="grid grid--one">
                             <?php while ($related->have_posts()) : $related->the_post(); ?>
                                 <article class="tile">
                                     <a class="tile__link" href="<?php the_permalink(); ?>">

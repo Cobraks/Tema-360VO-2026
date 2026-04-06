@@ -141,7 +141,7 @@ if (!$featured_posts->have_posts()) {
             <section class="section" aria-label="Te puede interesar">
                 <header class="section__header">
                     <h2 class="section__title">Te puede interesar</h2>
-                    <p class="section__subtitle">Guías destacadas para complementar esta categoría.</p>
+                    <p class="section__subtitle">Artículos destacados para complementar esta categoría.</p>
                 </header>
 
                 <div class="featured">
@@ -245,16 +245,10 @@ if (!$featured_posts->have_posts()) {
 
                                     <div class="lead__tools" role="group" aria-label="Herramientas">
                                         <button class="icon-btn" type="button" data-action="save" data-id="<?php echo (int) $latest_id; ?>" aria-pressed="false" aria-label="Guardar artículo" title="Guardar">
-                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                                <path d="M6 3h12a1 1 0 011 1v17l-7-4-7 4V4a1 1 0 011-1z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
-                                            </svg>
+                                            <?php echo E360VO_Icon::get('bookmark_add', ['aria-hidden' => 'true', 'width' => 24, 'height' => 24]); ?>
                                         </button>
                                         <button class="icon-btn" type="button" data-action="share" data-url="<?php echo esc_url($latest_url); ?>" aria-label="Compartir artículo" title="Compartir">
-                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                                <path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                                                <path d="M16 6l-4-4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                                <path d="M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                                            </svg>
+                                            <?php echo E360VO_Icon::get('share', ['aria-hidden' => 'true', 'width' => 24, 'height' => 24]); ?>
                                         </button>
                                     </div>
                                 </div>
@@ -328,21 +322,21 @@ if (!$featured_posts->have_posts()) {
             <aside class="aside" aria-label="Panel lateral">
                 <section class="panel panel--subscribe" aria-label="Recibe novedades">
                     <h2 class="panel__title">Recibe novedades</h2>
-                    <p class="panel__text">Un email cuando publiquemos una guía nueva. Sin spam.</p>
+                    <p class="panel__text">Un email cuando publiquemos contenido nuevo. Sin spam.</p>
 
                     <?php
-                    $newsletter_shortcode = (string) apply_filters('th360_newsletter_shortcode', '');
-                    if ($newsletter_shortcode !== '' && function_exists('do_shortcode')) {
+                    $newsletter_shortcode = (string) apply_filters('th360_newsletter_shortcode', '[contact-form-7 id="04d14f1" title="Newsletter"]');
+                    if (
+                        $newsletter_shortcode !== ''
+                        && function_exists('do_shortcode')
+                        && function_exists('shortcode_exists')
+                        && shortcode_exists('contact-form-7')
+                    ) {
                         echo do_shortcode($newsletter_shortcode);
                     } else {
                     ?>
-                        <form class="panel__form" action="#" method="post" novalidate>
-                            <label class="sr-only" for="side-sub-email">Email</label>
-                            <input id="side-sub-email" class="panel__input" type="email" placeholder="Tu email" autocomplete="email" inputmode="email" required>
-                            <button class="btn btn--primary btn--full" type="submit">Suscribirme</button>
-                        </form>
                         <p class="panel__note">
-                            Para activarlo: crea un formulario en Contact Form 7 y conéctalo con el filtro <code>th360_newsletter_shortcode</code>.
+                            Activa Contact Form 7 para mostrar el formulario de suscripción.
                         </p>
                     <?php } ?>
                 </section>

@@ -86,13 +86,6 @@ $related = new WP_Query($related_args);
 
     <header class="post-hero" aria-labelledby="post-title">
         <div class="post-hero__inner">
-            <p class="post-hero__kicker">
-                <a href="<?php echo esc_url($blog_url); ?>">Noticias</a>
-                <?php if ($cat_name && $cat_url) : ?>
-                    · <a href="<?php echo esc_url($cat_url); ?>"><?php echo esc_html($cat_name); ?></a>
-                <?php endif; ?>
-            </p>
-
             <h1 class="post-hero__title" id="post-title"><?php echo $title_safe; ?></h1>
 
             <?php if (trim(wp_strip_all_tags($intro)) !== '') : ?>
@@ -182,24 +175,55 @@ $related = new WP_Query($related_args);
                         <?php
                         endforeach;
                     endif;
-
-                    $prev = get_previous_post();
-                    $next = get_next_post();
-                    if ($prev || $next) :
                     ?>
-                        <nav class="post-footer__nav" aria-label="Navegación entre artículos">
-                            <?php if ($prev) : ?><a class="btn btn--primary" href="<?php echo esc_url(get_permalink($prev)); ?>">← Anterior</a><?php endif; ?>
-                            <?php if ($next) : ?><a class="btn btn--primary" href="<?php echo esc_url(get_permalink($next)); ?>">Siguiente →</a><?php endif; ?>
-                        </nav>
-                    <?php endif; ?>
+
                 </footer>
+
+                <?php
+                $prev = get_previous_post();
+                $next = get_next_post();
+                if ($prev || $next) :
+                ?>
+                    <nav class="post-nav-cards" aria-label="Navegación entre artículos">
+                        <?php if ($prev) : ?>
+                            <a class="post-nav-card post-nav-card--prev" href="<?php echo esc_url(get_permalink($prev)); ?>">
+                                <span class="post-nav-card__label">Artículo anterior</span>
+                                <div class="post-nav-card__content">
+                                    <div class="post-nav-card__thumb" aria-hidden="true">
+                                        <?php if (has_post_thumbnail($prev)) : ?>
+                                            <?php echo get_the_post_thumbnail($prev, 'thumbnail', ['loading' => 'lazy', 'decoding' => 'async']); ?>
+                                        <?php else : ?>
+                                            <span class="post-nav-card__ph"></span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <span class="post-nav-card__title"><?php echo esc_html(get_the_title($prev)); ?></span>
+                                </div>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if ($next) : ?>
+                            <a class="post-nav-card post-nav-card--next" href="<?php echo esc_url(get_permalink($next)); ?>">
+                                <span class="post-nav-card__label">Artículo siguiente</span>
+                                <div class="post-nav-card__content">
+                                    <div class="post-nav-card__thumb" aria-hidden="true">
+                                        <?php if (has_post_thumbnail($next)) : ?>
+                                            <?php echo get_the_post_thumbnail($next, 'thumbnail', ['loading' => 'lazy', 'decoding' => 'async']); ?>
+                                        <?php else : ?>
+                                            <span class="post-nav-card__ph"></span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <span class="post-nav-card__title"><?php echo esc_html(get_the_title($next)); ?></span>
+                                </div>
+                            </a>
+                        <?php endif; ?>
+                    </nav>
+                <?php endif; ?>
             </article>
 
             <aside class="aside" aria-label="Panel lateral">
 
                 <section class="panel panel--subscribe" aria-label="Recibe novedades">
                     <h2 class="panel__title">Recibe novedades</h2>
-                    <p class="panel__text">Recibe nuevos artículos y actualizaciones clave. Sin spam.</p>
 
                     <?php
                     $newsletter_shortcode = (string) apply_filters('th360_newsletter_shortcode', '[contact-form-7 id="04d14f1" title="Newsletter"]');

@@ -476,8 +476,6 @@ function th360_get_category_icon($category_name)
             <aside class="aside" aria-label="Panel lateral">
                 <section class="panel panel--subscribe" aria-label="Recibe novedades">
                     <h2 class="panel__title">Recibe novedades</h2>
-                    <p class="panel__text">Recibe nuevos artículos y actualizaciones clave. Sin spam.</p>
-
                     <?php
                     $newsletter_shortcode = (string) apply_filters('th360_newsletter_shortcode', '[contact-form-7 id="04d14f1" title="Newsletter"]');
                     if (

@@ -245,10 +245,10 @@ if (!$featured_posts->have_posts()) {
 
                                     <div class="lead__tools" role="group" aria-label="Herramientas">
                                         <button class="icon-btn" type="button" data-action="save" data-id="<?php echo (int) $latest_id; ?>" aria-pressed="false" aria-label="Guardar artículo" title="Guardar">
-                                            <?php echo E360VO_Icon::get('bookmark_add', ['aria-hidden' => 'true', 'width' => 24, 'height' => 24]); ?>
+                                            <?php echo E360VO_Icon::get('shield', ['aria-hidden' => 'true', 'width' => 24, 'height' => 24]); ?>
                                         </button>
                                         <button class="icon-btn" type="button" data-action="share" data-url="<?php echo esc_url($latest_url); ?>" aria-label="Compartir artículo" title="Compartir">
-                                            <?php echo E360VO_Icon::get('share', ['aria-hidden' => 'true', 'width' => 24, 'height' => 24]); ?>
+                                            <?php echo E360VO_Icon::get('open_new', ['aria-hidden' => 'true', 'width' => 24, 'height' => 24]); ?>
                                         </button>
                                     </div>
                                 </div>

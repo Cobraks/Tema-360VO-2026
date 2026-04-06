@@ -685,7 +685,7 @@
   transition: transform .14s ease, border-color .14s ease, box-shadow .14s ease, background-color .14s ease, color .14s ease;
   -webkit-tap-highlight-color: transparent;
 }
-.icon-btn svg { width: 20px; height: 20px; }
+.icon-btn svg { width: 24px; height: 24px; }
 
 @media (hover:hover) and (pointer:fine) {
   .icon-btn:hover {
@@ -890,7 +890,7 @@
   border-radius: var(--radius-2);
   background: rgba(255,255,255,.94);
   padding: 1.5rem;
-  box-shadow: 0 10px 26px rgba(0,0,0,.04);
+  box-shadow: none;
 }
 
 .panel__title {
@@ -925,6 +925,15 @@
 
 /* CF7 en panel subscribe */
 .panel--subscribe :where(.wpcf7-form) { display: grid; gap: .75rem; margin: 0; }
+.panel--subscribe :where(.wpcf7-form p) { margin: 0; }
+.panel--subscribe :where(.wpcf7-form label) {
+  display: grid;
+  gap: .35rem;
+  margin: 0;
+  font-size: var(--t-xs);
+  color: var(--muted);
+  font-weight: var(--fw-m);
+}
 .panel--subscribe :where(.wpcf7-form-control-wrap) { display: block; }
 .panel--subscribe :where(input[type="email"], input[type="text"], input[type="tel"]) {
   width: 100%;
@@ -1116,7 +1125,7 @@
   border-radius: var(--radius-3);
   background: rgba(255,255,255,.96);
   padding: clamp(1.25rem, 1.25rem + 1vw, 2rem);
-  box-shadow: 0 12px 34px rgba(0,0,0,.05);
+  box-shadow: none;
 }
 
 .post-card :where(h2, h3) {
@@ -1136,6 +1145,15 @@
   gap: .6rem;
   flex-wrap: wrap;
   align-items: center;
+}
+
+.post-footer__nav {
+  flex-basis: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .75rem;
+  flex-wrap: wrap;
 }
 
 .tag-link {

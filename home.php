@@ -251,16 +251,11 @@ function th360_get_category_icon($category_name)
                                 <div class="card__body">
                                     <div class="meta">
                                         <time class="meta__date" datetime="<?php echo esc_attr(get_the_date('c')); ?>"><?php echo esc_html(get_the_date('j M, Y')); ?></time>
-                                        <?php if ($cat_name) : ?>
-                                            <span class="meta__chip">
-                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                                    <path d="<?php echo esc_attr(th360_get_category_icon($cat_name)); ?>" />
-                                                </svg>
-                                                <?php echo esc_html($cat_name); ?>
-                                            </span>
-                                        <?php endif; ?>
                                         <?php if ($reading) : ?>
                                             <span class="meta__muted"><?php echo esc_html($reading); ?></span>
+                                        <?php endif; ?>
+                                        <?php if ($cat_name) : ?>
+                                            <span class="meta__chip"><?php echo esc_html($cat_name); ?></span>
                                         <?php endif; ?>
                                     </div>
 
@@ -364,15 +359,10 @@ function th360_get_category_icon($category_name)
 
                                 <div class="meta">
                                     <time class="meta__date" datetime="<?php echo esc_attr(get_the_date('c')); ?>"><?php echo esc_html(get_the_date('j M, Y')); ?></time>
-                                    <?php if ($latest_cat) : ?>
-                                        <span class="meta__chip">
-                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                                <path d="<?php echo esc_attr(th360_get_category_icon($latest_cat)); ?>" />
-                                            </svg>
-                                            <?php echo esc_html($latest_cat); ?>
-                                        </span>
-                                    <?php endif; ?>
                                     <?php if ($latest_read) : ?><span class="meta__muted"><?php echo esc_html($latest_read); ?></span><?php endif; ?>
+                                    <?php if ($latest_cat) : ?>
+                                        <span class="meta__chip"><?php echo esc_html($latest_cat); ?></span>
+                                    <?php endif; ?>
                                 </div>
 
                                 <h3 class="lead__title">
@@ -386,16 +376,10 @@ function th360_get_category_icon($category_name)
 
                                     <div class="lead__tools" role="group" aria-label="Herramientas">
                                         <button class="icon-btn" type="button" data-action="save" data-id="<?php echo (int) $latest_id; ?>" aria-pressed="false" aria-label="Guardar artículo" title="Guardar">
-                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                                <path d="M6 3h12a1 1 0 011 1v17l-7-4-7 4V4a1 1 0 011-1z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
-                                            </svg>
+                                            <?php echo E360VO_Icon::get('shield', ['aria-hidden' => 'true', 'width' => 24, 'height' => 24]); ?>
                                         </button>
                                         <button class="icon-btn" type="button" data-action="share" data-url="<?php echo esc_url(get_permalink($latest_id)); ?>" aria-label="Compartir artículo" title="Compartir">
-                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                                <path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                                                <path d="M16 6l-4-4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                                <path d="M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                                            </svg>
+                                            <?php echo E360VO_Icon::get('open_new', ['aria-hidden' => 'true', 'width' => 24, 'height' => 24]); ?>
                                         </button>
                                     </div>
                                 </div>
@@ -435,15 +419,10 @@ function th360_get_category_icon($category_name)
                                     <div class="tile__body">
                                         <div class="meta">
                                             <time class="meta__date" datetime="<?php echo esc_attr(get_the_date('c')); ?>"><?php echo esc_html(get_the_date('j M')); ?></time>
-                                            <?php if ($cat) : ?>
-                                                <span class="meta__chip">
-                                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                                        <path d="<?php echo esc_attr(th360_get_category_icon($cat)); ?>" />
-                                                    </svg>
-                                                    <?php echo esc_html($cat); ?>
-                                                </span>
-                                            <?php endif; ?>
                                             <?php if ($read) : ?><span class="meta__muted"><?php echo esc_html($read); ?></span><?php endif; ?>
+                                            <?php if ($cat) : ?>
+                                                <span class="meta__chip"><?php echo esc_html($cat); ?></span>
+                                            <?php endif; ?>
                                         </div>
 
                                         <h3 class="tile__title"><?php the_title(); ?></h3>
@@ -500,18 +479,18 @@ function th360_get_category_icon($category_name)
                     <p class="panel__text">Te avisamos cuando publiquemos contenido nuevo. Sin spam.</p>
 
                     <?php
-                    $newsletter_shortcode = (string) apply_filters('th360_newsletter_shortcode', '');
-                    if ($newsletter_shortcode !== '' && function_exists('do_shortcode')) {
+                    $newsletter_shortcode = (string) apply_filters('th360_newsletter_shortcode', '[contact-form-7 id="04d14f1" title="Newsletter"]');
+                    if (
+                        $newsletter_shortcode !== ''
+                        && function_exists('do_shortcode')
+                        && function_exists('shortcode_exists')
+                        && shortcode_exists('contact-form-7')
+                    ) {
                         echo do_shortcode($newsletter_shortcode);
                     } else {
                     ?>
-                        <form class="panel__form" action="#" method="post" novalidate>
-                            <label class="sr-only" for="side-sub-email">Email</label>
-                            <input id="side-sub-email" class="panel__input" type="email" placeholder="Tu email" autocomplete="email" inputmode="email" required>
-                            <button class="btn btn--primary btn--full" type="submit">Suscribirme</button>
-                        </form>
                         <p class="panel__note">
-                            Para activarlo: crea un formulario en Contact Form 7 y conéctalo con el filtro <code>th360_newsletter_shortcode</code>.
+                            Activa Contact Form 7 para mostrar el formulario de suscripción.
                         </p>
                     <?php } ?>
                 </section>

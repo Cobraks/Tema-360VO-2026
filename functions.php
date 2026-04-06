@@ -288,6 +288,18 @@ new E360VO_EnqueueScripts();
 add_filter('wpcf7_autop_or_not', '__return_false');
 
 /**
+ * Shortcode por defecto del formulario de newsletter (CF7).
+ * Se puede sobrescribir desde child theme/plugin con el mismo filtro.
+ */
+add_filter('th360_newsletter_shortcode', function (string $shortcode): string {
+    if (trim($shortcode) !== '') {
+        return $shortcode;
+    }
+
+    return '[contact-form-7 id="04d14f1" title="Newsletter"]';
+});
+
+/**
  * Defer selectivo para scripts del tema
  */
 

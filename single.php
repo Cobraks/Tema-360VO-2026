@@ -151,13 +151,16 @@ $related = new WP_Query($related_args);
     <?php endif; ?>
 
     <div class="blog-shell">
-        <div class="layout">
+        <div class="layout layout--single">
 
-            <article class="post-card" aria-label="Contenido del artículo">
+            <aside class="post-toc-col" aria-label="Navegación del artículo">
                 <nav class="post-toc" aria-label="Tabla de contenidos">
                     <h2 class="post-toc__title">En este artículo</h2>
                     <ol class="post-toc__list" id="post-toc-list"></ol>
                 </nav>
+            </aside>
+
+            <article class="post-card" aria-label="Contenido del artículo">
 
                 <div class="entry-content entry-content--start">
                     <?php
@@ -228,7 +231,7 @@ $related = new WP_Query($related_args);
                 </section>
             </article>
 
-            <aside class="aside" aria-label="Panel lateral">
+            <aside class="aside aside--single" aria-label="Panel lateral">
 
                 <section class="panel panel--subscribe" aria-label="Recibe novedades">
                     <div class="panel__title-row">

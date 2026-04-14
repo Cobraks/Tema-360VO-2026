@@ -120,19 +120,26 @@
 		if (!tocList || !content) return;
 
 		const headings = content.querySelectorAll("h2, h3");
-		if (!headings.length) {
+		let sourceNodes = Array.from(headings);
+		if (!sourceNodes.length) {
+			const pseudoHeadings = content.querySelectorAll("p > strong:first-child");
+			sourceNodes = Array.from(pseudoHeadings).map((el) => el.parentElement).filter(Boolean);
+		}
+
+		if (!sourceNodes.length) {
 			const toc = document.querySelector(".post-toc");
 			if (toc) toc.hidden = true;
 			return;
 		}
 
-		headings.forEach((heading, index) => {
+		sourceNodes.forEach((heading, index) => {
+			const isSubheading = heading.tagName.toLowerCase() === "h3";
 			if (!heading.id) {
 				heading.id = `toc-heading-${index + 1}`;
 			}
 
 			const li = document.createElement("li");
-			if (heading.tagName.toLowerCase() === "h3") {
+			if (isSubheading) {
 				li.style.marginLeft = "0.8rem";
 			}
 

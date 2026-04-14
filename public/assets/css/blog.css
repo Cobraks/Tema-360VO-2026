@@ -357,6 +357,39 @@
   .logged-in .aside {
     top: calc(var(--altura-WpAdminBaryHeader) + 1.5rem);
   }
+
+  .layout--single {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.post-toc-col {
+  display: none;
+}
+
+@media (min-width: 1280px) {
+  .layout--single {
+    grid-template-columns: 240px minmax(0, 780px) 320px;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  .layout--single .post-toc-col {
+    display: block;
+    position: sticky;
+    top: calc(var(--altura-header) + 1.5rem);
+    align-self: start;
+  }
+
+  .layout--single .post-card {
+    max-width: 780px;
+    width: 100%;
+  }
+
+  .layout--single .aside--single {
+    position: sticky;
+    top: calc(var(--altura-header) + 1.5rem);
+  }
 }
 
 /* Toolbar */

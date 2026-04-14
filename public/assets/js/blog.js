@@ -64,6 +64,7 @@
 
 	function setBtnState(btn, pressed) {
 		btn.classList.toggle("is-active", pressed);
+		btn.classList.toggle("is-saved", pressed);
 		btn.setAttribute("aria-pressed", pressed ? "true" : "false");
 	}
 
@@ -75,6 +76,72 @@
 				const id = btn.getAttribute("data-id");
 				setBtnState(btn, saved.has(String(id)));
 			});
+	}
+
+	function initNewsletterFloatingLabels() {
+		document
+			.querySelectorAll(
+				".panel--subscribe .wpcf7-form label input[type='email']",
+			)
+			.forEach((input) => {
+				const label = input.closest("label");
+				if (!label) return;
+
+				input.setAttribute("placeholder", " ");
+
+				const sync = () => {
+					label.classList.toggle("has-value", input.value.trim() !== "");
+				};
+
+				input.addEventListener("input", sync);
+				input.addEventListener("blur", sync);
+				sync();
+			});
+	}
+
+	function initNewsletterTips() {
+		document.querySelectorAll("[data-tip-toggle]").forEach((btn) => {
+			const id = btn.getAttribute("aria-controls");
+			if (!id) return;
+			const tip = document.getElementById(id);
+			if (!tip) return;
+
+			btn.addEventListener("click", () => {
+				const expanded = btn.getAttribute("aria-expanded") === "true";
+				btn.setAttribute("aria-expanded", expanded ? "false" : "true");
+				tip.hidden = expanded;
+			});
+		});
+	}
+
+	function initPostToc() {
+		const tocList = document.getElementById("post-toc-list");
+		const content = document.querySelector(".post-card .entry-content");
+		if (!tocList || !content) return;
+
+		const headings = content.querySelectorAll("h2, h3");
+		if (!headings.length) {
+			const toc = document.querySelector(".post-toc");
+			if (toc) toc.hidden = true;
+			return;
+		}
+
+		headings.forEach((heading, index) => {
+			if (!heading.id) {
+				heading.id = `toc-heading-${index + 1}`;
+			}
+
+			const li = document.createElement("li");
+			if (heading.tagName.toLowerCase() === "h3") {
+				li.style.marginLeft = "0.8rem";
+			}
+
+			const a = document.createElement("a");
+			a.href = `#${heading.id}`;
+			a.textContent = heading.textContent?.trim() || `Sección ${index + 1}`;
+			li.appendChild(a);
+			tocList.appendChild(li);
+		});
 	}
 
 	async function shareUrl(url, title) {
@@ -115,6 +182,9 @@
 
 	// Init
 	hydrateSaveButtons();
+	initNewsletterFloatingLabels();
+	initNewsletterTips();
+	initPostToc();
 
 	// Delegación global (archive)
 	document.addEventListener("click", async (e) => {

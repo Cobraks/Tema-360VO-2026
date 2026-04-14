@@ -1819,9 +1819,16 @@ width: 100%;
 
 /* Response output base (se conserva) */
 .wpcf7 form .wpcf7-response-output {
-  margin: 2em 0.5em 1em;
-  padding: 0.2em 1em;
-  border: 2px solid #00a0d2; /* Blue */
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: .82rem;
+  line-height: 1.45;
+  color: #0f4a63;
 }
 
 .wpcf7 form.init .wpcf7-response-output,
@@ -1830,7 +1837,7 @@ width: 100%;
   display: none;
 }
 
-.wpcf7 form.sent .wpcf7-response-output { border-color: #46b450; /* Green */ }
+.wpcf7 form.sent .wpcf7-response-output { color: #146c2e; }
 
 .custom-page .wpcf7 .wpcf7-response-output,
 .section-documentos .wpcf7 .wpcf7-response-output { order: 1; }
@@ -1839,13 +1846,13 @@ width: 100%;
 .section-documentos .wpcf7 form.invalid .wpcf7-response-output { order: 1; }
 
 .wpcf7 form.failed .wpcf7-response-output,
-.wpcf7 form.aborted .wpcf7-response-output { border-color: #dc3232; /* Red */ }
+.wpcf7 form.aborted .wpcf7-response-output { color: #b42318; }
 
-.wpcf7 form.spam .wpcf7-response-output { border-color: #f56e28; /* Orange */ }
+.wpcf7 form.spam .wpcf7-response-output { color: #9a3412; }
 
 .wpcf7 form.invalid .wpcf7-response-output,
 .wpcf7 form.unaccepted .wpcf7-response-output,
-.wpcf7 form.payment-required .wpcf7-response-output { border-color: #ffb900; /* Yellow */ }
+.wpcf7 form.payment-required .wpcf7-response-output { color: #b54708; }
 
 .wpcf7-form-control-wrap { position: relative; }
 

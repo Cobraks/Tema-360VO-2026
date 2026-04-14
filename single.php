@@ -85,46 +85,7 @@ $related = new WP_Query($related_args);
 <main class="main main--blog blog" id="main">
 
     <header class="post-hero" aria-labelledby="post-title">
-        <div class="post-hero__inner">
-            <h1 class="post-hero__title" id="post-title"><?php echo $title_safe; ?></h1>
-
-            <?php if (trim(wp_strip_all_tags($intro)) !== '') : ?>
-                <div class="post-hero__excerpt"><?php echo $intro_safe; ?></div>
-            <?php endif; ?>
-
-            <div class="post-hero__row">
-                <div class="meta" aria-label="Metadatos del artículo">
-                    <time class="meta__date" datetime="<?php echo esc_attr(get_the_date('c', $post_id)); ?>"><?php echo esc_html(get_the_date('j M, Y', $post_id)); ?></time>
-                    <?php if ($reading) : ?><span class="meta__muted"><?php echo esc_html($reading); ?></span><?php endif; ?>
-
-                    <?php
-                    $modified_u = (int) get_the_modified_time('U', $post_id);
-                    $published_u = (int) get_the_time('U', $post_id);
-                    if ($modified_u > 0 && $published_u > 0 && ($modified_u - $published_u) > DAY_IN_SECONDS) :
-                    ?>
-                        <span class="meta__muted">Actualizado <?php echo esc_html(get_the_modified_date('j M, Y', $post_id)); ?></span>
-                    <?php endif; ?>
-                </div>
-
-                <div class="post-tools" role="group" aria-label="Acciones">
-                    <button class="icon-btn icon-btn--text" type="button" data-action="save" data-id="<?php echo (int) $post_id; ?>" aria-pressed="false" aria-label="Guardar artículo" title="Guardar">
-                        <span class="icon-btn__icon icon-btn__icon--off" aria-hidden="true"><?php echo E360VO_Icon::get('blog_save', ['width' => 22, 'height' => 22]); ?></span>
-                        <span class="icon-btn__icon icon-btn__icon--on" aria-hidden="true"><?php echo E360VO_Icon::get('blog_saved', ['width' => 22, 'height' => 22]); ?></span>
-                        <span class="icon-btn__label">Guardar</span>
-                    </button>
-
-                    <button class="icon-btn icon-btn--text" type="button" data-action="copy" data-url="<?php echo esc_url($permalink); ?>" aria-label="Copiar enlace" title="Copiar enlace">
-                        <span class="icon-btn__icon" aria-hidden="true"><?php echo E360VO_Icon::get('blog_copy', ['width' => 22, 'height' => 22]); ?></span>
-                        <span class="icon-btn__label">Copiar enlace</span>
-                    </button>
-
-                    <button class="icon-btn icon-btn--text" type="button" data-action="share" data-url="<?php echo esc_url($permalink); ?>" aria-label="Compartir artículo" title="Compartir">
-                        <span class="icon-btn__icon" aria-hidden="true"><?php echo E360VO_Icon::get('blog_share', ['width' => 22, 'height' => 22]); ?></span>
-                        <span class="icon-btn__label">Compartir</span>
-                    </button>
-                </div>
-            </div>
-
+        <div class="post-hero__top">
             <form role="search" method="get" class="search search--single" action="<?php echo esc_url(home_url('/')); ?>">
                 <label class="sr-only" for="blog-search-single">Buscar en noticias</label>
                 <div class="search__field">
@@ -136,6 +97,39 @@ $related = new WP_Query($related_args);
                 </div>
             </form>
         </div>
+
+        <div class="post-hero__inner">
+            <h1 class="post-hero__title" id="post-title"><?php echo $title_safe; ?></h1>
+
+            <div class="post-hero__summary">
+                <div class="post-hero__meta" aria-label="Metadatos del artículo">
+                    <time class="post-hero__date" datetime="<?php echo esc_attr(get_the_date('c', $post_id)); ?>"><?php echo esc_html(get_the_date('j M, Y', $post_id)); ?></time>
+                    <?php if ($reading) : ?><span class="post-hero__reading"><?php echo esc_html($reading); ?> de lectura</span><?php endif; ?>
+                </div>
+
+                <?php if (trim(wp_strip_all_tags($intro)) !== '') : ?>
+                    <div class="post-hero__excerpt"><?php echo $intro_safe; ?></div>
+                <?php endif; ?>
+            </div>
+
+            <div class="post-tools" role="group" aria-label="Acciones">
+                <button class="icon-btn icon-btn--text" type="button" data-action="save" data-id="<?php echo (int) $post_id; ?>" aria-pressed="false" aria-label="Guardar artículo" title="Guardar">
+                    <span class="icon-btn__icon icon-btn__icon--off" aria-hidden="true"><?php echo E360VO_Icon::get('blog_save', ['width' => 22, 'height' => 22]); ?></span>
+                    <span class="icon-btn__icon icon-btn__icon--on" aria-hidden="true"><?php echo E360VO_Icon::get('blog_saved', ['width' => 22, 'height' => 22]); ?></span>
+                    <span class="icon-btn__label">Guardar</span>
+                </button>
+
+                <button class="icon-btn icon-btn--text" type="button" data-action="copy" data-url="<?php echo esc_url($permalink); ?>" aria-label="Copiar enlace" title="Copiar enlace">
+                    <span class="icon-btn__icon" aria-hidden="true"><?php echo E360VO_Icon::get('blog_copy', ['width' => 22, 'height' => 22]); ?></span>
+                    <span class="icon-btn__label">Copiar enlace</span>
+                </button>
+
+                <button class="icon-btn icon-btn--text" type="button" data-action="share" data-url="<?php echo esc_url($permalink); ?>" aria-label="Compartir artículo" title="Compartir">
+                    <span class="icon-btn__icon" aria-hidden="true"><?php echo E360VO_Icon::get('blog_share', ['width' => 22, 'height' => 22]); ?></span>
+                    <span class="icon-btn__label">Compartir</span>
+                </button>
+            </div>
+                </div>
     </header>
 
     <?php if (has_post_thumbnail($post_id)) : ?>

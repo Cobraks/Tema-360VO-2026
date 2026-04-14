@@ -153,11 +153,18 @@ $related = new WP_Query($related_args);
     <div class="blog-shell">
         <div class="layout layout--single">
 
-            <aside class="post-toc-col" aria-label="Navegación del artículo">
-                <nav class="post-toc" aria-label="Tabla de contenidos">
-                    <h2 class="post-toc__title">En este artículo</h2>
-                    <ol class="post-toc__list" id="post-toc-list"></ol>
-                </nav>
+            <aside id="toc-container" class="post-toc-col open" aria-label="Navegación del artículo">
+                <div id="menu-placeholder">
+                    <button class="toc-container__toggle show" type="button" aria-expanded="true" aria-controls="blog-toc-content">
+                        <span class="toc-container__icon toc-container__icon--toc"><?php echo E360VO_Icon::get('ordenar', ['aria-hidden' => 'true']); ?></span>
+                        <span class="toc-container__text">Ocultar tabla de contenidos</span>
+                        <span class="toc-container__icon toc-container__icon--expand"><?php echo E360VO_Icon::get('open_new', ['aria-hidden' => 'true']); ?></span>
+                        <span class="toc-container__icon toc-container__icon--collapse"><?php echo E360VO_Icon::get('close', ['aria-hidden' => 'true']); ?></span>
+                    </button>
+                    <div id="blog-toc-content" class="toc-container__content show">
+                        <ul class="toc__list" id="post-toc-list"></ul>
+                    </div>
+                </div>
             </aside>
 
             <article class="post-card" aria-label="Contenido del artículo">

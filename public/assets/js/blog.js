@@ -117,7 +117,11 @@
 	function initPostToc() {
 		const tocList = document.getElementById("post-toc-list");
 		const content = document.querySelector(".post-card .entry-content");
-		if (!tocList || !content) return;
+		const tocContainerElement = document.getElementById("toc-container");
+		const tocToggle = tocContainerElement?.querySelector(".toc-container__toggle");
+		const tocContent = tocContainerElement?.querySelector(".toc-container__content");
+		const tocToggleText = tocToggle?.querySelector(".toc-container__text");
+		if (!tocList || !content || !tocContainerElement || !tocToggle || !tocContent) return;
 
 		const headings = content.querySelectorAll("h2, h3");
 		let sourceNodes = Array.from(headings);
@@ -126,9 +130,20 @@
 			sourceNodes = Array.from(pseudoHeadings).map((el) => el.parentElement).filter(Boolean);
 		}
 
+		const setTocOpenState = (isOpen) => {
+			tocContainerElement.classList.toggle("open", isOpen);
+			tocContent.classList.toggle("show", isOpen);
+			tocContent.classList.toggle("hidden", !isOpen);
+			tocToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+			if (tocToggleText) {
+				tocToggleText.textContent = isOpen
+					? "Ocultar tabla de contenidos"
+					: "Mostrar tabla de contenidos";
+			}
+		};
+
 		if (!sourceNodes.length) {
-			const toc = document.querySelector(".post-toc");
-			if (toc) toc.hidden = true;
+			tocContainerElement.hidden = true;
 			return;
 		}
 
@@ -139,15 +154,34 @@
 			}
 
 			const li = document.createElement("li");
-			if (isSubheading) {
-				li.style.marginLeft = "0.8rem";
-			}
+			li.className = isSubheading ? "toc__item toc__item--subitem" : "toc__item";
 
 			const a = document.createElement("a");
+			a.className = "toc__link";
 			a.href = `#${heading.id}`;
-			a.textContent = heading.textContent?.trim() || `Sección ${index + 1}`;
+			const number = document.createElement("span");
+			number.className = "toc__number";
+			number.textContent = `${index + 1}.`;
+			a.appendChild(number);
+			a.append(` ${heading.textContent?.trim() || `Sección ${index + 1}`}`);
 			li.appendChild(a);
 			tocList.appendChild(li);
+		});
+
+		const isInitiallyOpen = tocToggle.getAttribute("aria-expanded") === "true";
+		setTocOpenState(isInitiallyOpen);
+
+		tocToggle.addEventListener("click", () => {
+			const isOpen = tocContainerElement.classList.contains("open");
+			setTocOpenState(!isOpen);
+		});
+
+		tocList.addEventListener("click", (event) => {
+			const link = event.target.closest(".toc__link");
+			if (!link) return;
+			if (window.matchMedia("(max-width: 1279px)").matches) {
+				setTocOpenState(false);
+			}
 		});
 	}
 

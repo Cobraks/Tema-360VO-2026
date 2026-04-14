@@ -364,31 +364,60 @@
 }
 
 .post-toc-col {
-  display: none;
+  display: block;
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 768px) {
   .layout--single {
-    grid-template-columns: 240px minmax(0, 780px) 320px;
-    justify-content: center;
-    gap: 2rem;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1.5rem;
   }
 
   .layout--single .post-toc-col {
-    display: block;
+    grid-column: 1 / -1;
+    grid-row: 1;
     position: sticky;
     top: calc(var(--altura-header) + 1.5rem);
     align-self: start;
   }
 
   .layout--single .post-card {
-    max-width: 780px;
+    grid-column: 1 / span 8;
+    grid-row: 2;
+    max-width: none;
     width: 100%;
   }
 
   .layout--single .aside--single {
+    grid-column: 9 / -1;
+    grid-row: 2;
     position: sticky;
     top: calc(var(--altura-header) + 1.5rem);
+    align-self: start;
+  }
+}
+
+@media (min-width: 1280px) {
+  .layout--single {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  .layout--single .post-toc-col {
+    grid-column: 1 / span 3;
+    grid-row: 1;
+  }
+
+  .layout--single .post-card {
+    grid-column: 4 / span 6;
+    grid-row: 1;
+    width: 100%;
+  }
+
+  .layout--single .aside--single {
+    grid-column: 10 / span 3;
+    grid-row: 1;
   }
 }
 
@@ -1291,29 +1320,14 @@
 .post-card .entry-content :where(img, video, iframe) {
   max-width: 100%;
 }
-.post-toc {
-  margin-bottom: 1rem;
-  padding: .9rem;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--neutral100);
+
+.layout--single #toc-container .toc-container__content.hidden {
+  display: none;
 }
-.post-toc__title {
-  margin: 0 0 .55rem 0;
-  font-size: .95rem;
+
+.layout--single #toc-container .toc-container__content.show {
+  display: block;
 }
-.post-toc__list {
-  margin: 0;
-  padding-left: 1rem;
-  display: grid;
-  gap: .32rem;
-}
-.post-toc__list a {
-  color: color-mix(in oklab, var(--brand-strong) 75%, black);
-  text-decoration: none;
-  font-size: .88rem;
-}
-.post-toc__list a:hover { text-decoration: underline; }
 
 .post-footer {
   margin-top: 1.25rem;

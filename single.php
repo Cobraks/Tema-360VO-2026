@@ -153,15 +153,15 @@ $related = new WP_Query($related_args);
     <div class="blog-shell">
         <div class="layout layout--single">
 
-            <aside id="toc-container" class="post-toc-col open" aria-label="Navegación del artículo">
+            <aside id="toc-container" class="post-toc-col" aria-label="Navegación del artículo">
                 <div id="menu-placeholder">
-                    <button class="toc-container__toggle show" type="button" aria-expanded="true" aria-controls="blog-toc-content">
+                    <button class="toc-container__toggle show" type="button" aria-expanded="false" aria-controls="blog-toc-content">
                         <span class="toc-container__icon toc-container__icon--toc"><?php echo E360VO_Icon::get('ordenar', ['aria-hidden' => 'true']); ?></span>
-                        <span class="toc-container__text">Ocultar tabla de contenidos</span>
+                        <span class="toc-container__text">Mostrar tabla de contenidos</span>
                         <span class="toc-container__icon toc-container__icon--expand"><?php echo E360VO_Icon::get('open_new', ['aria-hidden' => 'true']); ?></span>
                         <span class="toc-container__icon toc-container__icon--collapse"><?php echo E360VO_Icon::get('close', ['aria-hidden' => 'true']); ?></span>
                     </button>
-                    <div id="blog-toc-content" class="toc-container__content show">
+                    <div id="blog-toc-content" class="toc-container__content hidden">
                         <ul class="toc__list" id="post-toc-list"></ul>
                     </div>
                 </div>

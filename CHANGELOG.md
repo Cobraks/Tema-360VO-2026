@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.17 - 2026-04-15
+- Moved asset minification out of WordPress runtime so frontend and admin requests no longer generate minified files on the fly.
+- Added a local minify script plus VS Code Run On Save and a manual task to keep `.min` assets synchronized while editing.
+
 ## 3.0.16 - 2026-04-15
 - Stabilized the TOC toggle so its compact icon-only mode now depends on the TOC state itself instead of the global hidden body state.
 - Preserved the user's open or closed choice, added an auto-close after three downward scroll gestures when the TOC was manually opened, and adjusted the sticky offsets plus the single hero excerpt divider behavior.

@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 /**
  * Constantes del tema
  */
-define('THEME_VERSION', '3.0.16');
+define('THEME_VERSION', '3.0.17');
 define('THEME_DIR', get_template_directory());
 define('THEME_URI', get_template_directory_uri());
 
@@ -237,63 +237,7 @@ function get_latest_posts($num_posts = 5)
  * ---------------------------------------------------------
  */
 if (class_exists('E360VO_AssetMinifier')) {
-    // 1) Arrancar el minificador
-    E360VO_AssetMinifier::init();
-
-    // 2) Registrar style.css
-    E360VO_AssetMinifier::register(
-        '360vo-theme-style',
-        THEME_DIR . '/style.css',
-        THEME_DIR . '/style.min.css',
-        'css'
-    );
-
-    // 3) Registrar JS principal del tema
-    E360VO_AssetMinifier::register(
-        '360vo-funciones-tema',
-        THEME_DIR . '/public/assets/js/funciones_tema.js',
-        THEME_DIR . '/public/assets/js/funciones_tema.min.js',
-        'js'
-    );
-
-    // 4) Registrar critical
-    E360VO_AssetMinifier::register(
-        '360vo-critical',
-        THEME_DIR . '/public/assets/css/critical.css',
-        THEME_DIR . '/public/assets/css/critical.min.css',
-        'css'
-    );
-
-    // 5) Registrar pages
-    E360VO_AssetMinifier::register(
-        '360vo-pages',
-        THEME_DIR . '/public/assets/css/pages.css',
-        THEME_DIR . '/public/assets/css/pages.min.css',
-        'css'
-    );
-
-    E360VO_AssetMinifier::register(
-        '360vo-logged-in',
-        THEME_DIR . '/public/assets/css/logged-in.css',
-        THEME_DIR . '/public/assets/css/logged-in.min.css',
-        'css'
-    );
-
-    // Blog UI (home/category/single)
-    E360VO_AssetMinifier::register(
-        '360vo-blog',
-        THEME_DIR . '/public/assets/css/blog.css',
-        THEME_DIR . '/public/assets/css/blog.min.css',
-        'css'
-    );
-
-    E360VO_AssetMinifier::register(
-        '360vo-blog-js',
-        THEME_DIR . '/public/assets/js/blog.js',
-        THEME_DIR . '/public/assets/js/blog.min.js',
-        'js'
-    );
-
+    E360VO_AssetMinifier::register_defaults(THEME_DIR);
 }
 
 /**

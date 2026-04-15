@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Minify theme assets",
+      "type": "shell",
+      "command": "php",
+      "args": [
+        "${workspaceFolder}/tools/minify-assets.php"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "panel": "dedicated",
+        "clear": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "(^|[\\\\/])(style\\.css|public[\\\\/]assets[\\\\/](css|js)[\\\\/].+\\.(css|js))$",
+        "notMatch": "\\.min\\.(css|js)$",
+        "cmd": "php \"${workspaceFolder}/tools/minify-assets.php\""
+      }
+    ]
+  }
+}

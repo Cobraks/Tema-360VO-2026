@@ -11,15 +11,39 @@ class E360VO_AssetMinifier
 
     public static function init()
     {
-        add_action('wp_enqueue_scripts', [__CLASS__, 'maybe_minify_all'], 0);
-        add_action('admin_enqueue_scripts', [__CLASS__, 'maybe_minify_all'], 0);
+        // La minificación ya no se ejecuta en runtime.
+        // Se lanza desde herramientas locales (VS Code / scripts)
+        // o manualmente al activar el tema.
     }
 
     public static function register($handle, $orig, $min, $type = 'css')
     {
         if (in_array($type, ['css', 'js'], true) && file_exists($orig)) {
             self::$assets[$handle] = compact('orig', 'min', 'type');
-            self::maybe_minify($orig, $min, $type);
+        }
+    }
+
+    public static function register_defaults($theme_dir)
+    {
+        $theme_dir = rtrim($theme_dir, '/\\');
+
+        $assets = [
+            ['360vo-theme-style', '/style.css', '/style.min.css', 'css'],
+            ['360vo-funciones-tema', '/public/assets/js/funciones_tema.js', '/public/assets/js/funciones_tema.min.js', 'js'],
+            ['360vo-critical', '/public/assets/css/critical.css', '/public/assets/css/critical.min.css', 'css'],
+            ['360vo-pages', '/public/assets/css/pages.css', '/public/assets/css/pages.min.css', 'css'],
+            ['360vo-logged-in', '/public/assets/css/logged-in.css', '/public/assets/css/logged-in.min.css', 'css'],
+            ['360vo-blog', '/public/assets/css/blog.css', '/public/assets/css/blog.min.css', 'css'],
+            ['360vo-blog-js', '/public/assets/js/blog.js', '/public/assets/js/blog.min.js', 'js'],
+        ];
+
+        foreach ($assets as [$handle, $orig, $min, $type]) {
+            self::register(
+                $handle,
+                $theme_dir . $orig,
+                $theme_dir . $min,
+                $type
+            );
         }
     }
 

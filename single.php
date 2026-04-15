@@ -87,16 +87,24 @@ $related = new WP_Query($related_args);
 
     <header class="post-hero" aria-labelledby="post-title">
         <div class="post-hero__top">
-            <form role="search" method="get" class="search search--single" action="<?php echo esc_url(home_url('/')); ?>">
-                <label class="sr-only" for="blog-search-single">Buscar en noticias</label>
-                <div class="search__field">
-                    <svg class="search__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
-                        <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                    </svg>
-                    <input id="blog-search-single" class="search__input" type="search" name="s" placeholder="Buscar en el blog…" value="" />
-                </div>
-            </form>
+            <div class="single-search" data-single-search>
+                <button
+                    class="single-search__toggle"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="blog-search-panel"
+                    aria-label="Abrir búsqueda en noticias">
+                    <span class="single-search__toggle-icon" aria-hidden="true"><?php echo E360VO_Icon::get('buscar', ['width' => 20, 'height' => 20]); ?></span>
+                </button>
+
+                <form role="search" method="get" class="search search--single" id="blog-search-panel" action="<?php echo esc_url(home_url('/')); ?>">
+                    <label class="sr-only" for="blog-search-single">Buscar en noticias</label>
+                    <div class="search__field">
+                        <span class="search__icon" aria-hidden="true"><?php echo E360VO_Icon::get('buscar', ['width' => 20, 'height' => 20]); ?></span>
+                        <input id="blog-search-single" class="search__input" type="search" name="s" placeholder="Buscar en el blog…" value="" />
+                    </div>
+                </form>
+            </div>
         </div>
 
         <div class="post-hero__inner">
@@ -159,6 +167,7 @@ $related = new WP_Query($related_args);
                     'classes' => ['toc-container--single'],
                     'content_id' => 'toc-content-post-' . $post_id,
                     'label' => 'Navegacion del articulo',
+                    'toggle_aria_label' => 'Abrir tabla de contenidos',
                 ]); ?>
             <?php endif; ?>
 

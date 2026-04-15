@@ -114,6 +114,103 @@
 		});
 	}
 
+	function initSingleFloatingTools() {
+		const mobileQuery = window.matchMedia("(max-width: 767px)");
+		const searchControl = document.querySelector("[data-single-search]");
+		const searchToggle = searchControl?.querySelector(".single-search__toggle");
+		const searchForm = searchControl?.querySelector(".search--single");
+		const searchInput = searchControl?.querySelector(".search__input");
+		const tocContainer = document.querySelector(".toc-container--single");
+		const tocToggle = tocContainer?.querySelector(".toc-container__toggle");
+
+		if (!searchControl || !searchToggle || !searchForm || !searchInput || !tocToggle) {
+			return;
+		}
+
+		let closeSearchTimer = null;
+
+		const setSearchOpenState = (isOpen, { focusInput = false } = {}) => {
+			searchControl.classList.toggle("is-open", isOpen);
+			searchToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+			searchToggle.setAttribute(
+				"aria-label",
+				isOpen ? "Cerrar búsqueda en noticias" : "Abrir búsqueda en noticias",
+			);
+
+			if (!mobileQuery.matches) {
+				searchInput.removeAttribute("tabindex");
+				return;
+			}
+
+			searchInput.tabIndex = isOpen ? 0 : -1;
+
+			if (closeSearchTimer) {
+				window.clearTimeout(closeSearchTimer);
+				closeSearchTimer = null;
+			}
+
+			if (isOpen && focusInput) {
+				closeSearchTimer = window.setTimeout(() => searchInput.focus(), 180);
+				return;
+			}
+
+			if (!isOpen) {
+				searchInput.blur();
+			}
+		};
+
+		const closeSearch = () => setSearchOpenState(false);
+
+		const syncFloatingTools = () => {
+			if (mobileQuery.matches) {
+				setSearchOpenState(false);
+				return;
+			}
+
+			searchControl.classList.remove("is-open");
+			searchToggle.setAttribute("aria-expanded", "false");
+			searchInput.removeAttribute("tabindex");
+		};
+
+		searchToggle.addEventListener("click", () => {
+			if (!mobileQuery.matches) {
+				searchInput.focus();
+				return;
+			}
+
+			const willOpen = !searchControl.classList.contains("is-open");
+			if (willOpen && tocContainer.classList.contains("open")) {
+				tocToggle.click();
+			}
+
+			setSearchOpenState(willOpen, { focusInput: willOpen });
+		});
+
+		tocToggle.addEventListener("click", () => {
+			if (!mobileQuery.matches) return;
+			closeSearch();
+		});
+
+		document.addEventListener("click", (event) => {
+			if (!mobileQuery.matches) return;
+			if (searchControl.contains(event.target) || tocContainer.contains(event.target)) {
+				return;
+			}
+			closeSearch();
+		});
+
+		document.addEventListener("keydown", (event) => {
+			if (event.key !== "Escape") return;
+			closeSearch();
+		});
+
+		if (typeof mobileQuery.addEventListener === "function") {
+			mobileQuery.addEventListener("change", syncFloatingTools);
+		}
+
+		syncFloatingTools();
+	}
+
 	async function shareUrl(url, title) {
 		const u = url || window.location.href;
 		const t = title || document.title || "EdreamsCars";
@@ -152,6 +249,7 @@
 	hydrateSaveButtons();
 	initNewsletterFloatingLabels();
 	initNewsletterTips();
+	initSingleFloatingTools();
 
 	document.addEventListener("click", async (e) => {
 		const btn = e.target.closest("[data-action]");

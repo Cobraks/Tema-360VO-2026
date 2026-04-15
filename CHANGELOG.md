@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.11 - 2026-04-15
+- Reworked the blog single mobile controls so search and TOC behave as coordinated floating panels, closing each other to avoid overlap.
+- Refined the blog search styling and reshaped the single featured image for a more editorial presentation.
+- Added accessible TOC toggle labelling and stopped the single-post TOC from opening by default on mobile.
+
 ## 3.0.10 - 2026-04-15
 - Added a smooth transition to the shared TOC container and adjusted its sticky offset from `783px` upward for a little more breathing room below the header and breadcrumbs.
 

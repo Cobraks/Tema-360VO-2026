@@ -208,6 +208,9 @@ function initializeTableOfContents() {
 		const tocToggle =
 			tocContainerElement?.querySelector(".toc-container__toggle");
 		const content = scope.querySelector(".entry-content");
+		const isSingleToc =
+			tocContainerElement?.classList.contains("toc-container--single");
+		const defaultOpenOnMobile = !isSingleToc;
 
 		if (!tocContainer || !tocContainerElement || !tocToggle || !content) return;
 
@@ -231,6 +234,10 @@ function initializeTableOfContents() {
 			tocContainer.classList.toggle("hidden", !isOpen);
 			tocContainerElement.classList.toggle("open", isOpen);
 			tocToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+			tocToggle.setAttribute(
+				"aria-label",
+				isOpen ? "Ocultar tabla de contenidos" : "Mostrar tabla de contenidos",
+			);
 
 			if (toggleText) {
 				toggleText.textContent = isOpen
@@ -342,7 +349,10 @@ function initializeTableOfContents() {
 		tocHtml += "</ul>";
 		tocContainer.innerHTML = tocHtml;
 
-		setTocOpenState(mobileTocQuery.matches, { animateItems: false });
+		setTocOpenState(
+			mobileTocQuery.matches ? defaultOpenOnMobile : false,
+			{ animateItems: false },
+		);
 
 		tocContainer.addEventListener("click", (event) => {
 			const link = event.target.closest(".toc__link");
@@ -381,7 +391,10 @@ function initializeTableOfContents() {
 					tocContainerElement.classList.remove("sticky");
 				}
 				if (userHasToggledToc) return;
-				setTocOpenState(event.matches, { animateItems: false });
+				setTocOpenState(
+					event.matches ? defaultOpenOnMobile : false,
+					{ animateItems: false },
+				);
 			});
 		}
 

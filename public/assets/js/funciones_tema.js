@@ -232,6 +232,7 @@ function initializeTableOfContents() {
 		let autoCloseScrollLocked = false;
 		let lastTrackedScrollY = window.scrollY;
 		let wasSticky = tocContainerElement.classList.contains("sticky");
+		let hasBeenSticky = wasSticky;
 		const toggleText = tocToggle.querySelector(".toc-container__text");
 
 		const resetAutoCloseTracking = () => {
@@ -243,10 +244,13 @@ function initializeTableOfContents() {
 		const syncCompactState = () => {
 			const shouldCompact =
 				mobileTocQuery.matches &&
-				tocContainerElement.classList.contains("sticky") &&
-				(isSingleToc ||
+				((isSingleToc &&
+					!tocContainerElement.classList.contains("open") &&
+					(hasBeenSticky ||
+						tocContainerElement.classList.contains("sticky"))) ||
+					(tocContainerElement.classList.contains("sticky") &&
 					(!tocContainerElement.classList.contains("open") &&
-						userHasToggledToc));
+						userHasToggledToc)));
 
 			tocContainerElement.classList.toggle("is-compact", shouldCompact);
 		};
@@ -445,11 +449,13 @@ function initializeTableOfContents() {
 					tocContainerElement.classList.remove("sticky");
 					tocContainerElement.classList.remove("is-compact");
 					wasSticky = false;
+					hasBeenSticky = false;
 					return;
 				}
 
 				const isSticky = !entries[0]?.isIntersecting;
 				tocContainerElement.classList.toggle("sticky", isSticky);
+				hasBeenSticky = hasBeenSticky || isSticky;
 
 				if (isSingleToc && isSticky && !wasSticky) {
 					keepTocOpenOnScroll = false;

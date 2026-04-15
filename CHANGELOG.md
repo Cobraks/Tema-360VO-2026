@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.0.20 - 2026-04-15
+- Kept the single-post mobile TOC in its compact closed state after it has entered sticky mode, preventing it from widening again when scrolling back up with the TOC closed.
+
 ## 3.0.19 - 2026-04-15
 - Refined the single-post mobile TOC so it shows the full toggle with text before sticking, then collapses back to the TOC icon when it reaches the sticky state.
 - Forced the TOC heading navigation to use a smoother scripted scroll animation and refreshed the mobile search close icon background.

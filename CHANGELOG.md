@@ -1,8 +1,5 @@
 # Changelog
 
-## 3.0.15 - 2026-04-15
-- Corrected the shared hidden sticky TOC offset and removed the temporary fixed width from the single-post mobile TOC placeholder wrapper.
-
 ## 3.0.14 - 2026-04-15
 - Repositioned the mobile single search trigger back to the right edge and moved the TOC control below it with deeper sticky offsets.
 - Removed the extra open-state TOC toggle background and loosened the shared compact TOC button sizing.

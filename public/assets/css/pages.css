@@ -196,7 +196,7 @@ display: inline-flex;
 }
 
 .hidden #toc-container.sticky {
-  top: calc(5rem + var(--altura-header));
+  top: calc(1rem + var(--altura-header));
 }
 
 #toc-container.end-of-container {

@@ -184,6 +184,7 @@ display: inline-flex;
   width: 100%;
   margin: 1.5rem 0 2rem;
   z-index: 30;
+  transition: all .3s ease-in-out;
 }
 
 #toc-container.sticky {
@@ -962,7 +963,7 @@ left: 50%;
       grid-column: 1 / 13;
       margin-block: 0;
       position: sticky;
-      top: calc(1rem + var(--altura-breadcrumbsYheader));
+      top: calc(2rem + var(--altura-breadcrumbsYheader));
       justify-self: start;
       align-self: start;
     }

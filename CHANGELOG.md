@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.0.10 - 2026-04-15
+- Added a smooth transition to the shared TOC container and adjusted its sticky offset from `783px` upward for a little more breathing room below the header and breadcrumbs.
+
 ## 3.0.9 - 2026-04-15
 - Smoothed TOC section navigation by isolating its programmed scroll from the theme's global scroll-state toggles, reducing abrupt layout changes during the trip to each heading.
 - Tuned the TOC scroll timing and persisted the final hash after the animation completes.

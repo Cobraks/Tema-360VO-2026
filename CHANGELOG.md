@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.23 - 2026-04-16
+- Fixed the single-post mobile TOC compact state by overriding the global TOC width rules with a more specific selector, keeping the closed sticky button icon-only and right-aligned.
+- Added click-outside closing for the mobile single TOC and lowered the blur overlay behind the rest of the interface.
+
 ## 3.0.22 - 2026-04-16
 - Kept the compact single-post TOC aligned to the right of the content area by preserving the gap for the mobile search trigger.
 - Improved the TOC keyboard accessibility with Escape-to-close, reinforced the scripted scroll animation, and moved the mobile TOC blur overlay behind the floating controls.

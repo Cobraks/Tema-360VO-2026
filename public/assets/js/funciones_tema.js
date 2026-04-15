@@ -448,6 +448,15 @@ function initializeTableOfContents() {
 			setTocOpenState(false, { animateItems: false });
 		});
 
+		document.addEventListener("click", (event) => {
+			if (!mobileTocQuery.matches) return;
+			if (!isSingleToc) return;
+			if (!tocContainerElement.classList.contains("open")) return;
+			if (tocContainerElement.contains(event.target)) return;
+			keepTocOpenOnScroll = false;
+			setTocOpenState(false, { animateItems: false });
+		});
+
 		if (typeof mobileTocQuery.addEventListener === "function") {
 			mobileTocQuery.addEventListener("change", (event) => {
 				if (!event.matches) {

@@ -1556,23 +1556,26 @@
     box-shadow: 0 14px 28px rgba(15,15,15,.1);
   }
 
-  .layout--single .toc-container--single.is-compact .toc-container__toggle,
-  .layout--single .toc-container--single.has-been-sticky:not(.open) .toc-container__toggle {
+  .layout--single #toc-container.toc-container--single.is-compact .toc-container__toggle,
+  .layout--single #toc-container.toc-container--single.has-been-sticky:not(.open) .toc-container__toggle {
     width: 3rem;
+    height: 3rem;
     padding: 0;
     margin-right: 4rem;
     margin-left: auto;
     display: inline-flex;
     justify-content: center;
     align-items: center;
+    gap: 0;
+    border-radius: 999px;
   }
 
-  .layout--single .toc-container--single.is-compact .toc-container__text,
-  .layout--single .toc-container--single.is-compact .toc-container__icon--expand,
-  .layout--single .toc-container--single.is-compact .toc-container__icon--collapse,
-  .layout--single .toc-container--single.has-been-sticky:not(.open) .toc-container__text,
-  .layout--single .toc-container--single.has-been-sticky:not(.open) .toc-container__icon--expand,
-  .layout--single .toc-container--single.has-been-sticky:not(.open) .toc-container__icon--collapse {
+  .layout--single #toc-container.toc-container--single.is-compact .toc-container__text,
+  .layout--single #toc-container.toc-container--single.is-compact .toc-container__icon--expand,
+  .layout--single #toc-container.toc-container--single.is-compact .toc-container__icon--collapse,
+  .layout--single #toc-container.toc-container--single.has-been-sticky:not(.open) .toc-container__text,
+  .layout--single #toc-container.toc-container--single.has-been-sticky:not(.open) .toc-container__icon--expand,
+  .layout--single #toc-container.toc-container--single.has-been-sticky:not(.open) .toc-container__icon--collapse {
     display: none;
   }
 
@@ -1611,7 +1614,7 @@
     backdrop-filter: blur(0);
     -webkit-backdrop-filter: blur(0);
     transition: opacity .24s ease, backdrop-filter .24s ease, -webkit-backdrop-filter .24s ease;
-    z-index: 108;
+    z-index: 1;
   }
 
   body.toc-overlay-active::before {

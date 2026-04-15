@@ -3,6 +3,8 @@
 // =====================================================
 // Ya no usamos jQuery
 let isTocToggling = false;
+let isTocAutoScrolling = false;
+let tocAutoScrollFrame = null;
 
 // =====================================================
 // Función: Inicializar popup del footer
@@ -162,6 +164,12 @@ function handleScrollBehavior() {
 
 				const st = window.scrollY;
 
+				if (isTocAutoScrolling) {
+					lastScrollTop = Math.max(0, st);
+					lastScrollPos = st;
+					return;
+				}
+
 				if (st > lastScrollTop && st > lastScrollPos + 1) {
 					document.querySelector(".nav-breadcrumb")?.classList.add("hidden");
 					document
@@ -258,13 +266,20 @@ function initializeTableOfContents() {
 				target.getBoundingClientRect().top + startY - scrollMarginTop,
 			);
 
+			if (tocAutoScrollFrame) {
+				cancelAnimationFrame(tocAutoScrollFrame);
+				tocAutoScrollFrame = null;
+			}
+
 			if (prefersReducedMotion || Math.abs(targetY - startY) < 2) {
+				isTocAutoScrolling = false;
 				window.scrollTo({ top: targetY, behavior: "auto" });
 				return;
 			}
 
+			isTocAutoScrolling = true;
 			const distance = targetY - startY;
-			const duration = Math.min(720, Math.max(360, Math.abs(distance) * 0.45));
+			const duration = Math.min(900, Math.max(520, Math.abs(distance) * 0.6));
 			const easeInOutCubic = (progress) =>
 				progress < 0.5
 					? 4 * progress * progress * progress
@@ -281,14 +296,19 @@ function initializeTableOfContents() {
 				});
 
 				if (progress < 1) {
-					requestAnimationFrame(step);
+					tocAutoScrollFrame = requestAnimationFrame(step);
 					return;
 				}
 
+				isTocAutoScrolling = false;
+				tocAutoScrollFrame = null;
 				window.scrollTo({ top: targetY, behavior: "auto" });
+				if (history.replaceState) {
+					history.replaceState(null, "", `#${target.id}`);
+				}
 			};
 
-			requestAnimationFrame(step);
+			tocAutoScrollFrame = requestAnimationFrame(step);
 		};
 
 		let tocHtml = "<ul class='toc__list'>";

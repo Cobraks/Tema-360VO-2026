@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.9 - 2026-04-15
+- Smoothed TOC section navigation by isolating its programmed scroll from the theme's global scroll-state toggles, reducing abrupt layout changes during the trip to each heading.
+- Tuned the TOC scroll timing and persisted the final hash after the animation completes.
+
 ## 3.0.8 - 2026-04-15
 - Replaced the TOC anchor jump with a controlled smooth-scrolling routine so section navigation transitions more fluidly between headings.
 - Tightened TOC link spacing and text rhythm by removing inline padding and gap, aligning content from the top, and balancing wrapped titles.

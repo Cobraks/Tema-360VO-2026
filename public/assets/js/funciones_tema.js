@@ -240,6 +240,12 @@ function initializeTableOfContents() {
 			lastTrackedScrollY = window.scrollY;
 		};
 
+		const setPageScrollTop = (value) => {
+			window.scrollTo(0, value);
+			document.documentElement.scrollTop = value;
+			document.body.scrollTop = value;
+		};
+
 		const syncTocOverlayState = () => {
 			document.body.classList.toggle(
 				"toc-overlay-active",
@@ -325,7 +331,7 @@ function initializeTableOfContents() {
 
 			if (prefersReducedMotion || Math.abs(targetY - startY) < 2) {
 				isTocAutoScrolling = false;
-				window.scrollTo(0, targetY);
+				setPageScrollTop(targetY);
 				return;
 			}
 
@@ -342,7 +348,7 @@ function initializeTableOfContents() {
 				const progress = Math.min(1, (now - startTime) / duration);
 				const easedProgress = easeInOutQuart(progress);
 
-				window.scrollTo(0, startY + distance * easedProgress);
+				setPageScrollTop(startY + distance * easedProgress);
 
 				if (progress < 1) {
 					tocAutoScrollFrame = requestAnimationFrame(step);
@@ -351,7 +357,7 @@ function initializeTableOfContents() {
 
 				isTocAutoScrolling = false;
 				tocAutoScrollFrame = null;
-				window.scrollTo(0, targetY);
+				setPageScrollTop(targetY);
 				if (history.replaceState) {
 					history.replaceState(null, "", `#${target.id}`);
 				}
@@ -433,6 +439,13 @@ function initializeTableOfContents() {
 			setTimeout(() => {
 				isTocToggling = false;
 			}, 250);
+		});
+
+		document.addEventListener("keydown", (event) => {
+			if (event.key !== "Escape") return;
+			if (!tocContainerElement.classList.contains("open")) return;
+			keepTocOpenOnScroll = false;
+			setTocOpenState(false, { animateItems: false });
 		});
 
 		if (typeof mobileTocQuery.addEventListener === "function") {

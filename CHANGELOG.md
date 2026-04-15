@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.22 - 2026-04-16
+- Kept the compact single-post TOC aligned to the right of the content area by preserving the gap for the mobile search trigger.
+- Improved the TOC keyboard accessibility with Escape-to-close, reinforced the scripted scroll animation, and moved the mobile TOC blur overlay behind the floating controls.
+
 ## 3.0.21 - 2026-04-16
 - Hardened the single-post mobile TOC compact state so it stays icon-only after entering sticky mode until the user explicitly opens it again.
 - Reworked the TOC link scrolling animation to use a pure scripted window scroll and added a mobile blur overlay behind the open TOC panel.

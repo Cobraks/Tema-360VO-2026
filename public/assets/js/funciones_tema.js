@@ -287,16 +287,14 @@ function initializeTableOfContents() {
 
 			const target = document.querySelector(link.getAttribute("href"));
 			if (target) {
-				const scrollMarginTop =
-					parseFloat(window.getComputedStyle(target).scrollMarginTop) || 0;
-				const targetTop =
-					target.getBoundingClientRect().top +
-					window.scrollY -
-					scrollMarginTop;
-
-				window.scrollTo({
-					top: Math.max(0, targetTop),
-					behavior: "smooth",
+				const prefersReducedMotion = window.matchMedia(
+					"(prefers-reduced-motion: reduce)",
+				).matches;
+				requestAnimationFrame(() => {
+					target.scrollIntoView({
+						behavior: prefersReducedMotion ? "auto" : "smooth",
+						block: "start",
+					});
 				});
 			}
 

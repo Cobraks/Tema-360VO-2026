@@ -218,13 +218,13 @@ display: inline-flex;
   width: 100%;
   margin-right: auto;
   padding: .85rem 1rem;
-  min-height: 3.5rem;
   border: none;
   border-radius: 1rem;
   background: var(--neutral95);
   color: var(--neutral20);
   cursor: pointer;
   align-items: center;
+  justify-content: space-between;
   grid-template-columns: auto minmax(0, 1fr) auto;
   gap: .75rem;
   text-align: left;
@@ -252,6 +252,8 @@ display: inline-flex;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: center;
+  justify-self: center;
 }
 
 .toc-container__icon {
@@ -267,6 +269,7 @@ display: inline-flex;
 }
 
 .toc-container__icon--toc {
+  justify-self: start;
   transition: transform .24s ease;
 }
 
@@ -278,30 +281,31 @@ display: inline-flex;
 .toc-container__icon--collapse {
   grid-column: 3;
   grid-row: 1;
+  justify-self: end;
   transition:
     opacity .22s ease,
-    transform .26s cubic-bezier(.2, .7, .2, 1);
+    transform .3s cubic-bezier(.2, .7, .2, 1);
 }
 
 .toc-container__icon--expand {
   opacity: 1;
-  transform: translateX(0) scale(1);
+  transform: translateX(0) rotate(0deg) scale(1);
 }
 
 .toc-container__icon--collapse {
   opacity: 0;
-  transform: translateX(-.2rem) scale(.9);
+  transform: translateX(.18rem) rotate(-12deg) scale(.9);
   pointer-events: none;
 }
 
 #toc-container.open .toc-container__icon--expand {
   opacity: 0;
-  transform: translateX(.2rem) scale(.9);
+  transform: translateX(-.18rem) rotate(12deg) scale(.9);
 }
 
 #toc-container.open .toc-container__icon--collapse {
   opacity: 1;
-  transform: translateX(0) scale(1);
+  transform: translateX(0) rotate(0deg) scale(1);
 }
 
 body.hidden #toc-container.sticky:not(.open) .toc-container__toggle {
@@ -322,7 +326,6 @@ body.hidden #toc-container.sticky:not(.open) .toc-container__icon--collapse {
 @media (min-width:783px) {
   body.hidden #toc-container.sticky:not(.open) .toc-container__toggle {
     width: 100%;
-    min-height: 3rem;
     padding: .85rem 1rem;
     grid-template-columns: auto minmax(0, 1fr) auto;
     justify-items: stretch;
@@ -952,9 +955,9 @@ left: 50%;
     
     #toc-container {
       width: 100%;
-      max-width: 460px;
+      max-width: 360px;
       grid-column: 1 / 13;
-      margin: 0 0 2.5rem;
+      margin-block: 0;
       position: sticky;
       top: calc(1rem + var(--altura-breadcrumbsYheader));
       justify-self: start;

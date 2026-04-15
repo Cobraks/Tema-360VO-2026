@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.7 - 2026-04-15
+- Refined the shared TOC toggle geometry and icon choreography so the closed sticky state stays proportioned and the left, center, and right controls align consistently.
+- Replaced the TOC collapse icon with the inward-arrow variant and tightened the tablet/desktop TOC width to `360px` from `783px` upward.
+- Switched TOC item navigation back to a smooth `scrollIntoView()` flow that respects each heading's configured `scroll-margin-top`.
+
 ## 3.0.6 - 2026-04-15
 - Stabilized the shared TOC around the `783px` breakpoint by removing conflicting width/state overrides that could make the closed panel flicker after scroll.
 - Fixed the sticky state handoff so mobile-only compact behavior no longer leaks into tablet and desktop layouts.

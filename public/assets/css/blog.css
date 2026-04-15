@@ -53,7 +53,7 @@
   --shadow-2: 0 16px 44px rgba(0,0,0,.08);
 
   color: var(--text);
-  background: var(--bg);
+  background: white;
   text-rendering: geometricPrecision;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -294,7 +294,6 @@
 .search__input:focus {
   border-color: color-mix(in oklab, var(--brand) 55%, white);
   box-shadow: 0 0 0 4px color-mix(in oklab, var(--brand) 14%, transparent), 0 12px 26px rgba(15,15,15,.06);
-  background: var(--neutral100);
 }
 
 /* Shell + Layout */
@@ -1048,16 +1047,18 @@
 .panel--subscribe :where(.wpcf7-form-control-wrap) { display: block; }
 .panel--subscribe :where(input[type="email"], input[type="text"], input[type="tel"]) {
   width: 100%;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 1.1rem .9rem .55rem;
+  min-height: 3.5rem;
+  border: 1px solid color-mix(in oklab, var(--line) 85%, white);
+  border-radius: 1rem;
+  padding: 1.15rem 1rem .55rem;
   font-size: var(--t-sm);
-  background: var(--neutral100);
+  background: rgba(255,255,255,.96);
+  box-shadow: 0 8px 20px rgba(15,15,15,.04);
 }
 .panel--subscribe :where(.wpcf7-form label)::after {
   content: "Correo electrónico";
   position: absolute;
-  left: .9rem;
+  left: 1rem;
   top: 1rem;
   color: var(--muted);
   font-size: .78rem;
@@ -1075,18 +1076,22 @@
 }
 .panel--subscribe :where(input[type="submit"], button[type="submit"], .wpcf7-submit) {
   width: 100%;
-  border-radius: 12px;
-  padding: .78rem 1rem;
+  min-height: 3.5rem;
+  border-radius: 999px;
+  padding: .9rem 1.15rem;
   font-size: var(--t-sm);
   font-weight: var(--fw-s);
   border: 1px solid transparent;
   background: var(--primary20);
   color: #fff;
   cursor: pointer;
-  transition: background-color .16s ease;
+  box-shadow: 0 12px 28px rgba(15,15,15,.08);
+  transition: background-color .16s ease, transform .16s ease, box-shadow .16s ease;
 }
 .panel--subscribe :where(input[type="submit"], button[type="submit"], .wpcf7-submit):hover {
   background: var(--primary15);
+  transform: translateY(-1px);
+  box-shadow: 0 16px 30px rgba(15,15,15,.1);
 }
 
 .cars {
@@ -1194,8 +1199,8 @@
 
 .post-hero__title {
   margin: 0;
-  font-size: clamp(2.2rem, 6vw, 4.1rem);
-  line-height: 1.04;
+  font-size: clamp(1.9rem, 4.9vw, 3.35rem);
+  line-height: 1.06;
   font-weight: 400;
   letter-spacing: -.03em;
   max-width: none;
@@ -1211,15 +1216,19 @@
 
 .post-hero__excerpt {
   margin: 0;
-  font-size: 1.13rem;
-  line-height: 1.45;
+  font-size: 1.02rem;
+  line-height: 1.5;
   color: var(--muted);
   max-width: none;
   border-left: solid 1px var(--neutral70);
   padding-left: 2rem;
   flex: 1;
 }
-.post-hero__excerpt p { margin: 0; }
+.post-hero__excerpt p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.55;
+}
 
 .post-hero__meta {
   display: flex;
@@ -1273,6 +1282,7 @@
   gap: .42rem;
 }
 .icon-btn__label {
+  display: none;
   font-size: .95rem;
   font-weight: var(--fw-m);
 }
@@ -1328,10 +1338,10 @@
 }
 
 .post-card {
-  border: 1px solid var(--line);
-  border-radius: var(--radius-3);
-  background: rgba(255,255,255,.96);
-  padding: clamp(1.15rem, 1.15rem + .9vw, 1.75rem);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: clamp(.75rem, .75rem + .6vw, 1.25rem) 0;
   box-shadow: none;
 }
 
@@ -1365,7 +1375,7 @@
   .single-search {
     position: fixed;
     top: calc(var(--altura-breadcrumbsYheader) + 1rem);
-    right: calc(var(--wrapper-padding) + 3.75rem);
+    right: var(--wrapper-padding);
     width: 3rem;
     z-index: 101;
     transition: width .28s cubic-bezier(.2, .7, .2, 1), top .3s ease-in-out;
@@ -1384,7 +1394,7 @@
   }
 
   .single-search.is-open {
-    width: min(18.5rem, calc(100vw - (var(--wrapper-padding) * 2) - 4.5rem));
+    width: min(18.5rem, calc(100vw - (var(--wrapper-padding) * 2)));
   }
 
   .single-search__toggle {
@@ -1403,6 +1413,7 @@
     cursor: pointer;
     transition: transform .2s ease, background-color .2s ease, border-color .2s ease, box-shadow .2s ease;
     z-index: 2;
+    overflow: hidden;
   }
 
   .single-search.is-open .single-search__toggle {
@@ -1416,9 +1427,32 @@
   }
 
   .single-search__toggle-icon {
+    position: absolute;
+    inset: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    transition: opacity .22s ease, transform .28s cubic-bezier(.2, .7, .2, 1);
+  }
+
+  .single-search__toggle-icon--search {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+
+  .single-search__toggle-icon--close {
+    opacity: 0;
+    transform: rotate(-18deg) scale(.82);
+  }
+
+  .single-search.is-open .single-search__toggle-icon--search {
+    opacity: 0;
+    transform: rotate(18deg) scale(.82);
+  }
+
+  .single-search.is-open .single-search__toggle-icon--close {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
   }
 
   .single-search .search--single {
@@ -1455,7 +1489,7 @@
   .layout--single .toc-container--single.sticky {
     position: fixed;
     top: calc(var(--altura-breadcrumbsYheader) + 1rem);
-    right: var(--wrapper-padding);
+    right: calc(var(--wrapper-padding) + 3.75rem);
     width: 3rem;
     max-width: none;
     margin: 0;
@@ -1530,6 +1564,12 @@
   .layout--single .toc-container--single .toc-container__content.show {
     overflow: auto;
     max-height: min(60svh, 28rem);
+  }
+}
+
+@media (min-width: 540px) {
+  .icon-btn__label {
+    display: inline;
   }
 }
 

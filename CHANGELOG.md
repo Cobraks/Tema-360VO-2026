@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.12 - 2026-04-15
+- Refined the single-post mobile floating controls with a right-aligned search trigger, animated search/close icon swap, and cleaner spacing between the search and TOC buttons.
+- Softened the single hero typography, simplified the post content card container, restored a more polished newsletter form treatment, and hid action labels on narrower screens.
+- Updated the shared page TOC alignment so its container content is right-justified by default.
+
 ## 3.0.11 - 2026-04-15
 - Reworked the blog single mobile controls so search and TOC behave as coordinated floating panels, closing each other to avoid overlap.
 - Refined the blog search styling and reshaped the single featured image for a more editorial presentation.

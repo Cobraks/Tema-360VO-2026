@@ -94,7 +94,8 @@ $related = new WP_Query($related_args);
                     aria-expanded="false"
                     aria-controls="blog-search-panel"
                     aria-label="Abrir búsqueda en noticias">
-                    <span class="single-search__toggle-icon" aria-hidden="true"><?php echo E360VO_Icon::get('buscar', ['width' => 20, 'height' => 20]); ?></span>
+                    <span class="single-search__toggle-icon single-search__toggle-icon--search" aria-hidden="true"><?php echo E360VO_Icon::get('buscar', ['width' => 20, 'height' => 20]); ?></span>
+                    <span class="single-search__toggle-icon single-search__toggle-icon--close" aria-hidden="true"><?php echo E360VO_Icon::get('close', ['width' => 20, 'height' => 20]); ?></span>
                 </button>
 
                 <form role="search" method="get" class="search search--single" id="blog-search-panel" action="<?php echo esc_url(home_url('/')); ?>">

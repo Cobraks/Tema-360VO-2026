@@ -191,6 +191,7 @@ function handleScrollBehavior() {
 // =====================================================
 function initializeTableOfContents() {
 	document.querySelectorAll('[data-toc-enabled="1"]').forEach((scope, scopeIndex) => {
+		const mobileTocQuery = window.matchMedia("(max-width: 782px)");
 		const tocContainerElement =
 			scope.querySelector(".toc-container") ||
 			scope.querySelector("#toc-container");
@@ -213,6 +214,37 @@ function initializeTableOfContents() {
 
 		tocContainerElement.hidden = false;
 		tocToggle.classList.add("show");
+
+		let userHasToggledToc = false;
+		const toggleText = tocToggle.querySelector(".toc-container__text");
+
+		const setTocOpenState = (isOpen, { animateItems = true } = {}) => {
+			tocContainer.classList.toggle("show", isOpen);
+			tocContainer.classList.toggle("hidden", !isOpen);
+			tocContainerElement.classList.toggle("open", isOpen);
+			tocToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+
+			if (toggleText) {
+				toggleText.textContent = isOpen
+					? "Ocultar tabla de contenidos"
+					: "Mostrar tabla de contenidos";
+			}
+
+			const tocItems = tocContainer.querySelectorAll(".toc__item");
+			tocItems.forEach((item, idx) => {
+				if (!isOpen) {
+					item.classList.remove("show");
+					return;
+				}
+
+				if (!animateItems) {
+					item.classList.add("show");
+					return;
+				}
+
+				setTimeout(() => item.classList.add("show"), 36 + idx * 18);
+			});
+		};
 
 		let tocHtml = "<ul class='toc__list'>";
 		let idCounter = 0;
@@ -245,6 +277,8 @@ function initializeTableOfContents() {
 		tocHtml += "</ul>";
 		tocContainer.innerHTML = tocHtml;
 
+		setTocOpenState(mobileTocQuery.matches, { animateItems: false });
+
 		tocContainer.addEventListener("click", (event) => {
 			const link = event.target.closest(".toc__link");
 			if (!link) return;
@@ -253,7 +287,17 @@ function initializeTableOfContents() {
 
 			const target = document.querySelector(link.getAttribute("href"));
 			if (target) {
-				target.scrollIntoView({ behavior: "smooth", block: "start" });
+				const scrollMarginTop =
+					parseFloat(window.getComputedStyle(target).scrollMarginTop) || 0;
+				const targetTop =
+					target.getBoundingClientRect().top +
+					window.scrollY -
+					scrollMarginTop;
+
+				window.scrollTo({
+					top: Math.max(0, targetTop),
+					behavior: "smooth",
+				});
 			}
 
 			tocContainer
@@ -262,61 +306,45 @@ function initializeTableOfContents() {
 			link.parentElement?.classList.add("active");
 			allHeadings.forEach((heading) => heading.classList.remove("active"));
 			target?.classList.add("active");
-
-			if (tocContainer.classList.contains("show")) {
-				setTimeout(() => {
-					tocContainer.classList.remove("show");
-					tocContainerElement.classList.remove("open");
-					document.querySelectorAll(".backdrop").forEach((backdrop) => {
-						backdrop.classList.remove("open");
-						backdrop.style.zIndex = "";
-					});
-					const toggleText = tocToggle.querySelector(".toc-container__text");
-					if (toggleText) {
-						toggleText.textContent = "Mostrar tabla de contenidos";
-					}
-				}, 250);
-			}
 		});
 
 		tocToggle.addEventListener("click", () => {
 			if (isTocToggling) return;
 			isTocToggling = true;
+			userHasToggledToc = true;
 
-			tocContainer.classList.toggle("show");
-			tocContainerElement.classList.toggle("open");
-			document
-				.querySelectorAll(".backdrop")
-				.forEach((backdrop) => backdrop.classList.toggle("open"));
-
-			const toggleText = tocToggle.querySelector(".toc-container__text");
-
-			if (tocContainerElement.classList.contains("open")) {
-				document.querySelectorAll(".backdrop").forEach((backdrop) => {
-					backdrop.style.zIndex = "97";
-				});
-				if (toggleText) {
-					toggleText.textContent = "Ocultar tabla de contenidos";
-				}
-				tocContainer.querySelectorAll(".toc__item").forEach((item, idx) => {
-					setTimeout(() => item.classList.add("show"), 40 + idx * 18);
-				});
-			} else {
-				document.querySelectorAll(".backdrop").forEach((backdrop) => {
-					backdrop.style.zIndex = "";
-				});
-				if (toggleText) {
-					toggleText.textContent = "Mostrar tabla de contenidos";
-				}
-				tocContainer
-					.querySelectorAll(".toc__item")
-					.forEach((item) => item.classList.remove("show"));
-			}
+			setTocOpenState(!tocContainerElement.classList.contains("open"));
 
 			setTimeout(() => {
 				isTocToggling = false;
 			}, 250);
 		});
+
+		if (typeof mobileTocQuery.addEventListener === "function") {
+			mobileTocQuery.addEventListener("change", (event) => {
+				if (userHasToggledToc) return;
+				setTocOpenState(event.matches, { animateItems: false });
+			});
+		}
+
+		const stickySentinel = document.createElement("div");
+		stickySentinel.className = "toc-start-sentinel";
+		tocContainerElement.parentElement?.insertBefore(
+			stickySentinel,
+			tocContainerElement,
+		);
+
+		const stickyObserver = new IntersectionObserver(
+			(entries) => {
+				tocContainerElement.classList.toggle(
+					"sticky",
+					!entries[0]?.isIntersecting,
+				);
+			},
+			{ threshold: 0, rootMargin: "0px 0px 0px 0px" },
+		);
+
+		stickyObserver.observe(stickySentinel);
 
 		if ("IntersectionObserver" in window) {
 			const parent = tocContainerElement.parentElement;
@@ -330,16 +358,7 @@ function initializeTableOfContents() {
 				(entries) => {
 					if (entries[0]?.isIntersecting) {
 						tocContainerElement.classList.add("end-of-container");
-						tocContainer.classList.remove("show");
-						tocContainerElement.classList.remove("open");
-						document.querySelectorAll(".backdrop").forEach((backdrop) => {
-							backdrop.classList.remove("open");
-							backdrop.style.zIndex = "";
-						});
-						const toggleText = tocToggle.querySelector(".toc-container__text");
-						if (toggleText) {
-							toggleText.textContent = "Mostrar tabla de contenidos";
-						}
+						setTocOpenState(false, { animateItems: false });
 					} else {
 						tocContainerElement.classList.remove("end-of-container");
 					}

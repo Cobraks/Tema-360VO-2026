@@ -282,16 +282,6 @@ display: inline-flex;
   
   
   
-  #toc-container.open .toc-container__toggle.show {
-    border-radius: .5rem;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    -webkit-border-radius: .5rem;
-    -moz-border-radius: .5rem;
-    -ms-border-radius: .5rem;
-    -o-border-radius: .5rem;
-  }
-  
   .hidden #toc-container.sticky .toc-container__toggle {
     width: 2.625rem;
     height: 2.625rem;
@@ -478,20 +468,18 @@ display: inline-flex;
 .toc__list {
     list-style-type: none;
     padding-left: 0;
-    background: var(--primary90);
     padding: 2rem;
     font-size: .85rem;
     /* border-radius: 3rem; */
-    background: var(--neutral95);
     color: var(--neutral50);
     padding-left: .5rem;
     max-height: 65vh;
     overflow-y: scroll;
     border-top-left-radius: .5rem;
     border-top-right-radius: .5rem;
-    background: var(--neutral95);
     color: var(--neutral30);
     padding-top: 0.5rem;
+    background: none;
   
   }
   
@@ -567,32 +555,29 @@ display: inline-flex;
   
   
   /* Estilos para los enlaces */
-  .toc__link {
+  #toc-container .toc__link {
     color: currentColor;
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition:
+      color .18s ease,
+      background-color .18s ease,
+      border-color .18s ease;
     display: flex;
     height: auto;
     border-left: solid 2px var(--primary80);
-    padding-left: .5rem;
+    padding: .35rem .6rem;
     font-size: 0.875rem;
     align-items: center;
+    gap: .55rem;
     border: none;
-       transition: all .3s ease-out;
-       -webkit-transition: all .3s ease-out;
-       /* -moz-transition: all .3s ease-out; */
-       -ms-transition: all .3s ease-out;
-       -o-transition: all .3s ease-out;
-       font-size: 1rem;
+    border-radius: .9rem;
+    font-size: 1rem;
   }
   
-  .toc__link:hover {
-     color: var(--atc-primary);
-     transition: all .3s ease-in;
-     -webkit-transition: all .3s ease-in;
-     /* -moz-transition: all .3s ease-in; */
-     -ms-transition: all .3s ease-in;
-     -o-transition: all .3s ease-in;
+  #toc-container .toc__link:hover {
+     color: var(--primary30);
+     background: color-mix(in oklab, var(--primary95) 82%, white);
+     text-decoration: none;
   }
   
   .toc__item--active .toc__link {
@@ -601,40 +586,38 @@ display: inline-flex;
     
   }
   
-  .toc__link:hover .toc__number {
+  #toc-container .toc__link:hover .toc__number {
     text-decoration: none;
-    background: var(--primary50);
-    color: white;
-       transition: all .3s ease-in;
-     -webkit-transition: all .3s ease-in;
-     /* -moz-transition: all .3s ease-in; */
-     -ms-transition: all .3s ease-in;
-     -o-transition: all .3s ease-in;
+    background: color-mix(in oklab, var(--primary90) 70%, white);
+    color: var(--primary20);
   
   }
   
-  .toc__number {
-     
-      margin-right: 1rem;
-       text-decoration: none;
-       transition: all .3s ease-out;
-       -webkit-transition: all .3s ease-out;
-       /* -moz-transition: all .3s ease-out; */
-       -ms-transition: all .3s ease-out;
-       -o-transition: all .3s ease-out;
-  color: var(--primary40);
+  #toc-container .toc__number {
+    text-decoration: none;
+    transition:
+      color .18s ease,
+      background-color .18s ease;
+    color: var(--primary30);
     font-weight: bold;
   
     margin-right: .5rem;
-    padding: .15rem;
+    padding: .18rem .55rem;
       font-size: .875rem;
-      border-radius: 4rem;
-      padding-inline: .5rem;
+      border-radius: 999px;
+      background: color-mix(in oklab, var(--primary95) 65%, white);
+      line-height: 1.2;
+      font-variant-numeric: tabular-nums;
   }
   
-  .toc__item.active .toc__number{
-    color: white;
-    background-color: var(--primary40);
+  #toc-container .toc__item.active .toc__link {
+    color: var(--primary20);
+    background: color-mix(in oklab, var(--primary95) 78%, white);
+  }
+
+  #toc-container .toc__item.active .toc__number{
+    color: var(--primary10);
+    background-color: color-mix(in oklab, var(--primary85) 78%, white);
   
   }
   

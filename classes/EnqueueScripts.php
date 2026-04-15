@@ -132,7 +132,7 @@ class E360VO_EnqueueScripts
             wp_enqueue_style(
                 '360vo-blog',
                 $blog_css['url'],
-                ['360vo-theme-style'], // usa variables/estilos globales
+                ['360vo-theme-style', '360vo-pages'], // pages.css debe cargar antes para que blog pueda modularlo
                 $blog_css['version']
             );
 

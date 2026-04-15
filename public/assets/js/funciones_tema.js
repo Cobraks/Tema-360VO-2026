@@ -231,6 +231,7 @@ function initializeTableOfContents() {
 		let autoCloseScrollCount = 0;
 		let autoCloseScrollLocked = false;
 		let lastTrackedScrollY = window.scrollY;
+		let wasSticky = tocContainerElement.classList.contains("sticky");
 		const toggleText = tocToggle.querySelector(".toc-container__text");
 
 		const resetAutoCloseTracking = () => {
@@ -243,8 +244,9 @@ function initializeTableOfContents() {
 			const shouldCompact =
 				mobileTocQuery.matches &&
 				tocContainerElement.classList.contains("sticky") &&
-				!tocContainerElement.classList.contains("open") &&
-				userHasToggledToc;
+				(isSingleToc ||
+					(!tocContainerElement.classList.contains("open") &&
+						userHasToggledToc));
 
 			tocContainerElement.classList.toggle("is-compact", shouldCompact);
 		};
@@ -291,9 +293,11 @@ function initializeTableOfContents() {
 			const prefersReducedMotion = window.matchMedia(
 				"(prefers-reduced-motion: reduce)",
 			).matches;
+			const scrollingElement =
+				document.scrollingElement || document.documentElement;
 			const scrollMarginTop =
 				parseFloat(window.getComputedStyle(target).scrollMarginTop) || 0;
-			const startY = window.scrollY;
+			const startY = scrollingElement.scrollTop;
 			const targetY = Math.max(
 				0,
 				target.getBoundingClientRect().top + startY - scrollMarginTop,
@@ -306,27 +310,24 @@ function initializeTableOfContents() {
 
 			if (prefersReducedMotion || Math.abs(targetY - startY) < 2) {
 				isTocAutoScrolling = false;
-				window.scrollTo({ top: targetY, behavior: "auto" });
+				scrollingElement.scrollTop = targetY;
 				return;
 			}
 
 			isTocAutoScrolling = true;
 			const distance = targetY - startY;
-			const duration = Math.min(900, Math.max(520, Math.abs(distance) * 0.6));
-			const easeInOutCubic = (progress) =>
+			const duration = Math.min(1400, Math.max(680, Math.abs(distance) * 0.85));
+			const easeInOutQuint = (progress) =>
 				progress < 0.5
-					? 4 * progress * progress * progress
-					: 1 - Math.pow(-2 * progress + 2, 3) / 2;
+					? 16 * Math.pow(progress, 5)
+					: 1 - Math.pow(-2 * progress + 2, 5) / 2;
 			const startTime = performance.now();
 
 			const step = (now) => {
 				const progress = Math.min(1, (now - startTime) / duration);
-				const easedProgress = easeInOutCubic(progress);
+				const easedProgress = easeInOutQuint(progress);
 
-				window.scrollTo({
-					top: startY + distance * easedProgress,
-					behavior: "auto",
-				});
+				scrollingElement.scrollTop = startY + distance * easedProgress;
 
 				if (progress < 1) {
 					tocAutoScrollFrame = requestAnimationFrame(step);
@@ -335,7 +336,7 @@ function initializeTableOfContents() {
 
 				isTocAutoScrolling = false;
 				tocAutoScrollFrame = null;
-				window.scrollTo({ top: targetY, behavior: "auto" });
+				scrollingElement.scrollTop = targetY;
 				if (history.replaceState) {
 					history.replaceState(null, "", `#${target.id}`);
 				}
@@ -443,13 +444,21 @@ function initializeTableOfContents() {
 				if (!mobileTocQuery.matches) {
 					tocContainerElement.classList.remove("sticky");
 					tocContainerElement.classList.remove("is-compact");
+					wasSticky = false;
 					return;
 				}
 
-				tocContainerElement.classList.toggle(
-					"sticky",
-					!entries[0]?.isIntersecting,
-				);
+				const isSticky = !entries[0]?.isIntersecting;
+				tocContainerElement.classList.toggle("sticky", isSticky);
+
+				if (isSingleToc && isSticky && !wasSticky) {
+					keepTocOpenOnScroll = false;
+					if (tocContainerElement.classList.contains("open")) {
+						setTocOpenState(false, { animateItems: false });
+					}
+				}
+
+				wasSticky = isSticky;
 				syncCompactState();
 			},
 			{ threshold: 0, rootMargin: "0px 0px 0px 0px" },

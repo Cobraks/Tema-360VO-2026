@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.19 - 2026-04-15
+- Refined the single-post mobile TOC so it shows the full toggle with text before sticking, then collapses back to the TOC icon when it reaches the sticky state.
+- Forced the TOC heading navigation to use a smoother scripted scroll animation and refreshed the mobile search close icon background.
+
 ## 3.0.18 - 2026-04-15
 - Nudged the single-post mobile TOC toggle left by adding right offset space for the search control.
 - Reduced the shared sticky TOC top offsets and z-index to better fit the mobile header and breadcrumb stack.

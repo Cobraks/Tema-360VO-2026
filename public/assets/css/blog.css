@@ -1043,30 +1043,32 @@
   color: transparent;
   font-size: 0;
   line-height: 0;
-  padding: .4rem 1rem .2rem;
-  border-radius: 1rem;
-  background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.88));
-  box-shadow: 0 10px 24px rgba(15,15,15,.05);
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 .panel--subscribe :where(.wpcf7-form-control-wrap) { display: block; }
 .panel--subscribe :where(input[type="email"], input[type="text"], input[type="tel"]) {
   width: 100%;
-  min-height: 3.25rem;
+  min-height: 3.5rem;
   border: 0;
   border-bottom: 1px solid color-mix(in oklab, var(--line) 92%, white);
   border-radius: 0;
-  padding: 1.45rem 0 .45rem;
+  padding: 1.55rem 0 .5rem;
   font-size: var(--t-sm);
   background: transparent;
   box-shadow: none;
+  color: var(--neutral15);
+  line-height: 1.35;
 }
 .panel--subscribe :where(.wpcf7-form label)::after {
   content: "Correo electrónico";
   position: absolute;
-  left: 1rem;
-  top: .95rem;
+  left: 0;
+  top: 1.2rem;
   color: var(--muted);
-  font-size: .78rem;
+  font-size: .95rem;
   line-height: 1;
   pointer-events: none;
   transform-origin: left center;
@@ -1074,11 +1076,11 @@
 }
 .panel--subscribe :where(.wpcf7-form label:focus-within)::after {
   color: color-mix(in oklab, var(--brand-strong) 70%, black);
-  transform: translateY(-.3rem) scale(.94);
+  transform: translateY(-.95rem) scale(.78);
 }
 .panel--subscribe :where(.wpcf7-form label.has-value)::after {
   color: color-mix(in oklab, var(--brand-strong) 70%, black);
-  transform: translateY(-.3rem) scale(.94);
+  transform: translateY(-.95rem) scale(.78);
 }
 .panel--subscribe :where(input[type="email"], input[type="text"], input[type="tel"]):focus {
   outline: none;
@@ -1385,7 +1387,7 @@
   .single-search {
     position: fixed;
     top: calc(var(--altura-breadcrumbsYheader) + 1rem);
-    right: calc(var(--wrapper-padding) + 1rem + 3rem);
+    right: var(--wrapper-padding);
     width: 3rem;
     z-index: 101;
     transition: width .28s cubic-bezier(.2, .7, .2, 1), top .3s ease-in-out;
@@ -1498,7 +1500,7 @@
   .layout--single .toc-container--single,
   .layout--single .toc-container--single.sticky {
     position: fixed;
-    top: calc(var(--altura-breadcrumbsYheader) + 1rem);
+    top: calc(7.5rem + var(--altura-header));
     right: var(--wrapper-padding);
     width: 3rem;
     max-width: none;
@@ -1509,7 +1511,7 @@
 
   body.hidden .layout--single .toc-container--single,
   body.hidden .layout--single .toc-container--single.sticky {
-    top: calc(var(--altura-header) + 1rem);
+    top: calc(5rem + var(--altura-header));
   }
 
   .logged-in .layout--single .toc-container--single,
@@ -1562,7 +1564,6 @@
     position: absolute;
     top: calc(100% + .65rem);
     right: 0;
-    width: min(20rem, calc(100vw - (var(--wrapper-padding) * 2)));
     padding: .9rem 1rem 1rem;
     border: 1px solid color-mix(in oklab, var(--line) 88%, white);
     border-radius: 1.2rem;

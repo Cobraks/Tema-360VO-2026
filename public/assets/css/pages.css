@@ -246,10 +246,6 @@ display: inline-flex;
   transform: scale(.992);
 }
 
-#toc-container.open .toc-container__toggle {
-  background: var(--neutral98);
-}
-
 .toc-container__text {
   min-width: 0;
   white-space: nowrap;

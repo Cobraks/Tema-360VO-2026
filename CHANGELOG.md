@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.14 - 2026-04-15
+- Repositioned the mobile single search trigger back to the right edge and moved the TOC control below it with deeper sticky offsets.
+- Removed the extra open-state TOC toggle background and loosened the shared compact TOC button sizing.
+- Restored a clearer material-style floating label treatment for the newsletter email field.
+
 ## 3.0.13 - 2026-04-15
 - Fine-tuned the mobile single floating controls so the TOC sits flush to the right edge while the search trigger offsets itself to the left with a clearer gap.
 - Restored a stronger material-style treatment for the newsletter input, eased the compact TOC closed-state sizing, and gave the mobile post content a little more inline breathing room.

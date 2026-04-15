@@ -186,95 +186,100 @@ function handleScrollBehavior() {
 }
 
 // =====================================================
-// Función: Inicializar la Tabla de Contenidos (TOC)
+// Funcion: Inicializar la Tabla de Contenidos (TOC)
 // Optimizada: sin scroll handler que mida layout
 // =====================================================
 function initializeTableOfContents() {
-	const tocContainer = document.querySelector(".toc-container__content");
-	const tocContainerElement = document.getElementById("toc-container");
-	if (!tocContainer || !tocContainerElement) return;
+	document.querySelectorAll('[data-toc-enabled="1"]').forEach((scope, scopeIndex) => {
+		const tocContainerElement =
+			scope.querySelector(".toc-container") ||
+			scope.querySelector("#toc-container");
+		const tocContainer =
+			tocContainerElement?.querySelector(".toc-container__content");
+		const tocToggle =
+			tocContainerElement?.querySelector(".toc-container__toggle");
+		const content = scope.querySelector(".entry-content");
 
-	const content = document.querySelector(".custom-page__content");
-	if (!content) return;
+		if (!tocContainer || !tocContainerElement || !tocToggle || !content) return;
 
-	const allHeadings = Array.from(
-		content.querySelectorAll("h2, h3, h4, h5, h6"),
-	).filter((h) => !h.closest(".vehicle-card__container"));
+		const allHeadings = Array.from(
+			content.querySelectorAll("h2, h3, h4, h5, h6"),
+		).filter((heading) => !heading.closest(".vehicle-card__container"));
 
-	if (!allHeadings.length) return;
-
-	document.querySelector(".toc-container__toggle")?.classList.add("show");
-
-	let tocHtml = "<ul class='toc__list'>";
-	let idCounter = 0;
-	let headingNumbers = [0, 0, 0, 0, 0];
-	const idPrefix = "toc-heading-";
-
-	allHeadings.forEach((heading) => {
-		const level = parseInt(heading.tagName[1], 10) - 2;
-		headingNumbers[level]++;
-		for (let i = level + 1; i < headingNumbers.length; i++)
-			headingNumbers[i] = 0;
-
-		const headingNumber = headingNumbers.slice(0, level + 1).join(".");
-		const id = heading.id || idPrefix + idCounter++;
-		heading.id = id;
-
-		const itemClass =
-			level === 1 ? "toc__item toc__item--subitem" : "toc__item";
-
-		tocHtml +=
-			`<li class="${itemClass}">` +
-			`<a href="#${id}" class="toc__link">` +
-			`<span class="toc__number">${headingNumber}.</span> ` +
-			`${heading.textContent}` +
-			`</a>` +
-			`</li>`;
-	});
-
-	tocHtml += "</ul>";
-	tocContainer.innerHTML = tocHtml;
-
-	// Delegación: 1 listener en vez de N
-	tocContainer.addEventListener("click", (event) => {
-		const link = event.target.closest(".toc__link");
-		if (!link) return;
-
-		event.preventDefault();
-
-		const target = document.querySelector(link.getAttribute("href"));
-		if (target) {
-			// Sin medir layout: scroll-margin-top lo resuelve en CSS
-			target.scrollIntoView({ behavior: "smooth", block: "start" });
+		if (!allHeadings.length) {
+			tocContainerElement.hidden = true;
+			return;
 		}
 
-		tocContainer
-			.querySelectorAll(".toc__item")
-			.forEach((li) => li.classList.remove("active"));
-		link.parentElement.classList.add("active");
-		allHeadings.forEach((h) => h.classList.remove("active"));
-		target?.classList.add("active");
+		tocContainerElement.hidden = false;
+		tocToggle.classList.add("show");
 
-		// Cerrar si está abierto (móvil)
-		if (tocContainer.classList.contains("show")) {
-			setTimeout(() => {
-				tocContainer.classList.remove("show");
-				tocContainerElement.classList.remove("open");
-				document.querySelectorAll(".backdrop").forEach((b) => {
-					b.classList.remove("open");
-					b.style.zIndex = "";
-				});
-				const toggleText = document.querySelector(
-					".toc-container__toggle .toc-container__text",
-				);
-				if (toggleText) toggleText.textContent = "Mostrar tabla de contenidos";
-			}, 250);
-		}
-	});
+		let tocHtml = "<ul class='toc__list'>";
+		let idCounter = 0;
+		let headingNumbers = [0, 0, 0, 0, 0];
+		const idPrefix = `toc-heading-${scopeIndex}-`;
 
-	document
-		.querySelector(".toc-container__toggle")
-		?.addEventListener("click", () => {
+		allHeadings.forEach((heading) => {
+			const level = parseInt(heading.tagName[1], 10) - 2;
+			headingNumbers[level]++;
+			for (let i = level + 1; i < headingNumbers.length; i++) {
+				headingNumbers[i] = 0;
+			}
+
+			const headingNumber = headingNumbers.slice(0, level + 1).join(".");
+			const id = heading.id || idPrefix + idCounter++;
+			heading.id = id;
+
+			const itemClass =
+				level === 1 ? "toc__item toc__item--subitem" : "toc__item";
+
+			tocHtml +=
+				`<li class="${itemClass}">` +
+				`<a href="#${id}" class="toc__link">` +
+				`<span class="toc__number">${headingNumber}.</span> ` +
+				`${heading.textContent}` +
+				`</a>` +
+				`</li>`;
+		});
+
+		tocHtml += "</ul>";
+		tocContainer.innerHTML = tocHtml;
+
+		tocContainer.addEventListener("click", (event) => {
+			const link = event.target.closest(".toc__link");
+			if (!link) return;
+
+			event.preventDefault();
+
+			const target = document.querySelector(link.getAttribute("href"));
+			if (target) {
+				target.scrollIntoView({ behavior: "smooth", block: "start" });
+			}
+
+			tocContainer
+				.querySelectorAll(".toc__item")
+				.forEach((item) => item.classList.remove("active"));
+			link.parentElement?.classList.add("active");
+			allHeadings.forEach((heading) => heading.classList.remove("active"));
+			target?.classList.add("active");
+
+			if (tocContainer.classList.contains("show")) {
+				setTimeout(() => {
+					tocContainer.classList.remove("show");
+					tocContainerElement.classList.remove("open");
+					document.querySelectorAll(".backdrop").forEach((backdrop) => {
+						backdrop.classList.remove("open");
+						backdrop.style.zIndex = "";
+					});
+					const toggleText = tocToggle.querySelector(".toc-container__text");
+					if (toggleText) {
+						toggleText.textContent = "Mostrar tabla de contenidos";
+					}
+				}, 250);
+			}
+		});
+
+		tocToggle.addEventListener("click", () => {
 			if (isTocToggling) return;
 			isTocToggling = true;
 
@@ -282,25 +287,27 @@ function initializeTableOfContents() {
 			tocContainerElement.classList.toggle("open");
 			document
 				.querySelectorAll(".backdrop")
-				.forEach((b) => b.classList.toggle("open"));
+				.forEach((backdrop) => backdrop.classList.toggle("open"));
 
-			const toggleText = document.querySelector(
-				".toc-container__toggle .toc-container__text",
-			);
+			const toggleText = tocToggle.querySelector(".toc-container__text");
 
 			if (tocContainerElement.classList.contains("open")) {
-				document
-					.querySelectorAll(".backdrop")
-					.forEach((b) => (b.style.zIndex = "97"));
-				if (toggleText) toggleText.textContent = "Ocultar tabla de contenidos";
+				document.querySelectorAll(".backdrop").forEach((backdrop) => {
+					backdrop.style.zIndex = "97";
+				});
+				if (toggleText) {
+					toggleText.textContent = "Ocultar tabla de contenidos";
+				}
 				tocContainer.querySelectorAll(".toc__item").forEach((item, idx) => {
 					setTimeout(() => item.classList.add("show"), 40 + idx * 18);
 				});
 			} else {
-				document
-					.querySelectorAll(".backdrop")
-					.forEach((b) => (b.style.zIndex = ""));
-				if (toggleText) toggleText.textContent = "Mostrar tabla de contenidos";
+				document.querySelectorAll(".backdrop").forEach((backdrop) => {
+					backdrop.style.zIndex = "";
+				});
+				if (toggleText) {
+					toggleText.textContent = "Mostrar tabla de contenidos";
+				}
 				tocContainer
 					.querySelectorAll(".toc__item")
 					.forEach((item) => item.classList.remove("show"));
@@ -311,10 +318,10 @@ function initializeTableOfContents() {
 			}, 250);
 		});
 
-	// End-of-container sin scroll: sentinel + IO
-	if ("IntersectionObserver" in window) {
-		const parent = tocContainerElement.parentElement;
-		if (parent) {
+		if ("IntersectionObserver" in window) {
+			const parent = tocContainerElement.parentElement;
+			if (!parent) return;
+
 			const sentinel = document.createElement("div");
 			sentinel.className = "toc-end-sentinel";
 			parent.appendChild(sentinel);
@@ -323,19 +330,16 @@ function initializeTableOfContents() {
 				(entries) => {
 					if (entries[0]?.isIntersecting) {
 						tocContainerElement.classList.add("end-of-container");
-
-						// cierre defensivo
 						tocContainer.classList.remove("show");
 						tocContainerElement.classList.remove("open");
-						document.querySelectorAll(".backdrop").forEach((b) => {
-							b.classList.remove("open");
-							b.style.zIndex = "";
+						document.querySelectorAll(".backdrop").forEach((backdrop) => {
+							backdrop.classList.remove("open");
+							backdrop.style.zIndex = "";
 						});
-						const toggleText = document.querySelector(
-							".toc-container__toggle .toc-container__text",
-						);
-						if (toggleText)
+						const toggleText = tocToggle.querySelector(".toc-container__text");
+						if (toggleText) {
 							toggleText.textContent = "Mostrar tabla de contenidos";
+						}
 					} else {
 						tocContainerElement.classList.remove("end-of-container");
 					}
@@ -345,7 +349,7 @@ function initializeTableOfContents() {
 
 			io.observe(sentinel);
 		}
-	}
+	});
 }
 
 // =====================================================

@@ -65,6 +65,7 @@ $intro_safe = wp_kses_post(wpautop($intro));
 
 $reading = th360_reading_time_label($post_id);
 $caption = th360_get_image_caption($post_id);
+$activar_toc = true;
 
 $related_args = [
     'post_type'              => 'post',
@@ -151,21 +152,15 @@ $related = new WP_Query($related_args);
     <?php endif; ?>
 
     <div class="blog-shell">
-        <div class="layout layout--single">
+        <div class="layout layout--single" <?php echo $activar_toc ? 'data-toc-enabled="1"' : ''; ?>>
 
-            <aside id="toc-container" class="post-toc-col" aria-label="Navegación del artículo">
-                <div id="menu-placeholder">
-                    <button class="toc-container__toggle show" type="button" aria-expanded="false" aria-controls="blog-toc-content">
-                        <span class="toc-container__icon toc-container__icon--toc"><?php echo E360VO_Icon::get('ordenar', ['aria-hidden' => 'true']); ?></span>
-                        <span class="toc-container__text">Mostrar tabla de contenidos</span>
-                        <span class="toc-container__icon toc-container__icon--expand"><?php echo E360VO_Icon::get('open_new', ['aria-hidden' => 'true']); ?></span>
-                        <span class="toc-container__icon toc-container__icon--collapse"><?php echo E360VO_Icon::get('close', ['aria-hidden' => 'true']); ?></span>
-                    </button>
-                    <div id="blog-toc-content" class="toc-container__content hidden">
-                        <ul class="toc__list" id="post-toc-list"></ul>
-                    </div>
-                </div>
-            </aside>
+            <?php if ($activar_toc) : ?>
+                <?php th360_render_table_of_contents([
+                    'classes' => ['toc-container--single'],
+                    'content_id' => 'toc-content-post-' . $post_id,
+                    'label' => 'Navegacion del articulo',
+                ]); ?>
+            <?php endif; ?>
 
             <article class="post-card" aria-label="Contenido del artículo">
 

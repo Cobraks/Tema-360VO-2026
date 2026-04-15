@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 /**
  * Constantes del tema
  */
-define('THEME_VERSION', '1.0.1');
+define('THEME_VERSION', '3.0.3');
 define('THEME_DIR', get_template_directory());
 define('THEME_URI', get_template_directory_uri());
 
@@ -146,6 +146,39 @@ function obtener_estilo_fondo()
     }
 
     return '';
+}
+
+/**
+ * Render compartido de la tabla de contenidos.
+ */
+function th360_render_table_of_contents(array $args = []): void
+{
+    $args = wp_parse_args($args, [
+        'classes' => [],
+        'content_id' => 'toc-content',
+        'label' => 'Tabla de contenidos',
+        'toggle_text' => 'Mostrar tabla de contenidos',
+    ]);
+
+    $classes = array_map(
+        'sanitize_html_class',
+        array_filter(array_merge(['toc-container'], (array) $args['classes']))
+    );
+?>
+    <aside id="toc-container" class="<?php echo esc_attr(implode(' ', $classes)); ?>" aria-label="<?php echo esc_attr($args['label']); ?>">
+        <div id="menu-placeholder">
+            <button class="toc-container__toggle" type="button" aria-expanded="false" aria-controls="<?php echo esc_attr($args['content_id']); ?>">
+                <span class="toc-container__icon toc-container__icon--toc"><?php echo E360VO_Icon::get('ordenar', ['aria-hidden' => 'true']); ?></span>
+                <span class="toc-container__text"><?php echo esc_html($args['toggle_text']); ?></span>
+                <span class="toc-container__icon toc-container__icon--expand"><?php echo E360VO_Icon::get('open_new', ['aria-hidden' => 'true']); ?></span>
+                <span class="toc-container__icon toc-container__icon--collapse"><?php echo E360VO_Icon::get('close', ['aria-hidden' => 'true']); ?></span>
+            </button>
+            <div id="<?php echo esc_attr($args['content_id']); ?>" class="toc-container__content hidden">
+                <!-- La tabla de contenidos se genera dinamicamente -->
+            </div>
+        </div>
+    </aside>
+<?php
 }
 
 /**

@@ -1598,6 +1598,8 @@
   .layout--single .toc-container--single .toc-container__content.show {
     overflow: auto;
     max-height: min(60svh, 28rem);
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
 
   .post-card {

@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.24 - 2026-04-16
+- Locked page scrolling while the mobile single TOC is open, keeping breadcrumbs and header state stable while the TOC panel itself remains scrollable.
+- Updated TOC link selection so the mobile panel closes completely before running the scripted section scroll, and removed the reduced-motion branch from that TOC navigation flow.
+
 ## 3.0.23 - 2026-04-16
 - Fixed the single-post mobile TOC compact state by overriding the global TOC width rules with a more specific selector, keeping the closed sticky button icon-only and right-aligned.
 - Added click-outside closing for the mobile single TOC and lowered the blur overlay behind the rest of the interface.

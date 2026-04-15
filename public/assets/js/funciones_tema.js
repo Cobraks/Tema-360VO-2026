@@ -160,6 +160,7 @@ function handleScrollBehavior() {
 				ticking = false;
 
 				if (isTocToggling) return;
+				if (document.body.classList.contains("toc-scroll-lock")) return;
 				toggleScrolledLoggedIn();
 
 				const st = window.scrollY;
@@ -247,14 +248,16 @@ function initializeTableOfContents() {
 		};
 
 		const syncTocOverlayState = () => {
+			const shouldLockPageScroll =
+				isSingleToc &&
+				mobileTocQuery.matches &&
+				tocContainerElement.classList.contains("open");
+
 			document.body.classList.toggle(
 				"toc-overlay-active",
-				Boolean(
-					isSingleToc &&
-						mobileTocQuery.matches &&
-						tocContainerElement.classList.contains("open"),
-				),
+				shouldLockPageScroll,
 			);
+			document.body.classList.toggle("toc-scroll-lock", shouldLockPageScroll);
 		};
 
 		const syncCompactState = () => {
@@ -313,9 +316,6 @@ function initializeTableOfContents() {
 		};
 
 		const smoothScrollToHeading = (target) => {
-			const prefersReducedMotion = window.matchMedia(
-				"(prefers-reduced-motion: reduce)",
-			).matches;
 			const scrollMarginTop =
 				parseFloat(window.getComputedStyle(target).scrollMarginTop) || 0;
 			const startY = window.pageYOffset || window.scrollY || 0;
@@ -329,7 +329,7 @@ function initializeTableOfContents() {
 				tocAutoScrollFrame = null;
 			}
 
-			if (prefersReducedMotion || Math.abs(targetY - startY) < 2) {
+			if (Math.abs(targetY - startY) < 2) {
 				isTocAutoScrolling = false;
 				setPageScrollTop(targetY);
 				return;
@@ -411,16 +411,25 @@ function initializeTableOfContents() {
 			link.blur();
 
 			const target = document.querySelector(link.getAttribute("href"));
-			if (target) {
-				smoothScrollToHeading(target);
-			}
-
 			tocContainer
 				.querySelectorAll(".toc__item")
 				.forEach((item) => item.classList.remove("active"));
 			link.parentElement?.classList.add("active");
 			allHeadings.forEach((heading) => heading.classList.remove("active"));
 			target?.classList.add("active");
+
+			if (!target) return;
+
+			if (isSingleToc && mobileTocQuery.matches) {
+				keepTocOpenOnScroll = false;
+				setTocOpenState(false, { animateItems: false });
+				window.setTimeout(() => {
+					smoothScrollToHeading(target);
+				}, 220);
+				return;
+			}
+
+			smoothScrollToHeading(target);
 		});
 
 		tocToggle.addEventListener("click", () => {
@@ -464,6 +473,7 @@ function initializeTableOfContents() {
 					tocContainerElement.classList.remove("is-compact");
 					tocContainerElement.classList.remove("has-been-sticky");
 					document.body.classList.remove("toc-overlay-active");
+					document.body.classList.remove("toc-scroll-lock");
 				}
 				if (userHasToggledToc) return;
 				setTocOpenState(

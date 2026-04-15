@@ -322,6 +322,9 @@ function initializeTableOfContents() {
 
 		if (typeof mobileTocQuery.addEventListener === "function") {
 			mobileTocQuery.addEventListener("change", (event) => {
+				if (!event.matches) {
+					tocContainerElement.classList.remove("sticky");
+				}
 				if (userHasToggledToc) return;
 				setTocOpenState(event.matches, { animateItems: false });
 			});
@@ -336,6 +339,11 @@ function initializeTableOfContents() {
 
 		const stickyObserver = new IntersectionObserver(
 			(entries) => {
+				if (!mobileTocQuery.matches) {
+					tocContainerElement.classList.remove("sticky");
+					return;
+				}
+
 				tocContainerElement.classList.toggle(
 					"sticky",
 					!entries[0]?.isIntersecting,

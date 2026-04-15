@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.6 - 2026-04-15
+- Stabilized the shared TOC around the `783px` breakpoint by removing conflicting width/state overrides that could make the closed panel flicker after scroll.
+- Fixed the sticky state handoff so mobile-only compact behavior no longer leaks into tablet and desktop layouts.
+- Set the shared page TOC container to a consistent `460px` max width at `783px+` and cleaned up duplicated breakpoint rules.
+
 ## 3.0.5 - 2026-04-15
 - Updated the TOC component with dedicated theme icons, mobile-first open state, smoother in-page scrolling, and a cleaner sticky transition as it reaches the viewport edge.
 - Simplified the page TOC layout rules so it sits in the main flow on mobile and no longer inherits several legacy right-column overrides.

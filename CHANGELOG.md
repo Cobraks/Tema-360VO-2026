@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.21 - 2026-04-16
+- Hardened the single-post mobile TOC compact state so it stays icon-only after entering sticky mode until the user explicitly opens it again.
+- Reworked the TOC link scrolling animation to use a pure scripted window scroll and added a mobile blur overlay behind the open TOC panel.
+
 ## 3.0.20 - 2026-04-15
 - Kept the single-post mobile TOC in its compact closed state after it has entered sticky mode, preventing it from widening again when scrolling back up with the TOC closed.
 

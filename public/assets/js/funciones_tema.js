@@ -232,7 +232,6 @@ function initializeTableOfContents() {
 		let autoCloseScrollLocked = false;
 		let lastTrackedScrollY = window.scrollY;
 		let wasSticky = tocContainerElement.classList.contains("sticky");
-		let hasBeenSticky = wasSticky;
 		const toggleText = tocToggle.querySelector(".toc-container__text");
 
 		const resetAutoCloseTracking = () => {
@@ -241,16 +240,29 @@ function initializeTableOfContents() {
 			lastTrackedScrollY = window.scrollY;
 		};
 
+		const syncTocOverlayState = () => {
+			document.body.classList.toggle(
+				"toc-overlay-active",
+				Boolean(
+					isSingleToc &&
+						mobileTocQuery.matches &&
+						tocContainerElement.classList.contains("open"),
+				),
+			);
+		};
+
 		const syncCompactState = () => {
+			const hasBeenSticky = tocContainerElement.classList.contains(
+				"has-been-sticky",
+			);
 			const shouldCompact =
 				mobileTocQuery.matches &&
 				((isSingleToc &&
 					!tocContainerElement.classList.contains("open") &&
-					(hasBeenSticky ||
-						tocContainerElement.classList.contains("sticky"))) ||
+					hasBeenSticky) ||
 					(tocContainerElement.classList.contains("sticky") &&
-					(!tocContainerElement.classList.contains("open") &&
-						userHasToggledToc)));
+						!tocContainerElement.classList.contains("open") &&
+						userHasToggledToc));
 
 			tocContainerElement.classList.toggle("is-compact", shouldCompact);
 		};
@@ -291,17 +303,16 @@ function initializeTableOfContents() {
 			}
 
 			syncCompactState();
+			syncTocOverlayState();
 		};
 
 		const smoothScrollToHeading = (target) => {
 			const prefersReducedMotion = window.matchMedia(
 				"(prefers-reduced-motion: reduce)",
 			).matches;
-			const scrollingElement =
-				document.scrollingElement || document.documentElement;
 			const scrollMarginTop =
 				parseFloat(window.getComputedStyle(target).scrollMarginTop) || 0;
-			const startY = scrollingElement.scrollTop;
+			const startY = window.pageYOffset || window.scrollY || 0;
 			const targetY = Math.max(
 				0,
 				target.getBoundingClientRect().top + startY - scrollMarginTop,
@@ -314,24 +325,24 @@ function initializeTableOfContents() {
 
 			if (prefersReducedMotion || Math.abs(targetY - startY) < 2) {
 				isTocAutoScrolling = false;
-				scrollingElement.scrollTop = targetY;
+				window.scrollTo(0, targetY);
 				return;
 			}
 
 			isTocAutoScrolling = true;
 			const distance = targetY - startY;
-			const duration = Math.min(1400, Math.max(680, Math.abs(distance) * 0.85));
-			const easeInOutQuint = (progress) =>
+			const duration = Math.min(1600, Math.max(720, Math.abs(distance) * 0.9));
+			const easeInOutQuart = (progress) =>
 				progress < 0.5
-					? 16 * Math.pow(progress, 5)
-					: 1 - Math.pow(-2 * progress + 2, 5) / 2;
+					? 8 * Math.pow(progress, 4)
+					: 1 - Math.pow(-2 * progress + 2, 4) / 2;
 			const startTime = performance.now();
 
 			const step = (now) => {
 				const progress = Math.min(1, (now - startTime) / duration);
-				const easedProgress = easeInOutQuint(progress);
+				const easedProgress = easeInOutQuart(progress);
 
-				scrollingElement.scrollTop = startY + distance * easedProgress;
+				window.scrollTo(0, startY + distance * easedProgress);
 
 				if (progress < 1) {
 					tocAutoScrollFrame = requestAnimationFrame(step);
@@ -340,7 +351,7 @@ function initializeTableOfContents() {
 
 				isTocAutoScrolling = false;
 				tocAutoScrollFrame = null;
-				scrollingElement.scrollTop = targetY;
+				window.scrollTo(0, targetY);
 				if (history.replaceState) {
 					history.replaceState(null, "", `#${target.id}`);
 				}
@@ -390,6 +401,8 @@ function initializeTableOfContents() {
 			if (!link) return;
 
 			event.preventDefault();
+			event.stopPropagation();
+			link.blur();
 
 			const target = document.querySelector(link.getAttribute("href"));
 			if (target) {
@@ -427,6 +440,8 @@ function initializeTableOfContents() {
 				if (!event.matches) {
 					tocContainerElement.classList.remove("sticky");
 					tocContainerElement.classList.remove("is-compact");
+					tocContainerElement.classList.remove("has-been-sticky");
+					document.body.classList.remove("toc-overlay-active");
 				}
 				if (userHasToggledToc) return;
 				setTocOpenState(
@@ -449,13 +464,15 @@ function initializeTableOfContents() {
 					tocContainerElement.classList.remove("sticky");
 					tocContainerElement.classList.remove("is-compact");
 					wasSticky = false;
-					hasBeenSticky = false;
+					tocContainerElement.classList.remove("has-been-sticky");
 					return;
 				}
 
 				const isSticky = !entries[0]?.isIntersecting;
 				tocContainerElement.classList.toggle("sticky", isSticky);
-				hasBeenSticky = hasBeenSticky || isSticky;
+				if (isSticky) {
+					tocContainerElement.classList.add("has-been-sticky");
+				}
 
 				if (isSingleToc && isSticky && !wasSticky) {
 					keepTocOpenOnScroll = false;

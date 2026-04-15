@@ -402,13 +402,16 @@ body.hidden #toc-container.sticky:not(.open) .toc-container__icon--collapse {
 
 #toc-container .toc__link {
   display: flex;
-  align-items: center;
-  gap: .55rem;
-  padding: .35rem .6rem;
+  align-items: start;
+  gap: 0;
+  padding-block: 0;
+  padding-inline: 0;
   color: currentColor;
   text-decoration: none;
   font-size: 1rem;
   border-radius: .9rem;
+  line-height: 1.075;
+  text-wrap: balance;
   transition:
     color .18s ease,
     background-color .18s ease;

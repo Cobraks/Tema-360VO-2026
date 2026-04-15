@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.8 - 2026-04-15
+- Replaced the TOC anchor jump with a controlled smooth-scrolling routine so section navigation transitions more fluidly between headings.
+- Tightened TOC link spacing and text rhythm by removing inline padding and gap, aligning content from the top, and balancing wrapped titles.
+
 ## 3.0.7 - 2026-04-15
 - Refined the shared TOC toggle geometry and icon choreography so the closed sticky state stays proportioned and the left, center, and right controls align consistently.
 - Replaced the TOC collapse icon with the inward-arrow variant and tightened the tablet/desktop TOC width to `360px` from `783px` upward.

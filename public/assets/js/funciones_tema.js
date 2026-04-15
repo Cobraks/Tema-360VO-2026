@@ -246,6 +246,51 @@ function initializeTableOfContents() {
 			});
 		};
 
+		const smoothScrollToHeading = (target) => {
+			const prefersReducedMotion = window.matchMedia(
+				"(prefers-reduced-motion: reduce)",
+			).matches;
+			const scrollMarginTop =
+				parseFloat(window.getComputedStyle(target).scrollMarginTop) || 0;
+			const startY = window.scrollY;
+			const targetY = Math.max(
+				0,
+				target.getBoundingClientRect().top + startY - scrollMarginTop,
+			);
+
+			if (prefersReducedMotion || Math.abs(targetY - startY) < 2) {
+				window.scrollTo({ top: targetY, behavior: "auto" });
+				return;
+			}
+
+			const distance = targetY - startY;
+			const duration = Math.min(720, Math.max(360, Math.abs(distance) * 0.45));
+			const easeInOutCubic = (progress) =>
+				progress < 0.5
+					? 4 * progress * progress * progress
+					: 1 - Math.pow(-2 * progress + 2, 3) / 2;
+			const startTime = performance.now();
+
+			const step = (now) => {
+				const progress = Math.min(1, (now - startTime) / duration);
+				const easedProgress = easeInOutCubic(progress);
+
+				window.scrollTo({
+					top: startY + distance * easedProgress,
+					behavior: "auto",
+				});
+
+				if (progress < 1) {
+					requestAnimationFrame(step);
+					return;
+				}
+
+				window.scrollTo({ top: targetY, behavior: "auto" });
+			};
+
+			requestAnimationFrame(step);
+		};
+
 		let tocHtml = "<ul class='toc__list'>";
 		let idCounter = 0;
 		let headingNumbers = [0, 0, 0, 0, 0];
@@ -287,15 +332,7 @@ function initializeTableOfContents() {
 
 			const target = document.querySelector(link.getAttribute("href"));
 			if (target) {
-				const prefersReducedMotion = window.matchMedia(
-					"(prefers-reduced-motion: reduce)",
-				).matches;
-				requestAnimationFrame(() => {
-					target.scrollIntoView({
-						behavior: prefersReducedMotion ? "auto" : "smooth",
-						block: "start",
-					});
-				});
+				smoothScrollToHeading(target);
 			}
 
 			tocContainer

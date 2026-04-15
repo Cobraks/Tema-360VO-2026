@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.13 - 2026-04-15
+- Fine-tuned the mobile single floating controls so the TOC sits flush to the right edge while the search trigger offsets itself to the left with a clearer gap.
+- Restored a stronger material-style treatment for the newsletter input, eased the compact TOC closed-state sizing, and gave the mobile post content a little more inline breathing room.
+- Added right alignment helpers to the shared TOC container defaults.
+
 ## 3.0.12 - 2026-04-15
 - Refined the single-post mobile floating controls with a right-aligned search trigger, animated search/close icon swap, and cleaner spacing between the search and TOC buttons.
 - Softened the single hero typography, simplified the post content card container, restored a more polished newsletter form treatment, and hid action labels on narrower screens.

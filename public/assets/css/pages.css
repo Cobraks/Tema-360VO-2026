@@ -178,11 +178,13 @@ display: inline-flex;
 /*TOC*/
 #toc-container {
   position: relative;
+  right: 0;
   top: auto;
   display: flex;
   justify-content: end;
   width: 100%;
   margin: 1.5rem 0 2rem;
+  margin-block: 0;
   z-index: 30;
   transition: all .3s ease-in-out;
 }
@@ -310,8 +312,6 @@ display: inline-flex;
 }
 
 body.hidden #toc-container.sticky:not(.open) .toc-container__toggle {
-  width: 3.25rem;
-  min-height: 3.25rem;
   padding: 0;
   grid-template-columns: 1fr;
   justify-items: center;

@@ -1043,36 +1043,46 @@
   color: transparent;
   font-size: 0;
   line-height: 0;
+  padding: .4rem 1rem .2rem;
+  border-radius: 1rem;
+  background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.88));
+  box-shadow: 0 10px 24px rgba(15,15,15,.05);
 }
 .panel--subscribe :where(.wpcf7-form-control-wrap) { display: block; }
 .panel--subscribe :where(input[type="email"], input[type="text"], input[type="tel"]) {
   width: 100%;
-  min-height: 3.5rem;
-  border: 1px solid color-mix(in oklab, var(--line) 85%, white);
-  border-radius: 1rem;
-  padding: 1.15rem 1rem .55rem;
+  min-height: 3.25rem;
+  border: 0;
+  border-bottom: 1px solid color-mix(in oklab, var(--line) 92%, white);
+  border-radius: 0;
+  padding: 1.45rem 0 .45rem;
   font-size: var(--t-sm);
-  background: rgba(255,255,255,.96);
-  box-shadow: 0 8px 20px rgba(15,15,15,.04);
+  background: transparent;
+  box-shadow: none;
 }
 .panel--subscribe :where(.wpcf7-form label)::after {
   content: "Correo electrónico";
   position: absolute;
   left: 1rem;
-  top: 1rem;
+  top: .95rem;
   color: var(--muted);
   font-size: .78rem;
   line-height: 1;
   pointer-events: none;
-  transition: transform .14s ease, color .14s ease;
+  transform-origin: left center;
+  transition: transform .16s ease, color .16s ease;
 }
 .panel--subscribe :where(.wpcf7-form label:focus-within)::after {
   color: color-mix(in oklab, var(--brand-strong) 70%, black);
-  transform: translateY(-.28rem) scale(.96);
+  transform: translateY(-.3rem) scale(.94);
 }
 .panel--subscribe :where(.wpcf7-form label.has-value)::after {
   color: color-mix(in oklab, var(--brand-strong) 70%, black);
-  transform: translateY(-.28rem) scale(.96);
+  transform: translateY(-.3rem) scale(.94);
+}
+.panel--subscribe :where(input[type="email"], input[type="text"], input[type="tel"]):focus {
+  outline: none;
+  border-bottom-color: color-mix(in oklab, var(--brand) 55%, white);
 }
 .panel--subscribe :where(input[type="submit"], button[type="submit"], .wpcf7-submit) {
   width: 100%;
@@ -1375,7 +1385,7 @@
   .single-search {
     position: fixed;
     top: calc(var(--altura-breadcrumbsYheader) + 1rem);
-    right: var(--wrapper-padding);
+    right: calc(var(--wrapper-padding) + 1rem + 3rem);
     width: 3rem;
     z-index: 101;
     transition: width .28s cubic-bezier(.2, .7, .2, 1), top .3s ease-in-out;
@@ -1489,7 +1499,7 @@
   .layout--single .toc-container--single.sticky {
     position: fixed;
     top: calc(var(--altura-breadcrumbsYheader) + 1rem);
-    right: calc(var(--wrapper-padding) + 3.75rem);
+    right: var(--wrapper-padding);
     width: 3rem;
     max-width: none;
     margin: 0;
@@ -1564,6 +1574,10 @@
   .layout--single .toc-container--single .toc-container__content.show {
     overflow: auto;
     max-height: min(60svh, 28rem);
+  }
+
+  .post-card {
+    padding-inline: clamp(.65rem, 4vw, 1rem);
   }
 }
 

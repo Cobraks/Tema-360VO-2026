@@ -191,12 +191,12 @@ display: inline-flex;
 
 #toc-container.sticky {
   position: sticky;
-  top: calc(5rem + var(--altura-breadcrumbsYheader));
-  z-index: 98;
+  top: calc(1rem + var(--altura-breadcrumbsYheader));
+  z-index: 3;
 }
 
 .hidden #toc-container.sticky {
-  top: calc(5rem + var(--altura-header));
+  top: calc(1rem + var(--altura-header));
 }
 
 #toc-container.end-of-container {

@@ -1364,7 +1364,7 @@
 }
 
 .post-card :where(h2, h3) {
-  scroll-margin-top: calc(var(--altura-header) + 1.5rem);
+  scroll-margin-top: calc(var(--altura-breadcrumbsYheader) + 2rem);
 }
 
 /* Contenido dentro del post: no pisa pages.css, solo refuerza */
@@ -1412,7 +1412,7 @@
   }
 
   .single-search.is-open {
-    width: min(18.5rem, calc(100vw - (var(--wrapper-padding) * 2)));
+    width: calc(100% - var(--wrapper-padding));
   }
 
   .single-search__toggle {
@@ -1532,6 +1532,8 @@
   }
 
   .layout--single .toc-container--single #menu-placeholder {
+    display: flex;
+    justify-content: end;
     overflow: visible;
   }
 

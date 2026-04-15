@@ -337,16 +337,13 @@ function initializeTableOfContents() {
 
 			isTocAutoScrolling = true;
 			const distance = targetY - startY;
-			const duration = Math.min(1600, Math.max(720, Math.abs(distance) * 0.9));
-			const easeInOutQuart = (progress) =>
-				progress < 0.5
-					? 8 * Math.pow(progress, 4)
-					: 1 - Math.pow(-2 * progress + 2, 4) / 2;
+			const duration = Math.min(980, Math.max(440, Math.abs(distance) * 0.42));
+			const easeOutCubic = (progress) => 1 - Math.pow(1 - progress, 3);
 			const startTime = performance.now();
 
 			const step = (now) => {
 				const progress = Math.min(1, (now - startTime) / duration);
-				const easedProgress = easeInOutQuart(progress);
+				const easedProgress = easeOutCubic(progress);
 
 				setPageScrollTop(startY + distance * easedProgress);
 
@@ -425,7 +422,7 @@ function initializeTableOfContents() {
 				setTocOpenState(false, { animateItems: false });
 				window.setTimeout(() => {
 					smoothScrollToHeading(target);
-				}, 220);
+				}, 150);
 				return;
 			}
 

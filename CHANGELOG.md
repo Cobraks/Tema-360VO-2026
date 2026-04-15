@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.25 - 2026-04-16
+- Sped up the scripted TOC section scrolling, tightened the close-to-scroll handoff on mobile, and increased the single-post heading offset so headers no longer overlap section titles.
+- Fixed the mobile single TOC expansion direction by right-aligning the placeholder wrapper and widened the open mobile search field to fill the available row more naturally.
+
 ## 3.0.24 - 2026-04-16
 - Locked page scrolling while the mobile single TOC is open, keeping breadcrumbs and header state stable while the TOC panel itself remains scrollable.
 - Updated TOC link selection so the mobile panel closes completely before running the scripted section scroll, and removed the reduced-motion branch from that TOC navigation flow.

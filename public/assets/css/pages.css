@@ -191,7 +191,7 @@ display: inline-flex;
 
 #toc-container.sticky {
   position: sticky;
-  top: calc(1rem + var(--altura-breadcrumbsYheader));
+  top: calc(5rem + var(--altura-breadcrumbsYheader));
   z-index: 98;
 }
 
@@ -307,21 +307,21 @@ display: inline-flex;
   transform: translateX(0) rotate(0deg) scale(1);
 }
 
-body.hidden #toc-container.sticky:not(.open) .toc-container__toggle {
+.toc-container.sticky.is-compact:not(.open) .toc-container__toggle {
   padding: 0;
   grid-template-columns: 1fr;
   justify-items: center;
   border-radius: 999px;
 }
 
-body.hidden #toc-container.sticky:not(.open) .toc-container__text,
-body.hidden #toc-container.sticky:not(.open) .toc-container__icon--expand,
-body.hidden #toc-container.sticky:not(.open) .toc-container__icon--collapse {
+.toc-container.sticky.is-compact:not(.open) .toc-container__text,
+.toc-container.sticky.is-compact:not(.open) .toc-container__icon--expand,
+.toc-container.sticky.is-compact:not(.open) .toc-container__icon--collapse {
   display: none;
 }
 
 @media (min-width:783px) {
-  body.hidden #toc-container.sticky:not(.open) .toc-container__toggle {
+  .toc-container.sticky.is-compact:not(.open) .toc-container__toggle {
     width: 100%;
     padding: .85rem 1rem;
     grid-template-columns: auto minmax(0, 1fr) auto;
@@ -329,16 +329,16 @@ body.hidden #toc-container.sticky:not(.open) .toc-container__icon--collapse {
     border-radius: 1rem;
   }
 
-  body.hidden #toc-container.sticky:not(.open) .toc-container__text {
+  .toc-container.sticky.is-compact:not(.open) .toc-container__text {
     display: block;
   }
 
-  body.hidden #toc-container.sticky:not(.open) .toc-container__icon--expand,
-  body.hidden #toc-container.sticky:not(.open) .toc-container__icon--collapse {
+  .toc-container.sticky.is-compact:not(.open) .toc-container__icon--expand,
+  .toc-container.sticky.is-compact:not(.open) .toc-container__icon--collapse {
     display: inline-flex;
   }
 
-  body.hidden #toc-container.sticky:not(.open) .toc-container__icon--toc {
+  .toc-container.sticky.is-compact:not(.open) .toc-container__icon--toc {
     display: inline-flex;
   }
 }
@@ -959,7 +959,7 @@ left: 50%;
       grid-column: 1 / 13;
       margin-block: 0;
       position: sticky;
-      top: calc(2rem + var(--altura-breadcrumbsYheader));
+      top: calc(5rem + var(--altura-breadcrumbsYheader));
       justify-self: start;
       align-self: start;
     }

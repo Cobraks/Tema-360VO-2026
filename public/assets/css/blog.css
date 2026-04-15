@@ -1232,8 +1232,7 @@
   line-height: 1.5;
   color: var(--muted);
   max-width: none;
-  border-left: solid 1px var(--neutral70);
-  padding-left: 2rem;
+  padding-left: 0;
   flex: 1;
 }
 .post-hero__excerpt p {
@@ -1273,6 +1272,13 @@
   }
   .post-hero__excerpt {
     padding-left: 0;
+  }
+}
+
+@media (min-width: 900px) {
+  .post-hero__excerpt {
+    border-left: solid 1px var(--neutral70);
+    padding-left: 2rem;
   }
 }
 

@@ -227,7 +227,27 @@ function initializeTableOfContents() {
 		tocToggle.classList.add("show");
 
 		let userHasToggledToc = false;
+		let keepTocOpenOnScroll = false;
+		let autoCloseScrollCount = 0;
+		let autoCloseScrollLocked = false;
+		let lastTrackedScrollY = window.scrollY;
 		const toggleText = tocToggle.querySelector(".toc-container__text");
+
+		const resetAutoCloseTracking = () => {
+			autoCloseScrollCount = 0;
+			autoCloseScrollLocked = false;
+			lastTrackedScrollY = window.scrollY;
+		};
+
+		const syncCompactState = () => {
+			const shouldCompact =
+				mobileTocQuery.matches &&
+				tocContainerElement.classList.contains("sticky") &&
+				!tocContainerElement.classList.contains("open") &&
+				userHasToggledToc;
+
+			tocContainerElement.classList.toggle("is-compact", shouldCompact);
+		};
 
 		const setTocOpenState = (isOpen, { animateItems = true } = {}) => {
 			tocContainer.classList.toggle("show", isOpen);
@@ -259,6 +279,12 @@ function initializeTableOfContents() {
 
 				setTimeout(() => item.classList.add("show"), 36 + idx * 18);
 			});
+
+			if (isOpen) {
+				resetAutoCloseTracking();
+			}
+
+			syncCompactState();
 		};
 
 		const smoothScrollToHeading = (target) => {
@@ -377,8 +403,14 @@ function initializeTableOfContents() {
 			if (isTocToggling) return;
 			isTocToggling = true;
 			userHasToggledToc = true;
+			const willOpen = !tocContainerElement.classList.contains("open");
+			keepTocOpenOnScroll = willOpen;
 
-			setTocOpenState(!tocContainerElement.classList.contains("open"));
+			if (!willOpen) {
+				resetAutoCloseTracking();
+			}
+
+			setTocOpenState(willOpen);
 
 			setTimeout(() => {
 				isTocToggling = false;
@@ -389,6 +421,7 @@ function initializeTableOfContents() {
 			mobileTocQuery.addEventListener("change", (event) => {
 				if (!event.matches) {
 					tocContainerElement.classList.remove("sticky");
+					tocContainerElement.classList.remove("is-compact");
 				}
 				if (userHasToggledToc) return;
 				setTocOpenState(
@@ -409,6 +442,7 @@ function initializeTableOfContents() {
 			(entries) => {
 				if (!mobileTocQuery.matches) {
 					tocContainerElement.classList.remove("sticky");
+					tocContainerElement.classList.remove("is-compact");
 					return;
 				}
 
@@ -416,11 +450,47 @@ function initializeTableOfContents() {
 					"sticky",
 					!entries[0]?.isIntersecting,
 				);
+				syncCompactState();
 			},
 			{ threshold: 0, rootMargin: "0px 0px 0px 0px" },
 		);
 
 		stickyObserver.observe(stickySentinel);
+
+		window.addEventListener(
+			"scroll",
+			() => {
+				if (
+					!mobileTocQuery.matches ||
+					!keepTocOpenOnScroll ||
+					!tocContainerElement.classList.contains("sticky") ||
+					!tocContainerElement.classList.contains("open") ||
+					isTocAutoScrolling
+				) {
+					lastTrackedScrollY = window.scrollY;
+					return;
+				}
+
+				const currentScrollY = window.scrollY;
+				const scrollDelta = currentScrollY - lastTrackedScrollY;
+				lastTrackedScrollY = currentScrollY;
+
+				if (scrollDelta <= 18 || autoCloseScrollLocked) return;
+
+				autoCloseScrollLocked = true;
+				autoCloseScrollCount += 1;
+
+				window.setTimeout(() => {
+					autoCloseScrollLocked = false;
+				}, 180);
+
+				if (autoCloseScrollCount < 3) return;
+
+				keepTocOpenOnScroll = false;
+				setTocOpenState(false, { animateItems: false });
+			},
+			{ passive: true },
+		);
 
 		if ("IntersectionObserver" in window) {
 			const parent = tocContainerElement.parentElement;
@@ -434,6 +504,7 @@ function initializeTableOfContents() {
 				(entries) => {
 					if (entries[0]?.isIntersecting) {
 						tocContainerElement.classList.add("end-of-container");
+						keepTocOpenOnScroll = false;
 						setTocOpenState(false, { animateItems: false });
 					} else {
 						tocContainerElement.classList.remove("end-of-container");

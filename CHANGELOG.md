@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.16 - 2026-04-15
+- Stabilized the TOC toggle so its compact icon-only mode now depends on the TOC state itself instead of the global hidden body state.
+- Preserved the user's open or closed choice, added an auto-close after three downward scroll gestures when the TOC was manually opened, and adjusted the sticky offsets plus the single hero excerpt divider behavior.
+
 ## 3.0.15 - 2026-04-15
 - Corrected the shared hidden sticky TOC offset and removed the temporary fixed width from the single-post mobile TOC placeholder wrapper.
 

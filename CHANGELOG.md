@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.29 - 2026-04-16
+- Shifted the shared page TOC to columns 7–13 from 783px upward and lowered its sticky offset so the mid-width layout breathes more naturally.
+- Extended the shared TOC compact-state, blur overlay, and page scroll lock through 1599px so the tablet/intermediate layout no longer re-expands the closed toggle when scrolling back up.
+
 ## 3.0.28 - 2026-04-16
 - Right-aligned the shared TOC toggle from 783px upward so the tablet breakpoint keeps the control anchored to the right edge without disturbing the larger-screen TOC interaction states.
 

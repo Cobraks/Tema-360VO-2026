@@ -211,6 +211,9 @@ function initializeTableOfContents() {
 		const content = scope.querySelector(".entry-content");
 		const isSingleToc =
 			tocContainerElement?.classList.contains("toc-container--single");
+		const compactTocQuery = isSingleToc
+			? mobileTocQuery
+			: window.matchMedia("(max-width: 1599px)");
 		const defaultOpenOnMobile = !isSingleToc;
 
 		if (!tocContainer || !tocContainerElement || !tocToggle || !content) return;
@@ -249,9 +252,9 @@ function initializeTableOfContents() {
 
 		const syncTocOverlayState = () => {
 			const shouldLockPageScroll =
-				isSingleToc &&
-				mobileTocQuery.matches &&
-				tocContainerElement.classList.contains("open");
+				tocContainerElement.classList.contains("open") &&
+				((isSingleToc && mobileTocQuery.matches) ||
+					(!isSingleToc && compactTocQuery.matches));
 
 			document.body.classList.toggle(
 				"toc-overlay-active",
@@ -265,7 +268,7 @@ function initializeTableOfContents() {
 				"has-been-sticky",
 			);
 			const shouldCompact =
-				mobileTocQuery.matches &&
+				compactTocQuery.matches &&
 				((isSingleToc &&
 					!tocContainerElement.classList.contains("open") &&
 					hasBeenSticky) ||
@@ -463,8 +466,8 @@ function initializeTableOfContents() {
 			setTocOpenState(false, { animateItems: false });
 		});
 
-		if (typeof mobileTocQuery.addEventListener === "function") {
-			mobileTocQuery.addEventListener("change", (event) => {
+		if (typeof compactTocQuery.addEventListener === "function") {
+			compactTocQuery.addEventListener("change", (event) => {
 				if (!event.matches) {
 					tocContainerElement.classList.remove("sticky");
 					tocContainerElement.classList.remove("is-compact");
@@ -489,7 +492,7 @@ function initializeTableOfContents() {
 
 		const stickyObserver = new IntersectionObserver(
 			(entries) => {
-				if (!mobileTocQuery.matches) {
+				if (!compactTocQuery.matches) {
 					tocContainerElement.classList.remove("sticky");
 					tocContainerElement.classList.remove("is-compact");
 					wasSticky = false;
@@ -522,7 +525,7 @@ function initializeTableOfContents() {
 			"scroll",
 			() => {
 				if (
-					!mobileTocQuery.matches ||
+					!compactTocQuery.matches ||
 					!keepTocOpenOnScroll ||
 					!tocContainerElement.classList.contains("sticky") ||
 					!tocContainerElement.classList.contains("open") ||

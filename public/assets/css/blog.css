@@ -465,7 +465,7 @@
     gap: 2rem;
   }
 
-  .layout--single .toc-container--single {
+  .layout--single #toc-container.toc-container--single {
     grid-column: 1 / 4;
     grid-row: 1;
   }

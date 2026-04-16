@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.0.33 - 2026-04-16
+- Increased the single-post desktop TOC selector specificity at 1600px and above so it correctly overrides the shared page TOC grid placement and stays pinned to columns 1–4.
+
 ## 3.0.32 - 2026-04-16
 - Removed the shared page TOC max-width from 783px upward and moved the single-post desktop TOC fully into columns 1–4 at 1600px and above.
 

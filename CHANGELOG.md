@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.2.9 - 2026-04-16
+- Hid the shared TOC container by default in the server-rendered markup so pages or posts without headings no longer flash an empty TOC button before JavaScript decides whether the component should exist.
+
 ## 3.2.8 - 2026-04-16
 - Removed the back-to-top button's dependency on a delayed visibility flip so its timed hide/show states now animate with opacity and transform instead of feeling like an instant display toggle.
 - Kept the footer docking offset active during the hide/show transition, preventing the button from snapping to a different vertical position before the animation completes.

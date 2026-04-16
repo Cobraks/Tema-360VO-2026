@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 /**
  * Constantes del tema
  */
-define('THEME_VERSION', '3.2.8');
+define('THEME_VERSION', '3.2.9');
 define('THEME_DIR', get_template_directory());
 define('THEME_URI', get_template_directory_uri());
 
@@ -166,7 +166,7 @@ function th360_render_table_of_contents(array $args = []): void
         array_filter(array_merge(['toc-container'], (array) $args['classes']))
     );
 ?>
-    <aside id="toc-container" class="<?php echo esc_attr(implode(' ', $classes)); ?>" aria-label="<?php echo esc_attr($args['label']); ?>">
+    <aside id="toc-container" class="<?php echo esc_attr(implode(' ', $classes)); ?>" aria-label="<?php echo esc_attr($args['label']); ?>" hidden>
         <div id="menu-placeholder">
             <button class="toc-container__toggle" type="button" aria-expanded="false" aria-controls="<?php echo esc_attr($args['content_id']); ?>" aria-label="<?php echo esc_attr($args['toggle_aria_label']); ?>">
                 <span class="toc-container__icon toc-container__icon--toc"><?php echo E360VO_Icon::get('toc_menu', ['aria-hidden' => 'true']); ?></span>

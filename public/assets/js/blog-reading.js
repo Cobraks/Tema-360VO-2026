@@ -4,13 +4,16 @@
 	const root = document.querySelector("[data-reading-progress]");
 	const bar = root?.querySelector("[data-reading-progress-bar]");
 	const target = document.querySelector("[data-reading-progress-target]");
+	const startTarget = document.querySelector("main.main--blog");
+	const endTarget = target?.closest(".post-card") || target;
 
-	if (!root || !bar || !target) {
+	if (!root || !bar || !target || !startTarget || !endTarget) {
 		return;
 	}
 
-	let articleTop = 0;
-	let articleHeight = 0;
+	let startTop = 0;
+	let endTop = 0;
+	let endHeight = 0;
 	let viewportHeight = window.innerHeight;
 	let ticking = false;
 
@@ -36,9 +39,11 @@
 	};
 
 	const measure = () => {
-		const rect = target.getBoundingClientRect();
-		articleTop = window.scrollY + rect.top;
-		articleHeight = target.offsetHeight;
+		const startRect = startTarget.getBoundingClientRect();
+		const endRect = endTarget.getBoundingClientRect();
+		startTop = window.scrollY + startRect.top;
+		endTop = window.scrollY + endRect.top;
+		endHeight = endTarget.offsetHeight;
 		viewportHeight = window.innerHeight;
 	};
 
@@ -46,10 +51,10 @@
 		ticking = false;
 
 		const topOffset = getTopOffset();
-		const start = Math.max(0, articleTop - topOffset);
+		const start = Math.max(0, startTop - topOffset);
 		const end = Math.max(
 			start + 1,
-			articleTop + articleHeight - viewportHeight + topOffset,
+			endTop + endHeight - viewportHeight + topOffset,
 		);
 		const progress = Math.min(
 			1,
@@ -81,6 +86,9 @@
 
 	if ("ResizeObserver" in window) {
 		const resizeObserver = new ResizeObserver(handleResize);
-		resizeObserver.observe(target);
+		resizeObserver.observe(startTarget);
+		if (endTarget !== startTarget) {
+			resizeObserver.observe(endTarget);
+		}
 	}
 })();

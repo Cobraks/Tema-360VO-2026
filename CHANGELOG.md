@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.1 - 2026-04-16
+- Updated the single-post reading bar so it hides whenever breadcrumbs are visible, reappears when they collapse, and uses a cleaner single-color fill with a subtle motion treatment.
+- Expanded the reading-range calculation to start from the beginning of the single page and finish at the end of the article card, instead of beginning only at the entry-content block.
+
 ## 3.1.0 - 2026-04-16
 - Added a dedicated single-post reading progress bar fixed under the header or breadcrumbs, with its own CSS and JS loaded only on blog single pages.
 - Scripted the progress calculation against the article body using requestAnimationFrame plus resize observation, keeping the bar synchronized with scroll depth through to the end of the post.

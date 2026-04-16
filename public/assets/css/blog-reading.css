@@ -1,28 +1,30 @@
 .reading-progress {
   position: fixed;
   inset: auto 0 0;
-  top: var(--altura-breadcrumbsYheader);
+  top: var(--altura-header);
   height: 4px;
   z-index: 97;
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
-  transition: top .3s ease-in-out, opacity .18s ease-out;
-}
-
-body.hidden .reading-progress {
-  top: var(--altura-header);
+  transform: translateY(-8px) scaleX(.985);
+  transform-origin: center top;
+  will-change: opacity, transform;
+  transition:
+    opacity .14s ease-out,
+    transform .18s cubic-bezier(.2, .7, .2, 1),
+    visibility 0s linear .18s;
 }
 
 .logged-in .reading-progress {
-  top: calc(var(--altura-breadcrumbsYheader) + var(--altura-WpAdminBar));
-}
-
-.logged-in.hidden .reading-progress {
   top: calc(var(--altura-header) + var(--altura-WpAdminBar));
 }
 
-.reading-progress.is-ready {
+body.hidden .reading-progress.is-ready {
   opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scaleX(1);
+  transition-delay: .06s, .06s, 0s;
 }
 
 .reading-progress__track {
@@ -40,12 +42,8 @@ body.hidden .reading-progress {
   display: block;
   transform: scaleX(0);
   transform-origin: left center;
-  background: linear-gradient(
-    90deg,
-    color-mix(in oklab, var(--primary30) 88%, white),
-    color-mix(in oklab, var(--primary50) 92%, white)
-  );
-  box-shadow: 0 0 18px color-mix(in oklab, var(--primary40) 28%, transparent);
+  background: color-mix(in oklab, var(--primary40) 92%, white);
+  box-shadow: 0 0 14px color-mix(in oklab, var(--primary40) 24%, transparent);
   transition: transform .14s linear;
 }
 

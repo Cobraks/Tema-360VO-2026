@@ -463,4 +463,18 @@ $logo_svg_safe = ($logo_svg_raw !== '') ? theme360_prepare_inline_logo_svg($logo
     <?php
     get_template_part('template-parts/navigation/breadcrumbs');
     theme360_breadcrumbs();
+
+    if (is_page() || is_singular('post')) :
+    ?>
+        <button
+            class="scroll-top-button"
+            type="button"
+            data-scroll-top
+            aria-label="<?php esc_attr_e('Volver arriba', '360vo-theme'); ?>"
+            title="<?php esc_attr_e('Volver arriba', '360vo-theme'); ?>">
+            <span class="scroll-top-button__icon" aria-hidden="true"><?php echo E360VO_Icon::get('scroll_up', ['width' => 20, 'height' => 20]); ?></span>
+            <span class="scroll-top-button__label">Subir</span>
+        </button>
+    <?php
+    endif;
     ?>

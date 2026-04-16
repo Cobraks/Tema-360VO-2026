@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 /**
  * Constantes del tema
  */
-define('THEME_VERSION', '3.2.1');
+define('THEME_VERSION', '3.2.2');
 define('THEME_DIR', get_template_directory());
 define('THEME_URI', get_template_directory_uri());
 
@@ -318,6 +318,7 @@ add_filter('script_loader_tag', function ($tag, $handle) {
         '360vo-footer-map-lazy', // opcional, si quieres defer también aquí
         '360vo-blog-js',
         '360vo-header-context',
+        '360vo-scroll-top',
     ];
 
 

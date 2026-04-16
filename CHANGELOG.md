@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.2 - 2026-04-16
+- Added a dedicated back-to-top button for pages and blog single posts, with icon-only mobile treatment, icon-plus-label from tablet upward, and a smoother scripted return-to-top animation.
+- Scoped the new control to its own CSS and JS assets, keeping the component fixed at the lower right with restrained motion and keyboard-accessible focus behavior.
+
 ## 3.2.1 - 2026-04-16
 - Removed the header-context transform from the desktop primary navigation so the animated context switch no longer shifts the menu away from its original centered position.
 

@@ -182,6 +182,23 @@ class E360VO_EnqueueScripts
                 $header_context_js['version'],
                 true
             );
+
+            $scroll_top_css = E360VO_AssetHelper::get_asset_info('/public/assets/css/scroll-top', 'css');
+            wp_enqueue_style(
+                '360vo-scroll-top',
+                $scroll_top_css['url'],
+                ['360vo-theme-style'],
+                $scroll_top_css['version']
+            );
+
+            $scroll_top_js = E360VO_AssetHelper::get_asset_info('/public/assets/js/scroll-top', 'js');
+            wp_enqueue_script(
+                '360vo-scroll-top',
+                $scroll_top_js['url'],
+                [],
+                $scroll_top_js['version'],
+                true
+            );
         }
     }
 

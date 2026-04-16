@@ -16,15 +16,15 @@
 	let lastDirection = "";
 	let ticking = false;
 	let scrollFrame = null;
-	let idleTimer = null;
+	let visibilityTimer = null;
 	let isVisible = false;
 
 	const getCurrentY = () => window.scrollY || window.pageYOffset || 0;
 
-	const clearIdleTimer = () => {
-		if (!idleTimer) return;
-		window.clearTimeout(idleTimer);
-		idleTimer = null;
+	const clearVisibilityTimer = () => {
+		if (!visibilityTimer) return;
+		window.clearTimeout(visibilityTimer);
+		visibilityTimer = null;
 	};
 
 	const setVisible = (nextVisible) => {
@@ -56,15 +56,16 @@
 		button.classList.toggle("is-near-footer", overlap > 0);
 	};
 
-	const scheduleIdleReveal = (thresholdReached) => {
-		clearIdleTimer();
+	const scheduleVisibilityHide = (thresholdReached) => {
+		clearVisibilityTimer();
 
 		if (!thresholdReached) return;
 
-		idleTimer = window.setTimeout(() => {
+		visibilityTimer = window.setTimeout(() => {
 			setVisible(false);
+			setCompact(false);
 			updateFooterDocking();
-		}, 1100);
+		}, 3000);
 	};
 
 	const updateVisibility = () => {
@@ -79,7 +80,7 @@
 			upwardGestures = 0;
 			downwardGestures = 0;
 			lastDirection = "";
-			clearIdleTimer();
+			clearVisibilityTimer();
 			setCompact(false);
 			setVisible(false);
 			updateFooterDocking();
@@ -91,35 +92,31 @@
 			if (lastDirection !== "down") {
 				lastDirection = "down";
 				downwardGestures = 0;
-			}
-
-			downwardGestures += 1;
-			upwardGestures = 0;
-			setVisible(true);
-			setCompact(true);
-			if (downwardGestures >= 2) {
-				setVisible(false);
-			}
-			scheduleIdleReveal(thresholdReached);
-		} else if (delta < -14) {
-			clearIdleTimer();
-
-			if (lastDirection !== "up") {
-				lastDirection = "up";
 				upwardGestures = 0;
 			}
 
-			upwardGestures += 1;
-			downwardGestures = 0;
-
-			if (upwardGestures >= 2) {
-				setVisible(true);
-				setCompact(false);
+			downwardGestures += 1;
+			setVisible(true);
+			setCompact(true);
+			scheduleVisibilityHide(thresholdReached);
+		} else if (delta < -14) {
+			if (lastDirection !== "up") {
+				lastDirection = "up";
+				upwardGestures = 0;
+				downwardGestures = 0;
 			}
 
-			scheduleIdleReveal(thresholdReached);
+			upwardGestures += 1;
+
+			if (upwardGestures >= 3) {
+				setVisible(true);
+				setCompact(false);
+				scheduleVisibilityHide(thresholdReached);
+			} else {
+				clearVisibilityTimer();
+			}
 		} else {
-			scheduleIdleReveal(thresholdReached);
+			scheduleVisibilityHide(thresholdReached);
 		}
 
 		updateFooterDocking();
@@ -171,7 +168,7 @@
 	};
 
 	button.addEventListener("click", () => {
-		clearIdleTimer();
+		clearVisibilityTimer();
 		button.classList.add("is-pressed");
 		window.setTimeout(() => {
 			button.classList.remove("is-pressed");

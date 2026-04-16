@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.6 - 2026-04-16
+- Reworked the back-to-top visibility flow so downward scrolling shows the compact icon-only control immediately and keeps it alive for three seconds after the last downward gesture, while upward scrolling now requires three distinct gestures before revealing the full button.
+- Tightened the direction switching logic and timer resets so quick reversals between downward and upward scrolling feel more natural and no longer snap the button into the wrong state.
+
 ## 3.2.5 - 2026-04-16
 - Limited the footer-edge docking behavior of the back-to-top button to widths from `783px` upward, avoiding jumpy repositioning on mobile while keeping the cleaner footer alignment on larger screens.
 - Changed the idle behavior so the button now hides completely after a short pause without scrolling instead of lingering on screen.

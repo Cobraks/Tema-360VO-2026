@@ -3,6 +3,7 @@
 
 	const button = document.querySelector("[data-scroll-top]");
 	const footerTopSection = document.querySelector(".ft-top");
+	const footerDockQuery = window.matchMedia("(min-width: 783px)");
 
 	if (!button) {
 		return;
@@ -40,7 +41,7 @@
 	};
 
 	const updateFooterDocking = () => {
-		if (!footerTopSection || !isVisible) {
+		if (!footerDockQuery.matches || !footerTopSection || !isVisible) {
 			button.style.setProperty("--scroll-top-offset-y", "0px");
 			button.classList.remove("is-near-footer");
 			return;
@@ -61,10 +62,9 @@
 		if (!thresholdReached) return;
 
 		idleTimer = window.setTimeout(() => {
-			setVisible(true);
-			setCompact(false);
+			setVisible(false);
 			updateFooterDocking();
-		}, 540);
+		}, 1100);
 	};
 
 	const updateVisibility = () => {
@@ -95,6 +95,7 @@
 
 			downwardGestures += 1;
 			upwardGestures = 0;
+			setVisible(true);
 			setCompact(true);
 			if (downwardGestures >= 2) {
 				setVisible(false);
@@ -115,12 +116,10 @@
 				setVisible(true);
 				setCompact(false);
 			}
+
+			scheduleIdleReveal(thresholdReached);
 		} else {
 			scheduleIdleReveal(thresholdReached);
-		}
-
-		if (!isVisible && currentY > threshold * 1.35) {
-			setVisible(true);
 		}
 
 		updateFooterDocking();
@@ -192,6 +191,9 @@
 		{ passive: true },
 	);
 	window.addEventListener("load", requestVisibilityUpdate);
+	if (typeof footerDockQuery.addEventListener === "function") {
+		footerDockQuery.addEventListener("change", requestVisibilityUpdate);
+	}
 
 	updateVisibility();
 })();

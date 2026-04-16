@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.5 - 2026-04-16
+- Limited the footer-edge docking behavior of the back-to-top button to widths from `783px` upward, avoiding jumpy repositioning on mobile while keeping the cleaner footer alignment on larger screens.
+- Changed the idle behavior so the button now hides completely after a short pause without scrolling instead of lingering on screen.
+
 ## 3.2.4 - 2026-04-16
 - Refined the back-to-top button so it compacts to icon-only while scrolling down, hides more intentionally during continued downward reading, and reappears after upward gestures or a short idle pause.
 - Added a footer-aware docking offset that lifts the button toward the top edge of the featured footer section instead of leaving it floating over the legal/footer area.

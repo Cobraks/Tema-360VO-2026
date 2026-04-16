@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.1.2 - 2026-04-16
+- Hid the single-post reading bar again when the blog shell is about to scroll out of view, so it clears away before the footer area takes over.
+
 ## 3.1.1 - 2026-04-16
 - Updated the single-post reading bar so it hides whenever breadcrumbs are visible, reappears when they collapse, and uses a cleaner single-color fill with a subtle motion treatment.
 - Expanded the reading-range calculation to start from the beginning of the single page and finish at the end of the article card, instead of beginning only at the entry-content block.

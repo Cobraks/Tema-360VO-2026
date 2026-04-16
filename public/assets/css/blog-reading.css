@@ -27,6 +27,13 @@ body.hidden .reading-progress.is-ready {
   transition-delay: .06s, .06s, 0s;
 }
 
+body.hidden .reading-progress.is-ready.is-near-footer {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scaleX(.985);
+  transition-delay: 0s, 0s, .14s;
+}
+
 .reading-progress__track {
   width: 100%;
   height: 100%;

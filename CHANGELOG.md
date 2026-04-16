@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.7 - 2026-04-16
+- Tightened the compact back-to-top state so the hidden label no longer leaves behind extra gap or width, keeping the control truly icon-sized when the text collapses.
+- Smoothed the button enter/exit motion from below the viewport with a fuller translate-and-scale transition, avoiding the abrupt clipped appearance during visibility changes.
+
 ## 3.2.6 - 2026-04-16
 - Reworked the back-to-top visibility flow so downward scrolling shows the compact icon-only control immediately and keeps it alive for three seconds after the last downward gesture, while upward scrolling now requires three distinct gestures before revealing the full button.
 - Tightened the direction switching logic and timer resets so quick reversals between downward and upward scrolling feel more natural and no longer snap the button into the wrong state.

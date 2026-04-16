@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.30 - 2026-04-16
+- Repositioned the shared page TOC across the intermediate breakpoints, added an explicit 1080px placement, and reinforced the shared blur overlay through 1599px.
+- Refined the single subscribe panel styling with calmer focus rings, larger help icon, tighter heading spacing, a shorter subscribe button, and smoother sticky offsets for the desktop aside.
+
 ## 3.0.29 - 2026-04-16
 - Shifted the shared page TOC to columns 7–13 from 783px upward and lowered its sticky offset so the mid-width layout breathes more naturally.
 - Extended the shared TOC compact-state, blur overlay, and page scroll lock through 1599px so the tablet/intermediate layout no longer re-expands the closed toggle when scrolling back up.

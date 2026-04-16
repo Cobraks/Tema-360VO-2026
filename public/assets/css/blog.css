@@ -67,7 +67,7 @@
 .blog :where(a, button, input, select, textarea):focus-visible {
   outline: 2px solid var(--brand);
   outline-offset: 0;
-  border-radius: 12px;
+  border-radius: 0;
 }
 
 .blog .sr-only {
@@ -441,8 +441,13 @@
     grid-column: 9 / -1;
     grid-row: 2;
     position: sticky;
-    top: calc(var(--altura-header) + 1.5rem);
+    top: calc(var(--altura-header) + 4.5rem);
     align-self: start;
+    transition: all .35s ease-in-out;
+  }
+
+  .hidden .layout--single .aside--single {
+    top: calc(var(--altura-header) + 2.5rem);
   }
 }
 
@@ -1009,6 +1014,7 @@
   align-items: center;
   justify-content: space-between;
   gap: .75rem;
+  margin-bottom: 1rem;
 }
 .panel__help-btn {
   width: auto;
@@ -1024,8 +1030,8 @@
   cursor: pointer;
 }
 .panel__help-btn .ayuda_garantia__icon {
-  width: 18px;
-  height: 18px;
+  width: 28px;
+  height: 28px;
 }
 .panel__tip {
   margin: 0 0 .85rem 0;
@@ -1127,22 +1133,23 @@
 }
 .panel--subscribe :where(input[type="submit"], button[type="submit"], .wpcf7-submit) {
   width: 100%;
-  min-height: 3.5rem;
+  min-height: 4rem;
+  height: 4rem;
   border-radius: 999px;
-  padding: .9rem 1.15rem;
+  padding: .75rem 1.15rem;
   font-size: var(--t-sm);
   font-weight: var(--fw-s);
   border: 1px solid transparent;
-  background: var(--primary20);
-  color: #fff;
+  background: color-mix(in oklab, var(--primary20) 88%, var(--neutral10));
+  color: var(--neutral100);
   cursor: pointer;
-  box-shadow: 0 12px 28px rgba(15,15,15,.08);
-  transition: background-color .16s ease, transform .16s ease, box-shadow .16s ease;
+  box-shadow: 0 10px 24px rgba(15,15,15,.08);
+  transition: background-color .16s ease, transform .16s ease, box-shadow .16s ease, border-color .16s ease;
 }
 .panel--subscribe :where(input[type="submit"], button[type="submit"], .wpcf7-submit):hover {
-  background: var(--primary15);
+  background: color-mix(in oklab, var(--primary15) 90%, var(--neutral5));
   transform: translateY(-1px);
-  box-shadow: 0 16px 30px rgba(15,15,15,.1);
+  box-shadow: 0 14px 30px rgba(15,15,15,.1);
 }
 
 .cars {

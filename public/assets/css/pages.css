@@ -966,7 +966,9 @@ left: 50%;
     
     .toc-container__toggle {
       height: 3rem;
+      min-height: 0;
       font-size: 1rem;
+      border-radius: 4rem;
       margin-left: auto;
       margin-right: 0;
     }
@@ -1013,6 +1015,18 @@ left: 50%;
     align-self: center !important;
   }
 
+  .wp-block-columns {
+    column-gap: 1.5rem;
+  }
+
+  }
+
+  @media (min-width:1080px) and (max-width:1599px) {
+    #toc-container {
+      grid-column: 4 / 9;
+    }
+  }
+
   @media (min-width:783px) and (max-width:1599px) {
     body::after {
       content: "";
@@ -1035,12 +1049,6 @@ left: 50%;
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
     }
-  }
-  
-  .wp-block-columns {
-    column-gap: 1.5rem;
-  }
-
   }
 
   @media (min-width:900px) {

@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.0.32 - 2026-04-16
+- Removed the shared page TOC max-width from 783px upward and moved the single-post desktop TOC fully into columns 1–4 at 1600px and above.
+
 ## 3.0.31 - 2026-04-16
 - Moved the single-post TOC blur overlay out of the mobile-only CSS so it stays active below 1080px, then explicitly disabled it again from 1080px upward.
 - Tightened the newsletter form controls with pill-shaped 3rem fields, rounded focus rings, and a shorter auto-aligned subscribe button.

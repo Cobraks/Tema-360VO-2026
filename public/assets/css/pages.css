@@ -955,7 +955,6 @@ left: 50%;
     
     #toc-container {
       width: 100%;
-      max-width: 360px;
       grid-column: 7 / 13;
       margin-block: 0;
       position: sticky;

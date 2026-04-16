@@ -113,6 +113,14 @@ if (!$theme_color) {
 }
 
 $site_name = (string) get_bloginfo('name');
+$header_context_title = '';
+
+if (is_page() || is_singular('post')) {
+    $header_context_title = trim(wp_strip_all_tags(get_the_title()));
+    if ($header_context_title === '') {
+        $header_context_title = $site_name;
+    }
+}
 
 /**
  * ---------------------------------------------------------
@@ -300,15 +308,23 @@ $logo_svg_safe = ($logo_svg_raw !== '') ? theme360_prepare_inline_logo_svg($logo
                 </a>
             <?php endif; ?>
 
-            <?php
-            wp_nav_menu(array(
-                'theme_location'  => 'primary',
-                'container'       => 'nav',
-                'container_class' => 'site-navigation',
-                'link_before'     => '<div class="item-navegacion__container"><span class="item-navegacion">',
-                'link_after'      => '</span></div>',
-            ));
-            ?>
+            <div class="site-header__context-switcher" data-header-context-switcher>
+                <?php
+                wp_nav_menu(array(
+                    'theme_location'  => 'primary',
+                    'container'       => 'nav',
+                    'container_class' => 'site-navigation',
+                    'link_before'     => '<div class="item-navegacion__container"><span class="item-navegacion">',
+                    'link_after'      => '</span></div>',
+                ));
+                ?>
+
+                <?php if ($header_context_title !== '') : ?>
+                    <div class="site-header__context-title" data-header-context-title aria-hidden="true">
+                        <span class="site-header__context-title-text"><?php echo esc_html($header_context_title); ?></span>
+                    </div>
+                <?php endif; ?>
+            </div>
 
             <div class="site-header__contact-buttons flex">
                 <?php if ($email_principal !== '') : ?>

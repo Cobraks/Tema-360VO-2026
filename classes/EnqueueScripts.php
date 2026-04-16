@@ -164,6 +164,25 @@ class E360VO_EnqueueScripts
                 true
             );
         }
+
+        if (is_page() || is_singular('post')) {
+            $header_context_css = E360VO_AssetHelper::get_asset_info('/public/assets/css/header-context', 'css');
+            wp_enqueue_style(
+                '360vo-header-context',
+                $header_context_css['url'],
+                ['360vo-theme-style'],
+                $header_context_css['version']
+            );
+
+            $header_context_js = E360VO_AssetHelper::get_asset_info('/public/assets/js/header-context', 'js');
+            wp_enqueue_script(
+                '360vo-header-context',
+                $header_context_js['url'],
+                [],
+                $header_context_js['version'],
+                true
+            );
+        }
     }
 
 

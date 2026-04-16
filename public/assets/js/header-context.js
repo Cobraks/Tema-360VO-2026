@@ -1,0 +1,77 @@
+function initializeHeaderContextSwitcher() {
+	const body = document.body;
+	const header = document.querySelector(".site-header");
+	const switcher = header?.querySelector("[data-header-context-switcher]");
+	const title = header?.querySelector("[data-header-context-title]");
+	const navigation = switcher?.querySelector(".site-navigation");
+	const desktopQuery = window.matchMedia("(min-width: 1080px)");
+
+	if (!body || !header || !switcher || !title || !navigation) return;
+
+	const navigationFocusables = Array.from(
+		navigation.querySelectorAll("a, button, input, select, textarea, [tabindex]"),
+	);
+
+	const setNavigationFocusability = (isHidden) => {
+		navigation.setAttribute("aria-hidden", isHidden ? "true" : "false");
+		title.setAttribute("aria-hidden", isHidden ? "false" : "true");
+
+		if ("inert" in navigation) {
+			navigation.inert = isHidden;
+		}
+
+		navigationFocusables.forEach((element) => {
+			if (isHidden) {
+				if (!element.hasAttribute("data-header-context-tabindex")) {
+					element.setAttribute(
+						"data-header-context-tabindex",
+						element.getAttribute("tabindex") ?? "",
+					);
+				}
+				element.setAttribute("tabindex", "-1");
+				return;
+			}
+
+			const originalTabindex =
+				element.getAttribute("data-header-context-tabindex");
+
+			if (originalTabindex === null) return;
+
+			if (originalTabindex === "") {
+				element.removeAttribute("tabindex");
+			} else {
+				element.setAttribute("tabindex", originalTabindex);
+			}
+
+			element.removeAttribute("data-header-context-tabindex");
+		});
+	};
+
+	const syncHeaderContext = () => {
+		const shouldShowTitle =
+			desktopQuery.matches && body.classList.contains("hidden");
+
+		body.classList.toggle("header-context-active", shouldShowTitle);
+		setNavigationFocusability(shouldShowTitle);
+	};
+
+	syncHeaderContext();
+
+	if (typeof desktopQuery.addEventListener === "function") {
+		desktopQuery.addEventListener("change", syncHeaderContext);
+	}
+
+	const observer = new MutationObserver((mutations) => {
+		if (!mutations.some((mutation) => mutation.attributeName === "class")) {
+			return;
+		}
+
+		syncHeaderContext();
+	});
+
+	observer.observe(body, { attributes: true, attributeFilter: ["class"] });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+	initializeHeaderContextSwitcher();
+});

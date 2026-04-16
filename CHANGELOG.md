@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.0 - 2026-04-16
+- Added a dedicated page and blog-single header context switcher that replaces the desktop primary navigation with the current content title whenever downward scrolling hides the breadcrumbs.
+- Kept the interaction isolated to pages and blog single posts with a small, dedicated CSS/JS pair, including a smoother fade/slide handoff and reduced keyboard focus on the hidden navigation.
+
 ## 3.1.2 - 2026-04-16
 - Hid the single-post reading bar again when the blog shell is about to scroll out of view, so it clears away before the footer area takes over.
 

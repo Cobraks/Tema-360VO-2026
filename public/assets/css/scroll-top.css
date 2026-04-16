@@ -17,27 +17,25 @@
 	color: white;
 	box-shadow: 0 12px 30px color-mix(in oklab, var(--primary30) 18%, transparent);
 	opacity: 0;
-	visibility: hidden;
 	pointer-events: none;
 	overflow: hidden;
 	transform: translate3d(-50%, calc(var(--scroll-top-hidden-distance) + var(--scroll-top-offset-y)), 0) scale(0.88);
 	transform-origin: center bottom;
+	will-change: transform, opacity;
 	transition:
 		opacity 0.24s ease,
 		transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
 		box-shadow 0.24s ease,
-		background-color 0.24s ease,
-		visibility 0s linear 0.42s;
+		background-color 0.24s ease;
 	z-index: 95;
 	-webkit-tap-highlight-color: transparent;
 }
 
 .scroll-top-button.is-visible {
 	opacity: 1;
-	visibility: visible;
 	pointer-events: auto;
 	transform: translate3d(-50%, var(--scroll-top-offset-y), 0) scale(1);
-	transition-delay: 0.02s, 0.02s, 0s, 0s, 0s;
+	transition-delay: 0.02s, 0.02s, 0s, 0s;
 }
 
 .scroll-top-button.is-pressed {
@@ -59,7 +57,7 @@
 }
 
 .scroll-top-button.is-near-footer {
-	transition-duration: 0.18s, 0.24s, 0.24s, 0.24s, 0s;
+	transition-duration: 0.18s, 0.24s, 0.24s, 0.24s;
 }
 
 .scroll-top-button__icon {

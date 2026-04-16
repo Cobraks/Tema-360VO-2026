@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.8 - 2026-04-16
+- Removed the back-to-top button's dependency on a delayed visibility flip so its timed hide/show states now animate with opacity and transform instead of feeling like an instant display toggle.
+- Kept the footer docking offset active during the hide/show transition, preventing the button from snapping to a different vertical position before the animation completes.
+
 ## 3.2.7 - 2026-04-16
 - Tightened the compact back-to-top state so the hidden label no longer leaves behind extra gap or width, keeping the control truly icon-sized when the text collapses.
 - Smoothed the button enter/exit motion from below the viewport with a fuller translate-and-scale transition, avoiding the abrupt clipped appearance during visibility changes.

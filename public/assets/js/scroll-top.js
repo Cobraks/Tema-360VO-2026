@@ -41,7 +41,7 @@
 	};
 
 	const updateFooterDocking = () => {
-		if (!footerDockQuery.matches || !footerTopSection || !isVisible) {
+		if (!footerDockQuery.matches || !footerTopSection) {
 			button.style.setProperty("--scroll-top-offset-y", "0px");
 			button.classList.remove("is-near-footer");
 			return;

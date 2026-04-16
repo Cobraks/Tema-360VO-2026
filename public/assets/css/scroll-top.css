@@ -2,6 +2,7 @@
 	position: fixed;
 	left: 50%;
 	bottom: 2rem;
+	--scroll-top-offset-y: 0px;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -17,11 +18,11 @@
 	opacity: 0;
 	visibility: hidden;
 	pointer-events: none;
-	transform: translateX(-50%) translateY(calc(100% + 1rem)) scale(0.94);
+	transform: translateX(-50%) translateY(calc(100% + 1rem + var(--scroll-top-offset-y))) scale(0.94);
 	transform-origin: center bottom;
 	transition:
 		opacity 0.2s ease,
-		transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+		transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
 		box-shadow 0.24s ease,
 		background-color 0.24s ease,
 		visibility 0s linear 0.28s;
@@ -33,12 +34,22 @@
 	opacity: 1;
 	visibility: visible;
 	pointer-events: auto;
-	transform: translateX(-50%) translateY(0) scale(1);
+	transform: translateX(-50%) translateY(var(--scroll-top-offset-y)) scale(1);
 	transition-delay: 0.05s, 0.05s, 0s, 0s, 0s;
 }
 
 .scroll-top-button.is-pressed {
-	transform: translateX(-50%) translateY(0) scale(0.95);
+	transform: translateX(-50%) translateY(var(--scroll-top-offset-y)) scale(0.95);
+}
+
+.scroll-top-button.is-compact .scroll-top-button__label {
+	opacity: 0;
+	max-width: 0;
+	margin: 0;
+}
+
+.scroll-top-button.is-near-footer {
+	transition-duration: 0.18s, 0.24s, 0.24s, 0.24s, 0s;
 }
 
 .scroll-top-button__icon {
@@ -81,9 +92,15 @@
 
 	.scroll-top-button__label {
 		display: inline-block;
+		max-width: 6rem;
+		overflow: hidden;
 		font-size: 0.95rem;
-		font-weight: 600;
 		line-height: 1;
+		white-space: nowrap;
+		transition:
+			opacity 0.18s ease,
+			max-width 0.22s ease,
+			margin 0.22s ease;
 	}
 }
 

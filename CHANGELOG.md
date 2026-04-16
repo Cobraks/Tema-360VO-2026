@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.2.4 - 2026-04-16
+- Refined the back-to-top button so it compacts to icon-only while scrolling down, hides more intentionally during continued downward reading, and reappears after upward gestures or a short idle pause.
+- Added a footer-aware docking offset that lifts the button toward the top edge of the featured footer section instead of leaving it floating over the legal/footer area.
+- Removed the extra font weight from the desktop header context title so it sits more calmly against the navigation transition.
+
 ## 3.2.3 - 2026-04-16
 - Repositioned the page and single back-to-top button to the center-bottom edge, with a cleaner enter/exit motion that slides it from below the viewport instead of fading it in place.
 - Refined the button visibility logic so it hides while scrolling down, reappears after repeated upward gestures, and avoids disappearing unexpectedly while focused.

@@ -2,19 +2,29 @@
 	"use strict";
 
 	const button = document.querySelector("[data-scroll-top]");
+	const footerTopSection = document.querySelector(".ft-top");
 
 	if (!button) {
 		return;
 	}
 
 	let viewportHeight = window.innerHeight;
-	let ticking = false;
-	let scrollFrame = null;
 	let lastY = window.scrollY || window.pageYOffset || 0;
 	let upwardGestures = 0;
-	let downwardHideTimer = null;
+	let downwardGestures = 0;
 	let lastDirection = "";
+	let ticking = false;
+	let scrollFrame = null;
+	let idleTimer = null;
 	let isVisible = false;
+
+	const getCurrentY = () => window.scrollY || window.pageYOffset || 0;
+
+	const clearIdleTimer = () => {
+		if (!idleTimer) return;
+		window.clearTimeout(idleTimer);
+		idleTimer = null;
+	};
 
 	const setVisible = (nextVisible) => {
 		if (document.activeElement === button && !nextVisible) {
@@ -25,43 +35,73 @@
 		button.classList.toggle("is-visible", nextVisible);
 	};
 
+	const setCompact = (isCompact) => {
+		button.classList.toggle("is-compact", isCompact);
+	};
+
+	const updateFooterDocking = () => {
+		if (!footerTopSection || !isVisible) {
+			button.style.setProperty("--scroll-top-offset-y", "0px");
+			button.classList.remove("is-near-footer");
+			return;
+		}
+
+		const footerRect = footerTopSection.getBoundingClientRect();
+		const buttonHeight = button.offsetHeight || 48;
+		const restingCenterY = viewportHeight - 32 - buttonHeight / 2;
+		const overlap = Math.max(0, restingCenterY - footerRect.top);
+
+		button.style.setProperty("--scroll-top-offset-y", `${-overlap}px`);
+		button.classList.toggle("is-near-footer", overlap > 0);
+	};
+
+	const scheduleIdleReveal = (thresholdReached) => {
+		clearIdleTimer();
+
+		if (!thresholdReached) return;
+
+		idleTimer = window.setTimeout(() => {
+			setVisible(true);
+			setCompact(false);
+			updateFooterDocking();
+		}, 540);
+	};
+
 	const updateVisibility = () => {
 		ticking = false;
-		const currentY = window.scrollY || window.pageYOffset || 0;
+
+		const currentY = getCurrentY();
 		const threshold = Math.max(viewportHeight * 0.9, 420);
-		const aboveThreshold = currentY > threshold;
+		const thresholdReached = currentY > threshold;
 		const delta = currentY - lastY;
 
-		if (!aboveThreshold) {
+		if (!thresholdReached) {
 			upwardGestures = 0;
+			downwardGestures = 0;
 			lastDirection = "";
-			if (downwardHideTimer) {
-				clearTimeout(downwardHideTimer);
-				downwardHideTimer = null;
-			}
+			clearIdleTimer();
+			setCompact(false);
 			setVisible(false);
+			updateFooterDocking();
 			lastY = currentY;
 			return;
 		}
 
-		if (delta > 18) {
+		if (delta > 16) {
 			if (lastDirection !== "down") {
 				lastDirection = "down";
-				upwardGestures = 0;
+				downwardGestures = 0;
 			}
 
-			if (downwardHideTimer) {
-				clearTimeout(downwardHideTimer);
-			}
-
-			downwardHideTimer = window.setTimeout(() => {
+			downwardGestures += 1;
+			upwardGestures = 0;
+			setCompact(true);
+			if (downwardGestures >= 2) {
 				setVisible(false);
-			}, 140);
-		} else if (delta < -14) {
-			if (downwardHideTimer) {
-				clearTimeout(downwardHideTimer);
-				downwardHideTimer = null;
 			}
+			scheduleIdleReveal(thresholdReached);
+		} else if (delta < -14) {
+			clearIdleTimer();
 
 			if (lastDirection !== "up") {
 				lastDirection = "up";
@@ -69,13 +109,21 @@
 			}
 
 			upwardGestures += 1;
+			downwardGestures = 0;
+
 			if (upwardGestures >= 2) {
 				setVisible(true);
+				setCompact(false);
 			}
-		} else if (!isVisible && (delta === 0 || currentY > threshold * 1.35)) {
+		} else {
+			scheduleIdleReveal(thresholdReached);
+		}
+
+		if (!isVisible && currentY > threshold * 1.35) {
 			setVisible(true);
 		}
 
+		updateFooterDocking();
 		lastY = currentY;
 	};
 
@@ -91,7 +139,7 @@
 			scrollFrame = null;
 		}
 
-		const startY = window.pageYOffset || window.scrollY || 0;
+		const startY = getCurrentY();
 		if (startY <= 0) {
 			return;
 		}
@@ -124,15 +172,13 @@
 	};
 
 	button.addEventListener("click", () => {
-		if (downwardHideTimer) {
-			clearTimeout(downwardHideTimer);
-			downwardHideTimer = null;
-		}
+		clearIdleTimer();
 		button.classList.add("is-pressed");
 		window.setTimeout(() => {
 			button.classList.remove("is-pressed");
 		}, 180);
 		setVisible(false);
+		setCompact(false);
 		smoothScrollToTop();
 	});
 

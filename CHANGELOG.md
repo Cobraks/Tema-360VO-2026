@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.27 - 2026-04-16
+- Extended the single-post floating TOC and search controls through the 768–782px range so they keep the mobile interaction model while the JavaScript still treats that width as mobile.
+- Kept both controls fixed and right-aligned in that overlap range, preventing the TOC toggle from jumping left and the search control from collapsing into the desktop layout too early.
+
 ## 3.0.26 - 2026-04-16
 - Delayed the single-post newsletter aside until 1080px and postponed the three-column TOC/content/aside layout until 1600px, keeping the mid-width layout calmer.
 - Refreshed the newsletter email field toward a Material Design 3 outlined style and simplified the panel help button chrome while tightening the panel title spacing.

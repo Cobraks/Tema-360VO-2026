@@ -404,6 +404,32 @@
   }
 
   .layout--single .post-card {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    max-width: none;
+    width: 100%;
+  }
+
+  .layout--single .aside--single {
+    display: none;
+  }
+}
+
+@media (min-width: 1080px) {
+  .layout--single {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  .layout--single .toc-container--single {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    position: sticky;
+    top: calc(var(--altura-header) + 1.5rem);
+    align-self: start;
+  }
+
+  .layout--single .post-card {
     grid-column: 1 / span 8;
     grid-row: 2;
     max-width: none;
@@ -411,6 +437,7 @@
   }
 
   .layout--single .aside--single {
+    display: block;
     grid-column: 9 / -1;
     grid-row: 2;
     position: sticky;
@@ -419,7 +446,7 @@
   }
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1600px) {
   .layout--single {
     grid-template-columns: repeat(12, minmax(0, 1fr));
     justify-content: center;
@@ -975,6 +1002,7 @@
   margin: 0 0 .75rem 0;
   font-size: var(--t-md);
   font-weight: var(--fw-s);
+  margin-bottom: 0;
 }
 .panel__title-row {
   display: flex;
@@ -983,11 +1011,11 @@
   gap: .75rem;
 }
 .panel__help-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: var(--neutral100);
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  border: 0;
+  background: transparent;
   color: var(--neutral20);
   display: inline-flex;
   align-items: center;
@@ -1051,40 +1079,51 @@
 .panel--subscribe :where(.wpcf7-form-control-wrap) { display: block; }
 .panel--subscribe :where(input[type="email"], input[type="text"], input[type="tel"]) {
   width: 100%;
-  min-height: 3.5rem;
-  border: 0;
-  border-bottom: 1px solid color-mix(in oklab, var(--line) 92%, white);
-  border-radius: 0;
-  padding: 1.55rem 0 .5rem;
+  min-height: 3.75rem;
+  border: 1px solid color-mix(in oklab, var(--line) 92%, white);
+  border-radius: 1rem;
+  padding: 1.5rem 1rem .7rem;
   font-size: var(--t-sm);
-  background: transparent;
+  background: rgba(255,255,255,.92);
   box-shadow: none;
   color: var(--neutral15);
   line-height: 1.35;
+  transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
 }
 .panel--subscribe :where(.wpcf7-form label)::after {
   content: "Correo electrónico";
   position: absolute;
-  left: 0;
-  top: 1.2rem;
+  left: .9rem;
+  top: 1.12rem;
   color: var(--muted);
   font-size: .95rem;
   line-height: 1;
   pointer-events: none;
+  padding-inline: .2rem;
+  background: var(--neutral99);
   transform-origin: left center;
-  transition: transform .16s ease, color .16s ease;
+  transition: transform .18s ease, color .18s ease, top .18s ease;
 }
 .panel--subscribe :where(.wpcf7-form label:focus-within)::after {
   color: color-mix(in oklab, var(--brand-strong) 70%, black);
-  transform: translateY(-.95rem) scale(.78);
+  top: 0;
+  transform: translateY(-50%) scale(.78);
 }
 .panel--subscribe :where(.wpcf7-form label.has-value)::after {
   color: color-mix(in oklab, var(--brand-strong) 70%, black);
-  transform: translateY(-.95rem) scale(.78);
+  top: 0;
+  transform: translateY(-50%) scale(.78);
+}
+.panel--subscribe :where(.wpcf7-form label:has(input:not(:placeholder-shown)))::after {
+  color: color-mix(in oklab, var(--brand-strong) 70%, black);
+  top: 0;
+  transform: translateY(-50%) scale(.78);
 }
 .panel--subscribe :where(input[type="email"], input[type="text"], input[type="tel"]):focus {
   outline: none;
-  border-bottom-color: color-mix(in oklab, var(--brand) 55%, white);
+  border-color: color-mix(in oklab, var(--brand) 55%, white);
+  background: var(--neutral100);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary95) 70%, white);
 }
 .panel--subscribe :where(input[type="submit"], button[type="submit"], .wpcf7-submit) {
   width: 100%;

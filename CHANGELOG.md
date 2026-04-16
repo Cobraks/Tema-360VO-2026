@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.26 - 2026-04-16
+- Delayed the single-post newsletter aside until 1080px and postponed the three-column TOC/content/aside layout until 1600px, keeping the mid-width layout calmer.
+- Refreshed the newsletter email field toward a Material Design 3 outlined style and simplified the panel help button chrome while tightening the panel title spacing.
+
 ## 3.0.25 - 2026-04-16
 - Sped up the scripted TOC section scrolling, tightened the close-to-scroll handoff on mobile, and increased the single-post heading offset so headers no longer overlap section titles.
 - Fixed the mobile single TOC expansion direction by right-aligning the placeholder wrapper and widened the open mobile search field to fill the available row more naturally.

@@ -10,12 +10,73 @@
 	let viewportHeight = window.innerHeight;
 	let ticking = false;
 	let scrollFrame = null;
+	let lastY = window.scrollY || window.pageYOffset || 0;
+	let upwardGestures = 0;
+	let downwardHideTimer = null;
+	let lastDirection = "";
+	let isVisible = false;
+
+	const setVisible = (nextVisible) => {
+		if (document.activeElement === button && !nextVisible) {
+			return;
+		}
+
+		isVisible = nextVisible;
+		button.classList.toggle("is-visible", nextVisible);
+	};
 
 	const updateVisibility = () => {
 		ticking = false;
+		const currentY = window.scrollY || window.pageYOffset || 0;
 		const threshold = Math.max(viewportHeight * 0.9, 420);
-		const isVisible = (window.scrollY || window.pageYOffset || 0) > threshold;
-		button.classList.toggle("is-visible", isVisible);
+		const aboveThreshold = currentY > threshold;
+		const delta = currentY - lastY;
+
+		if (!aboveThreshold) {
+			upwardGestures = 0;
+			lastDirection = "";
+			if (downwardHideTimer) {
+				clearTimeout(downwardHideTimer);
+				downwardHideTimer = null;
+			}
+			setVisible(false);
+			lastY = currentY;
+			return;
+		}
+
+		if (delta > 18) {
+			if (lastDirection !== "down") {
+				lastDirection = "down";
+				upwardGestures = 0;
+			}
+
+			if (downwardHideTimer) {
+				clearTimeout(downwardHideTimer);
+			}
+
+			downwardHideTimer = window.setTimeout(() => {
+				setVisible(false);
+			}, 140);
+		} else if (delta < -14) {
+			if (downwardHideTimer) {
+				clearTimeout(downwardHideTimer);
+				downwardHideTimer = null;
+			}
+
+			if (lastDirection !== "up") {
+				lastDirection = "up";
+				upwardGestures = 0;
+			}
+
+			upwardGestures += 1;
+			if (upwardGestures >= 2) {
+				setVisible(true);
+			}
+		} else if (!isVisible && (delta === 0 || currentY > threshold * 1.35)) {
+			setVisible(true);
+		}
+
+		lastY = currentY;
 	};
 
 	const requestVisibilityUpdate = () => {
@@ -63,10 +124,15 @@
 	};
 
 	button.addEventListener("click", () => {
+		if (downwardHideTimer) {
+			clearTimeout(downwardHideTimer);
+			downwardHideTimer = null;
+		}
 		button.classList.add("is-pressed");
 		window.setTimeout(() => {
 			button.classList.remove("is-pressed");
 		}, 180);
+		setVisible(false);
 		smoothScrollToTop();
 	});
 

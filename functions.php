@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 /**
  * Constantes del tema
  */
-define('THEME_VERSION', '3.2.2');
+define('THEME_VERSION', '3.2.3');
 define('THEME_DIR', get_template_directory());
 define('THEME_URI', get_template_directory_uri());
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.3 - 2026-04-16
+- Repositioned the page and single back-to-top button to the center-bottom edge, with a cleaner enter/exit motion that slides it from below the viewport instead of fading it in place.
+- Refined the button visibility logic so it hides while scrolling down, reappears after repeated upward gestures, and avoids disappearing unexpectedly while focused.
+
 ## 3.2.2 - 2026-04-16
 - Added a dedicated back-to-top button for pages and blog single posts, with icon-only mobile treatment, icon-plus-label from tablet upward, and a smoother scripted return-to-top animation.
 - Scoped the new control to its own CSS and JS assets, keeping the component fixed at the lower right with restrained motion and keyboard-accessible focus behavior.

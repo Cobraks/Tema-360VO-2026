@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.2.1 - 2026-04-16
+- Removed the header-context transform from the desktop primary navigation so the animated context switch no longer shifts the menu away from its original centered position.
+
 ## 3.2.0 - 2026-04-16
 - Added a dedicated page and blog-single header context switcher that replaces the desktop primary navigation with the current content title whenever downward scrolling hides the breadcrumbs.
 - Kept the interaction isolated to pages and blog single posts with a small, dedicated CSS/JS pair, including a smoother fade/slide handoff and reduced keyboard focus on the hidden navigation.

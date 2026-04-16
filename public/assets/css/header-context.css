@@ -52,22 +52,18 @@
 	.site-header__context-switcher .site-navigation {
 		transition:
 			opacity 0.18s ease,
-			transform 0.24s cubic-bezier(0.4, 0, 0.2, 1),
 			filter 0.18s ease,
 			visibility 0s linear 0s;
-		transform: translateY(0) scale(1);
-		transform-origin: center;
 		filter: blur(0);
-		will-change: opacity, transform, filter;
+		will-change: opacity, filter;
 	}
 
 	body.header-context-active .site-header__context-switcher .site-navigation {
 		opacity: 0;
 		visibility: hidden;
 		pointer-events: none;
-		transform: translateY(-0.5rem) scale(0.985);
 		filter: blur(8px);
-		transition-delay: 0s, 0s, 0s, 0.2s;
+		transition-delay: 0s, 0s, 0.2s;
 	}
 
 	body.header-context-active .site-header__context-title {

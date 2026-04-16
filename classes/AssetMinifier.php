@@ -35,6 +35,8 @@ class E360VO_AssetMinifier
             ['360vo-logged-in', '/public/assets/css/logged-in.css', '/public/assets/css/logged-in.min.css', 'css'],
             ['360vo-blog', '/public/assets/css/blog.css', '/public/assets/css/blog.min.css', 'css'],
             ['360vo-blog-js', '/public/assets/js/blog.js', '/public/assets/js/blog.min.js', 'js'],
+            ['360vo-blog-reading', '/public/assets/css/blog-reading.css', '/public/assets/css/blog-reading.min.css', 'css'],
+            ['360vo-blog-reading-js', '/public/assets/js/blog-reading.js', '/public/assets/js/blog-reading.min.js', 'js'],
         ];
 
         foreach ($assets as [$handle, $orig, $min, $type]) {

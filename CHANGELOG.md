@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.0 - 2026-04-16
+- Added a dedicated single-post reading progress bar fixed under the header or breadcrumbs, with its own CSS and JS loaded only on blog single pages.
+- Scripted the progress calculation against the article body using requestAnimationFrame plus resize observation, keeping the bar synchronized with scroll depth through to the end of the post.
+
 ## 3.0.33 - 2026-04-16
 - Increased the single-post desktop TOC selector specificity at 1600px and above so it correctly overrides the shared page TOC grid placement and stays pinned to columns 1–4.
 

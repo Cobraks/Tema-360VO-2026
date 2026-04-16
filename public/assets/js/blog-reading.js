@@ -1,0 +1,86 @@
+(() => {
+	"use strict";
+
+	const root = document.querySelector("[data-reading-progress]");
+	const bar = root?.querySelector("[data-reading-progress-bar]");
+	const target = document.querySelector("[data-reading-progress-target]");
+
+	if (!root || !bar || !target) {
+		return;
+	}
+
+	let articleTop = 0;
+	let articleHeight = 0;
+	let viewportHeight = window.innerHeight;
+	let ticking = false;
+
+	const readCssVar = (name) => {
+		const raw = window
+			.getComputedStyle(document.documentElement)
+			.getPropertyValue(name)
+			.trim();
+		const value = Number.parseFloat(raw);
+		return Number.isFinite(value) ? value : 0;
+	};
+
+	const getTopOffset = () => {
+		const headerHeight = readCssVar("--altura-header");
+		const breadcrumbsHeight = document.body.classList.contains("hidden")
+			? 0
+			: readCssVar("--altura-breadcrumbs");
+		const adminBarHeight = document.body.classList.contains("logged-in")
+			? readCssVar("--altura-WpAdminBar")
+			: 0;
+
+		return headerHeight + breadcrumbsHeight + adminBarHeight;
+	};
+
+	const measure = () => {
+		const rect = target.getBoundingClientRect();
+		articleTop = window.scrollY + rect.top;
+		articleHeight = target.offsetHeight;
+		viewportHeight = window.innerHeight;
+	};
+
+	const render = () => {
+		ticking = false;
+
+		const topOffset = getTopOffset();
+		const start = Math.max(0, articleTop - topOffset);
+		const end = Math.max(
+			start + 1,
+			articleTop + articleHeight - viewportHeight + topOffset,
+		);
+		const progress = Math.min(
+			1,
+			Math.max(0, (window.scrollY - start) / (end - start)),
+		);
+
+		bar.style.transform = `scaleX(${progress})`;
+		root.setAttribute("aria-valuenow", String(Math.round(progress * 100)));
+		root.classList.add("is-ready");
+	};
+
+	const requestRender = () => {
+		if (ticking) return;
+		ticking = true;
+		window.requestAnimationFrame(render);
+	};
+
+	const handleResize = () => {
+		measure();
+		requestRender();
+	};
+
+	measure();
+	render();
+
+	window.addEventListener("scroll", requestRender, { passive: true });
+	window.addEventListener("resize", handleResize, { passive: true });
+	window.addEventListener("load", handleResize);
+
+	if ("ResizeObserver" in window) {
+		const resizeObserver = new ResizeObserver(handleResize);
+		resizeObserver.observe(target);
+	}
+})();

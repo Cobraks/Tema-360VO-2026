@@ -85,6 +85,19 @@ $related = new WP_Query($related_args);
 
 <main class="main main--blog blog" id="main">
 
+    <div
+        class="reading-progress"
+        data-reading-progress
+        role="progressbar"
+        aria-label="Progreso de lectura"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0">
+        <span class="reading-progress__track" aria-hidden="true">
+            <span class="reading-progress__bar" data-reading-progress-bar></span>
+        </span>
+    </div>
+
     <header class="post-hero" aria-labelledby="post-title">
         <div class="post-hero__top">
             <div class="single-search" data-single-search>
@@ -174,7 +187,7 @@ $related = new WP_Query($related_args);
 
             <article class="post-card" aria-label="Contenido del artículo">
 
-                <div class="entry-content entry-content--start">
+                <div class="entry-content entry-content--start" data-reading-progress-target>
                     <?php
                     while (have_posts()) : the_post();
                         the_content();

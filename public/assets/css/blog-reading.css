@@ -1,0 +1,57 @@
+.reading-progress {
+  position: fixed;
+  inset: auto 0 0;
+  top: var(--altura-breadcrumbsYheader);
+  height: 4px;
+  z-index: 97;
+  opacity: 0;
+  pointer-events: none;
+  transition: top .3s ease-in-out, opacity .18s ease-out;
+}
+
+body.hidden .reading-progress {
+  top: var(--altura-header);
+}
+
+.logged-in .reading-progress {
+  top: calc(var(--altura-breadcrumbsYheader) + var(--altura-WpAdminBar));
+}
+
+.logged-in.hidden .reading-progress {
+  top: calc(var(--altura-header) + var(--altura-WpAdminBar));
+}
+
+.reading-progress.is-ready {
+  opacity: 1;
+}
+
+.reading-progress__track {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: color-mix(in oklab, var(--neutral90) 38%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.reading-progress__bar {
+  width: 100%;
+  height: 100%;
+  display: block;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--primary30) 88%, white),
+    color-mix(in oklab, var(--primary50) 92%, white)
+  );
+  box-shadow: 0 0 18px color-mix(in oklab, var(--primary40) 28%, transparent);
+  transition: transform .14s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reading-progress,
+  .reading-progress__bar {
+    transition: none;
+  }
+}

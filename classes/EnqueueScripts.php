@@ -145,6 +145,25 @@ class E360VO_EnqueueScripts
                 true
             );
         }
+
+        if (is_singular('post')) {
+            $reading_css = E360VO_AssetHelper::get_asset_info('/public/assets/css/blog-reading', 'css');
+            wp_enqueue_style(
+                '360vo-blog-reading',
+                $reading_css['url'],
+                ['360vo-theme-style', '360vo-blog'],
+                $reading_css['version']
+            );
+
+            $reading_js = E360VO_AssetHelper::get_asset_info('/public/assets/js/blog-reading', 'js');
+            wp_enqueue_script(
+                '360vo-blog-reading',
+                $reading_js['url'],
+                [],
+                $reading_js['version'],
+                true
+            );
+        }
     }
 
 

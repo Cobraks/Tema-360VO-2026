@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.2.11 - 2026-04-16
+- Switched the single-post brand-mode detection to the actual ACF selector field `tipo_de_categoria`, keeping backward compatibility with the earlier experimental field name so the brand highlight block now appears in the intended posts.
+
 ## 3.2.10 - 2026-04-16
 - Forced hidden TOC containers to stay fully out of layout with a CSS override, so posts or pages without headings no longer show the empty TOC toggle at all.
 - Added an initial “brand mode” highlight block to blog single posts, driven by `seleccione_categoria = marca` plus the selected ACF brand term and summary, with a placeholder stock button for layout work.

@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 /**
  * Constantes del tema
  */
-define('THEME_VERSION', '3.2.10');
+define('THEME_VERSION', '3.2.11');
 define('THEME_DIR', get_template_directory());
 define('THEME_URI', get_template_directory_uri());
 
@@ -219,7 +219,11 @@ function th360_is_brand_mode_post(int $post_id): bool
         return false;
     }
 
-    $mode = get_field('seleccione_categoria', $post_id);
+    $mode = get_field('tipo_de_categoria', $post_id);
+
+    if (!is_scalar($mode) || trim((string) $mode) === '') {
+        $mode = get_field('seleccione_categoria', $post_id);
+    }
 
     if (!is_scalar($mode)) {
         return false;

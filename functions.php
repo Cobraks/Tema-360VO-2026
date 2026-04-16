@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 /**
  * Constantes del tema
  */
-define('THEME_VERSION', '3.2.9');
+define('THEME_VERSION', '3.2.10');
 define('THEME_DIR', get_template_directory());
 define('THEME_URI', get_template_directory_uri());
 
@@ -180,6 +180,53 @@ function th360_render_table_of_contents(array $args = []): void
         </div>
     </aside>
 <?php
+}
+
+/**
+ * Normaliza valores de campos ACF de taxonomía a un WP_Term.
+ */
+function th360_resolve_acf_term($value): ?WP_Term
+{
+    if ($value instanceof WP_Term) {
+        return $value;
+    }
+
+    if (is_array($value)) {
+        if (isset($value['term_id'])) {
+            $term = get_term((int) $value['term_id']);
+            return ($term instanceof WP_Term && !is_wp_error($term)) ? $term : null;
+        }
+
+        if (isset($value[0])) {
+            return th360_resolve_acf_term($value[0]);
+        }
+    }
+
+    if (is_numeric($value)) {
+        $term = get_term((int) $value);
+        return ($term instanceof WP_Term && !is_wp_error($term)) ? $term : null;
+    }
+
+    return null;
+}
+
+/**
+ * Detecta si una entrada usa el modo especial "marca".
+ */
+function th360_is_brand_mode_post(int $post_id): bool
+{
+    if (!function_exists('get_field')) {
+        return false;
+    }
+
+    $mode = get_field('seleccione_categoria', $post_id);
+
+    if (!is_scalar($mode)) {
+        return false;
+    }
+
+    $normalized_mode = sanitize_title((string) $mode);
+    return str_contains($normalized_mode, 'marca');
 }
 
 /**

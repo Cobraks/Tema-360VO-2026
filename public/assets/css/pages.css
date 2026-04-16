@@ -177,16 +177,21 @@ display: inline-flex;
 
 /*TOC*/
 #toc-container {
-  position: relative;
-  right: 0;
+    position: relative;
+    right: 0;
   top: auto;
   display: flex;
   justify-content: end;
   width: 100%;
   margin: 1.5rem 0 2rem;
   margin-block: 0;
-  z-index: 30;
-  transition: all .3s ease-in-out;
+    z-index: 30;
+    transition: all .3s ease-in-out;
+}
+
+#toc-container[hidden],
+.toc-container[hidden] {
+    display: none !important;
 }
 
 #toc-container.sticky {

@@ -66,6 +66,45 @@ $intro_safe = wp_kses_post(wpautop($intro));
 $reading = th360_reading_time_label($post_id);
 $caption = th360_get_image_caption($post_id);
 $activar_toc = true;
+$is_brand_mode = th360_is_brand_mode_post($post_id);
+$selected_brand = function_exists('get_field')
+    ? th360_resolve_acf_term(get_field('seleccione_marca', $post_id))
+    : null;
+$brand_name = ($selected_brand instanceof WP_Term && !empty($selected_brand->name))
+    ? (string) $selected_brand->name
+    : '';
+$brand_slug = ($selected_brand instanceof WP_Term && !empty($selected_brand->slug))
+    ? (string) $selected_brand->slug
+    : '';
+$brand_summary = function_exists('get_field')
+    ? trim((string) get_field('resumen_entrada', $post_id))
+    : '';
+$brand_stock_url = $brand_slug !== ''
+    ? home_url('/stock/' . $brand_slug . '/')
+    : '#stock-marca';
+$brand_logo = null;
+
+if ($selected_brand instanceof WP_Term && function_exists('get_field')) {
+    $brand_term_contexts = [
+        'term_' . $selected_brand->term_id,
+        $selected_brand->taxonomy . '_' . $selected_brand->term_id,
+    ];
+
+    foreach ($brand_term_contexts as $context) {
+        $maybe_logo = get_field('imagen_marca', $context);
+        if (is_array($maybe_logo) && !empty($maybe_logo['url'])) {
+            $brand_logo = $maybe_logo;
+            break;
+        }
+    }
+}
+
+if ($brand_summary === '' && $brand_name !== '') {
+    $brand_summary = sprintf(
+        'Descubre una selección de %s de segunda mano y encuentra modelos disponibles con un enfoque especial en esta marca.',
+        $brand_name
+    );
+}
 
 $related_args = [
     'post_type'              => 'post',
@@ -152,7 +191,34 @@ $related = new WP_Query($related_args);
                     <span class="icon-btn__label">Compartir</span>
                 </button>
             </div>
-                </div>
+
+            <?php if ($is_brand_mode && $brand_name !== '') : ?>
+                <section class="brand-highlight" aria-label="<?php echo esc_attr(sprintf('Marca destacada: %s', $brand_name)); ?>">
+                    <div class="brand-highlight__main">
+                        <div class="brand-highlight__media" aria-hidden="true">
+                            <?php if (is_array($brand_logo) && !empty($brand_logo['url'])) : ?>
+                                <img
+                                    src="<?php echo esc_url((string) $brand_logo['url']); ?>"
+                                    alt="<?php echo esc_attr($brand_name); ?>"
+                                    class="brand-highlight__logo"
+                                    loading="lazy"
+                                    decoding="async">
+                            <?php else : ?>
+                                <span class="brand-highlight__logo-fallback"><?php echo esc_html(mb_substr($brand_name, 0, 1)); ?></span>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="brand-highlight__copy">
+                            <p class="brand-highlight__eyebrow">Marca destacada</p>
+                            <h2 class="brand-highlight__title"><?php echo esc_html($brand_name); ?></h2>
+                            <p class="brand-highlight__text"><?php echo esc_html($brand_summary); ?></p>
+                        </div>
+                    </div>
+
+                    <a class="brand-highlight__cta" href="<?php echo esc_url($brand_stock_url); ?>">Ver stock</a>
+                </section>
+            <?php endif; ?>
+        </div>
     </header>
 
     <?php if (has_post_thumbnail($post_id)) : ?>

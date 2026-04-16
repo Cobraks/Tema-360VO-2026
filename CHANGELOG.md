@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.10 - 2026-04-16
+- Forced hidden TOC containers to stay fully out of layout with a CSS override, so posts or pages without headings no longer show the empty TOC toggle at all.
+- Added an initial “brand mode” highlight block to blog single posts, driven by `seleccione_categoria = marca` plus the selected ACF brand term and summary, with a placeholder stock button for layout work.
+
 ## 3.2.9 - 2026-04-16
 - Hid the shared TOC container by default in the server-rendered markup so pages or posts without headings no longer flash an empty TOC button before JavaScript decides whether the component should exist.
 

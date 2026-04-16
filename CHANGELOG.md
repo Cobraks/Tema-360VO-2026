@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.31 - 2026-04-16
+- Moved the single-post TOC blur overlay out of the mobile-only CSS so it stays active below 1080px, then explicitly disabled it again from 1080px upward.
+- Tightened the newsletter form controls with pill-shaped 3rem fields, rounded focus rings, and a shorter auto-aligned subscribe button.
+
 ## 3.0.30 - 2026-04-16
 - Repositioned the shared page TOC across the intermediate breakpoints, added an explicit 1080px placement, and reinforced the shared blur overlay through 1599px.
 - Refined the single subscribe panel styling with calmer focus rings, larger help icon, tighter heading spacing, a shorter subscribe button, and smoother sticky offsets for the desktop aside.

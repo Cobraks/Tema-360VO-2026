@@ -67,7 +67,7 @@
 .blog :where(a, button, input, select, textarea):focus-visible {
   outline: 2px solid var(--brand);
   outline-offset: 0;
-  border-radius: 0;
+  border-radius: 4rem;
 }
 
 .blog .sr-only {
@@ -419,6 +419,13 @@
   .layout--single {
     grid-template-columns: repeat(12, minmax(0, 1fr));
     gap: 1.5rem;
+  }
+
+  body::before,
+  body.toc-overlay-active::before {
+    opacity: 0;
+    backdrop-filter: blur(0);
+    -webkit-backdrop-filter: blur(0);
   }
 
   .layout--single .toc-container--single {
@@ -1085,10 +1092,10 @@
 .panel--subscribe :where(.wpcf7-form-control-wrap) { display: block; }
 .panel--subscribe :where(input[type="email"], input[type="text"], input[type="tel"]) {
   width: 100%;
-  min-height: 3.75rem;
+  height: 3rem;
   border: 1px solid color-mix(in oklab, var(--line) 92%, white);
-  border-radius: 1rem;
-  padding: 1.5rem 1rem .7rem;
+  border-radius: 4rem;
+  padding: 1.15rem 1rem .4rem;
   font-size: var(--t-sm);
   background: rgba(255,255,255,.92);
   box-shadow: none;
@@ -1132,19 +1139,19 @@
   box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary95) 70%, white);
 }
 .panel--subscribe :where(input[type="submit"], button[type="submit"], .wpcf7-submit) {
-  width: 100%;
-  min-height: 4rem;
-  height: 4rem;
+  width: fit-content;
+  height: 3rem;
   border-radius: 999px;
-  padding: .75rem 1.15rem;
-  font-size: var(--t-sm);
+  padding: .6rem 1.15rem;
+  font-size: 1rem;
   font-weight: var(--fw-s);
   border: 1px solid transparent;
   background: color-mix(in oklab, var(--primary20) 88%, var(--neutral10));
-  color: var(--neutral100);
+  color: white;
   cursor: pointer;
   box-shadow: 0 10px 24px rgba(15,15,15,.08);
   transition: background-color .16s ease, transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+  margin-left: auto;
 }
 .panel--subscribe :where(input[type="submit"], button[type="submit"], .wpcf7-submit):hover {
   background: color-mix(in oklab, var(--primary15) 90%, var(--neutral5));
@@ -1426,6 +1433,25 @@
   display: block;
 }
 
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  background: rgba(255,255,255,.08);
+  backdrop-filter: blur(0);
+  -webkit-backdrop-filter: blur(0);
+  transition: opacity .24s ease, backdrop-filter .24s ease, -webkit-backdrop-filter .24s ease;
+  z-index: 1;
+}
+
+body.toc-overlay-active::before {
+  opacity: 1;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
 @media (max-width: 767px) {
   .post-hero {
     margin-bottom: 2rem;
@@ -1654,24 +1680,6 @@
     padding-inline: clamp(.65rem, 4vw, 1rem);
   }
 
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    opacity: 0;
-    pointer-events: none;
-    background: rgba(255,255,255,.08);
-    backdrop-filter: blur(0);
-    -webkit-backdrop-filter: blur(0);
-    transition: opacity .24s ease, backdrop-filter .24s ease, -webkit-backdrop-filter .24s ease;
-    z-index: 1;
-  }
-
-  body.toc-overlay-active::before {
-    opacity: 1;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
 }
 
 @media (min-width: 540px) {

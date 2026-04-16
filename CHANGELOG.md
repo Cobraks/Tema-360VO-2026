@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.0.28 - 2026-04-16
+- Right-aligned the shared TOC toggle from 783px upward so the tablet breakpoint keeps the control anchored to the right edge without disturbing the larger-screen TOC interaction states.
+
 ## 3.0.27 - 2026-04-16
 - Extended the single-post floating TOC and search controls through the 768–782px range so they keep the mobile interaction model while the JavaScript still treats that width as mobile.
 - Kept both controls fixed and right-aligned in that overlap range, preventing the TOC toggle from jumping left and the search control from collapsing into the desktop layout too early.

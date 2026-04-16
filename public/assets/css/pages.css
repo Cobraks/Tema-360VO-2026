@@ -967,6 +967,8 @@ left: 50%;
     .toc-container__toggle {
       height: 3rem;
       font-size: 1rem;
+      margin-left: auto;
+      margin-right: 0;
     }
     
     .entry-header {

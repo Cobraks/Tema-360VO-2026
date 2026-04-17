@@ -1241,8 +1241,16 @@
 }
 
 .newsletter-panel {
+  padding-block: 0;
+  border: 1px solid transparent;
   border-radius: 0;
   background: white;
+  transition: padding-block .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+
+.newsletter-panel.is-open {
+  padding-block: 1rem;
+  border-color: var(--line);
 }
 
 .newsletter-panel__header {
@@ -2541,6 +2549,7 @@ body.toc-overlay-active::before {
 }
 
 .single-brand-vehicles__header {
+  margin-block: 2rem;
   display: grid;
   gap: 1rem;
 }
@@ -2549,6 +2558,8 @@ body.toc-overlay-active::before {
   display: grid;
   gap: .45rem;
   max-width: 62ch;
+  margin-inline: auto;
+  text-align: center;
 }
 
 .single-brand-vehicles__title {
@@ -2566,15 +2577,18 @@ body.toc-overlay-active::before {
   align-items: center;
   justify-content: center;
   width: fit-content;
-  min-height: 3.1rem;
-  padding: 0 1.2rem;
+  min-height: 3.2rem;
+  padding: 0 1.35rem;
   border: 1px solid color-mix(in oklab, var(--brand) 28%, white);
-  background: var(--primary15);
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--primary20), var(--primary15));
   color: white;
   text-decoration: none;
+  letter-spacing: .01em;
   font-weight: var(--fw-s);
   box-shadow: 0 14px 28px rgba(15,15,15,.10);
   transition: transform .18s ease, border-color .18s ease, background-color .18s ease, box-shadow .18s ease;
+  margin-inline: auto;
 }
 
 .single-brand-vehicles__listing {
@@ -2603,7 +2617,7 @@ body.toc-overlay-active::before {
   color: inherit;
   overflow: hidden;
   display: grid;
-  grid-template-columns: 92px minmax(0, 1fr);
+  grid-template-columns: 78px minmax(0, 1fr);
   gap: 0;
   transition: border-color .16s ease, transform .16s ease, box-shadow .16s ease;
 }
@@ -2670,7 +2684,7 @@ body.toc-overlay-active::before {
 }
 
 .post-nav-card__title {
-  font-size: var(--t-sm);
+  font-size: 1rem;
   line-height: 1.28;
   font-weight: var(--fw-s);
   text-wrap: balance;
@@ -2683,8 +2697,7 @@ body.toc-overlay-active::before {
   }
 
   .post-nav-card {
-    grid-template-columns: minmax(140px, 32%) minmax(0, 1fr);
-    min-height: 152px;
+    grid-template-columns: minmax(112px, 27%) minmax(0, 1fr);
   }
 
   .single-brand-vehicles__inner {
@@ -2692,12 +2705,13 @@ body.toc-overlay-active::before {
   }
 
   .single-brand-vehicles__header {
+    margin-block: 3rem;
     grid-column: 1 / span 8;
     gap: 1.1rem;
   }
 
   .single-brand-vehicles__link {
-    justify-self: start;
+    justify-self: center;
     white-space: nowrap;
   }
 
@@ -2738,7 +2752,7 @@ body.toc-overlay-active::before {
   .single-brand-vehicles__link:hover {
     transform: translateY(-1px);
     border-color: color-mix(in oklab, var(--brand) 42%, white);
-    background: var(--primary20);
+    background: linear-gradient(135deg, var(--primary15), var(--primary10));
     box-shadow: 0 18px 34px rgba(15,15,15,.12);
   }
 }

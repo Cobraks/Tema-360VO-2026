@@ -218,13 +218,28 @@ function initializeTableOfContents() {
 
 		if (!tocContainer || !tocContainerElement || !tocToggle || !content) return;
 
-		const allHeadings = Array.from(
+		const contentHeadings = Array.from(
 			content.querySelectorAll("h2, h3, h4, h5, h6"),
 		).filter((heading) => !heading.closest(".vehicle-card__container"));
 
-		if (!allHeadings.length) {
+		if (!contentHeadings.length) {
 			tocContainerElement.hidden = true;
 			return;
+		}
+
+		const allHeadings = [...contentHeadings];
+
+		if (isSingleToc) {
+			const blogShell = scope.closest(".blog-shell");
+			const extraHeadings = Array.from(
+				blogShell?.querySelectorAll(".single-brand-vehicles__title") || [],
+			).filter((heading) => !heading.closest(".vehicle-card__container"));
+
+			extraHeadings.forEach((heading) => {
+				if (!allHeadings.includes(heading)) {
+					allHeadings.push(heading);
+				}
+			});
 		}
 
 		tocContainerElement.hidden = false;

@@ -484,6 +484,7 @@
 		let currentCompactState = null;
 		let activeAnimation = null;
 		let activeGhost = null;
+		let transitionClassTimer = 0;
 		const compactEnterThreshold = 140;
 		const compactExitThreshold = 210;
 
@@ -504,6 +505,19 @@
 
 			brandHighlight.style.removeProperty("opacity");
 			brandHighlight.style.removeProperty("pointer-events");
+		};
+
+		const markTransitioning = () => {
+			brandHighlight.classList.add("is-transitioning");
+
+			if (transitionClassTimer) {
+				window.clearTimeout(transitionClassTimer);
+			}
+
+			transitionClassTimer = window.setTimeout(() => {
+				brandHighlight.classList.remove("is-transitioning");
+				transitionClassTimer = 0;
+			}, 560);
 		};
 
 		const syncStackMetrics = (isCompact) => {
@@ -545,6 +559,7 @@
 
 			cancelActiveAnimation();
 			clearGhost();
+			markTransitioning();
 
 			if (prefersReducedMotion.matches) {
 				commitState();
@@ -626,6 +641,11 @@
 			if (!desktopQuery.matches) {
 				cancelActiveAnimation();
 				clearGhost();
+				if (transitionClassTimer) {
+					window.clearTimeout(transitionClassTimer);
+					transitionClassTimer = 0;
+				}
+				brandHighlight.classList.remove("is-transitioning");
 				layout.classList.remove("has-compact-brand");
 				syncStackMetrics(false);
 				syncClickableState(false);

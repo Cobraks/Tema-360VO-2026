@@ -227,8 +227,32 @@ $related = new WP_Query($related_args);
                 </button>
             </div>
 
+        </div>
+    </header>
+
+    <?php if (has_post_thumbnail($post_id)) : ?>
+        <section class="post-media" aria-label="Imagen destacada">
+            <div class="post-media__inner">
+                <?php the_post_thumbnail('large', [
+                    'loading'       => 'eager',
+                    'decoding'      => 'async',
+                    'fetchpriority' => 'high',
+                    'class'         => 'post-media__img',
+                    'alt'           => esc_attr(get_the_title($post_id)),
+                ]); ?>
+
+                <?php if ($caption) : ?>
+                    <div class="post-media__caption"><?php echo esc_html($caption); ?></div>
+                <?php endif; ?>
+            </div>
+        </section>
+    <?php endif; ?>
+
+    <div class="blog-shell">
+        <div class="layout layout--single" <?php echo $activar_toc ? 'data-toc-enabled="1"' : ''; ?>>
+
             <?php if ($is_brand_mode && $brand_name !== '') : ?>
-                <section class="brand-highlight" aria-label="<?php echo esc_attr(sprintf('Marca destacada: %s', $brand_name)); ?>">
+                <section class="brand-highlight brand-highlight--single" data-brand-highlight-single aria-label="<?php echo esc_attr(sprintf('Marca destacada: %s', $brand_name)); ?>">
                     <div class="brand-highlight__main">
                         <div class="brand-highlight__media brand-highlight__media--<?php echo esc_attr($brand_logo_shape); ?>">
                             <?php if ($brand_logo_id > 0) : ?>
@@ -253,29 +277,6 @@ $related = new WP_Query($related_args);
                     <a class="brand-highlight__cta" href="<?php echo esc_url($brand_stock_url); ?>">Ver stock</a>
                 </section>
             <?php endif; ?>
-        </div>
-    </header>
-
-    <?php if (has_post_thumbnail($post_id)) : ?>
-        <section class="post-media" aria-label="Imagen destacada">
-            <div class="post-media__inner">
-                <?php the_post_thumbnail('large', [
-                    'loading'       => 'eager',
-                    'decoding'      => 'async',
-                    'fetchpriority' => 'high',
-                    'class'         => 'post-media__img',
-                    'alt'           => esc_attr(get_the_title($post_id)),
-                ]); ?>
-
-                <?php if ($caption) : ?>
-                    <div class="post-media__caption"><?php echo esc_html($caption); ?></div>
-                <?php endif; ?>
-            </div>
-        </section>
-    <?php endif; ?>
-
-    <div class="blog-shell">
-        <div class="layout layout--single" <?php echo $activar_toc ? 'data-toc-enabled="1"' : ''; ?>>
 
             <?php if ($activar_toc) : ?>
                 <?php th360_render_table_of_contents([

@@ -211,6 +211,46 @@
 		syncFloatingTools();
 	}
 
+	function initSingleBrandHighlight() {
+		const desktopQuery = window.matchMedia("(min-width: 1080px)");
+		const layout = document.querySelector(".layout--single");
+		const brandHighlight = document.querySelector("[data-brand-highlight-single]");
+		const article = document.querySelector(".layout--single .post-card");
+
+		if (!layout || !brandHighlight || !article) {
+			return;
+		}
+
+		let rafId = 0;
+
+		const syncState = () => {
+			rafId = 0;
+
+			if (!desktopQuery.matches) {
+				layout.classList.remove("has-compact-brand");
+				return;
+			}
+
+			const articleTop = article.getBoundingClientRect().top;
+			const shouldCompact = articleTop <= 140;
+			layout.classList.toggle("has-compact-brand", shouldCompact);
+		};
+
+		const requestSync = () => {
+			if (rafId) return;
+			rafId = window.requestAnimationFrame(syncState);
+		};
+
+		window.addEventListener("scroll", requestSync, { passive: true });
+		window.addEventListener("resize", requestSync);
+
+		if (typeof desktopQuery.addEventListener === "function") {
+			desktopQuery.addEventListener("change", requestSync);
+		}
+
+		requestSync();
+	}
+
 	async function shareUrl(url, title) {
 		const u = url || window.location.href;
 		const t = title || document.title || "EdreamsCars";
@@ -250,6 +290,7 @@
 	initNewsletterFloatingLabels();
 	initNewsletterTips();
 	initSingleFloatingTools();
+	initSingleBrandHighlight();
 
 	document.addEventListener("click", async (e) => {
 		const btn = e.target.closest("[data-action]");

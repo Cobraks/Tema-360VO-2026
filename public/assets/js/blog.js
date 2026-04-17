@@ -483,6 +483,7 @@
 		let rafId = 0;
 		let currentCompactState = null;
 		let activeAnimation = null;
+		let activeGhost = null;
 		const compactEnterThreshold = 140;
 		const compactExitThreshold = 210;
 
@@ -495,6 +496,16 @@
 			activeAnimation = null;
 		};
 
+		const clearGhost = () => {
+			if (activeGhost) {
+				activeGhost.remove();
+				activeGhost = null;
+			}
+
+			brandHighlight.style.removeProperty("opacity");
+			brandHighlight.style.removeProperty("pointer-events");
+		};
+
 		const syncStackMetrics = (isCompact) => {
 			if (!desktopQuery.matches || !aside) {
 				layout.style.removeProperty("--single-brand-stack-height-current");
@@ -503,7 +514,7 @@
 			}
 
 			layout.style.setProperty("--single-brand-stack-height-current", `${Math.ceil(brandHighlight.offsetHeight)}px`);
-			layout.style.setProperty("--single-brand-stack-gap-current", isCompact ? "2.75rem" : "3.2rem");
+			layout.style.setProperty("--single-brand-stack-gap-current", isCompact ? "1.75rem" : "2.2rem");
 		};
 
 		const syncClickableState = (isCompact) => {
@@ -533,6 +544,7 @@
 			};
 
 			cancelActiveAnimation();
+			clearGhost();
 
 			if (prefersReducedMotion.matches) {
 				commitState();
@@ -542,10 +554,10 @@
 			commitState();
 
 			const lastRect = brandHighlight.getBoundingClientRect();
-			const deltaX = firstRect.left - lastRect.left;
-			const deltaY = firstRect.top - lastRect.top;
-			const scaleX = firstRect.width > 0 && lastRect.width > 0 ? firstRect.width / lastRect.width : 1;
-			const scaleY = firstRect.height > 0 && lastRect.height > 0 ? firstRect.height / lastRect.height : 1;
+			const deltaX = lastRect.left - firstRect.left;
+			const deltaY = lastRect.top - firstRect.top;
+			const scaleX = firstRect.width > 0 && lastRect.width > 0 ? lastRect.width / firstRect.width : 1;
+			const scaleY = firstRect.height > 0 && lastRect.height > 0 ? lastRect.height / firstRect.height : 1;
 
 			const hasMeaningfulChange =
 				Math.abs(deltaX) > 1 ||
@@ -557,21 +569,41 @@
 				return;
 			}
 
-			activeAnimation = brandHighlight.animate(
+			activeGhost = brandHighlight.cloneNode(true);
+			activeGhost.classList.add("brand-highlight--ghost");
+			activeGhost.setAttribute("aria-hidden", "true");
+			activeGhost.removeAttribute("data-brand-highlight-single");
+			activeGhost.removeAttribute("id");
+			activeGhost.style.position = "fixed";
+			activeGhost.style.left = `${firstRect.left}px`;
+			activeGhost.style.top = `${firstRect.top}px`;
+			activeGhost.style.width = `${firstRect.width}px`;
+			activeGhost.style.height = `${firstRect.height}px`;
+			activeGhost.style.margin = "0";
+			activeGhost.style.pointerEvents = "none";
+			activeGhost.style.zIndex = "999";
+			activeGhost.style.willChange = "transform, opacity";
+			activeGhost.style.transformOrigin = "top right";
+			document.body.appendChild(activeGhost);
+
+			brandHighlight.style.opacity = "0";
+			brandHighlight.style.pointerEvents = "none";
+
+			activeAnimation = activeGhost.animate(
 				[
 					{
 						transformOrigin: "top right",
-						transform: `translate(${deltaX}px, ${deltaY}px) scale(${scaleX}, ${scaleY})`,
-						opacity: 0.98,
+						transform: "translate(0, 0) scale(1, 1)",
+						opacity: 1,
 					},
 					{
 						transformOrigin: "top right",
-						opacity: 1,
-						transform: "translate(0, 0) scale(1, 1)",
+						opacity: 0.98,
+						transform: `translate(${deltaX}px, ${deltaY}px) scale(${scaleX}, ${scaleY})`,
 					},
 				],
 				{
-					duration: 460,
+					duration: 520,
 					easing: "cubic-bezier(.22, 1, .36, 1)",
 					fill: "none",
 				},
@@ -579,10 +611,12 @@
 
 			activeAnimation.onfinish = () => {
 				activeAnimation = null;
+				clearGhost();
 			};
 
 			activeAnimation.oncancel = () => {
 				activeAnimation = null;
+				clearGhost();
 			};
 		};
 
@@ -591,6 +625,7 @@
 
 			if (!desktopQuery.matches) {
 				cancelActiveAnimation();
+				clearGhost();
 				layout.classList.remove("has-compact-brand");
 				syncStackMetrics(false);
 				syncClickableState(false);

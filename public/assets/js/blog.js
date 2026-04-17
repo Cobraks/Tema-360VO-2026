@@ -81,7 +81,7 @@
 	function initNewsletterFloatingLabels() {
 		document
 			.querySelectorAll(
-				".panel--subscribe .wpcf7-form label input[type='email']",
+				".panel--subscribe .newsletter-form__field input[type='email']",
 			)
 			.forEach((input) => {
 				const label = input.closest("label");
@@ -130,7 +130,7 @@
 		};
 
 		const syncPanelLabels = (panel) => {
-			panel.querySelectorAll(".wpcf7-form label input[type='email']").forEach((input) => {
+			panel.querySelectorAll(".newsletter-form__field input[type='email']").forEach((input) => {
 				const label = input.closest("label");
 				if (!label) return;
 				label.classList.toggle("has-value", input.value.trim() !== "");
@@ -483,6 +483,8 @@
 		let currentCompactState = null;
 		let activeAnimation = null;
 		let activeGhost = null;
+		const compactEnterThreshold = 140;
+		const compactExitThreshold = 210;
 
 		const clearGhost = ({ cancelAnimation = true } = {}) => {
 			if (cancelAnimation && activeAnimation) {
@@ -586,7 +588,9 @@
 			}
 
 			const articleTop = article.getBoundingClientRect().top;
-			const shouldCompact = articleTop <= 140;
+			const shouldCompact = currentCompactState
+				? articleTop <= compactExitThreshold
+				: articleTop <= compactEnterThreshold;
 
 			if (currentCompactState === null) {
 				layout.classList.toggle("has-compact-brand", shouldCompact);

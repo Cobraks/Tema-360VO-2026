@@ -1328,7 +1328,7 @@
 }
 
 .newsletter-form__field,
-.panel--subscribe :where(.wpcf7-form label) {
+.panel--subscribe :where(.newsletter-form__field) {
   display: block;
   position: relative;
   margin: 0;
@@ -1346,14 +1346,22 @@
 }
 
 .newsletter-form__checkbox,
-.panel--subscribe :where(.wpcf7-acceptance) {
+.panel--subscribe :where(.newsletter-form__checkbox),
+.panel--subscribe :where(.newsletter-form__checkbox .wpcf7-acceptance) {
   display: block;
   font-size: .84rem;
   line-height: 1.45;
   color: var(--muted);
 }
 
-.newsletter-form__checkbox label {
+.newsletter-form__checkbox .wpcf7-list-item,
+.panel--subscribe :where(.newsletter-form__checkbox .wpcf7-list-item) {
+  display: block;
+  margin: 0;
+}
+
+.newsletter-form__checkbox label,
+.panel--subscribe :where(.newsletter-form__checkbox label) {
   display: inline-flex;
   align-items: flex-start;
   gap: .6rem;
@@ -1362,13 +1370,20 @@
   color: inherit;
 }
 
+.newsletter-form__checkbox .wpcf7-list-item-label,
+.panel--subscribe :where(.newsletter-form__checkbox .wpcf7-list-item-label) {
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
 .newsletter-form__checkbox input[type="checkbox"],
-.panel--subscribe :where(.wpcf7-acceptance input[type="checkbox"]) {
+.panel--subscribe :where(.newsletter-form__checkbox input[type="checkbox"]) {
   margin-top: .12rem;
 }
 
 .newsletter-form__checkbox a,
-.panel--subscribe :where(.wpcf7-acceptance a) {
+.panel--subscribe :where(.newsletter-form__checkbox a) {
   color: var(--primary30);
   text-decoration: underline;
   text-underline-offset: 2px;
@@ -1387,20 +1402,8 @@
 /* CF7 en panel subscribe */
 .panel--subscribe :where(.wpcf7-form) { display: grid; gap: .75rem; margin: 0; }
 .panel--subscribe :where(.wpcf7-form p) { margin: 0; }
-.panel--subscribe :where(.wpcf7-form label) {
-  display: block;
-  position: relative;
-  margin: 0;
-  color: transparent;
-  font-size: 0;
-  line-height: 0;
-  padding: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-}
-.panel--subscribe :where(.wpcf7-form-control-wrap) { display: block; }
-.panel--subscribe :where(input[type="email"], input[type="text"], input[type="tel"]) {
+.panel--subscribe :where(.newsletter-form__field .wpcf7-form-control-wrap) { display: block; }
+.panel--subscribe :where(.newsletter-form__field input[type="email"], .newsletter-form__field input[type="text"], .newsletter-form__field input[type="tel"]) {
   width: 100%;
   height: 3rem;
   border: 1px solid color-mix(in oklab, var(--line) 92%, white);
@@ -1413,7 +1416,7 @@
   line-height: 1.35;
   transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
 }
-.panel--subscribe :where(.wpcf7-form label)::after {
+.panel--subscribe :where(.newsletter-form__field)::after {
   content: "Correo electrónico";
   position: absolute;
   left: .9rem;
@@ -1427,22 +1430,22 @@
   transform-origin: left center;
   transition: transform .18s ease, color .18s ease, top .18s ease;
 }
-.panel--subscribe :where(.wpcf7-form label:focus-within)::after {
+.panel--subscribe :where(.newsletter-form__field:focus-within)::after {
   color: color-mix(in oklab, var(--brand-strong) 70%, black);
   top: 0;
   transform: translateY(-50%) scale(.78);
 }
-.panel--subscribe :where(.wpcf7-form label.has-value)::after {
+.panel--subscribe :where(.newsletter-form__field.has-value)::after {
   color: color-mix(in oklab, var(--brand-strong) 70%, black);
   top: 0;
   transform: translateY(-50%) scale(.78);
 }
-.panel--subscribe :where(.wpcf7-form label:has(input:not(:placeholder-shown)))::after {
+.panel--subscribe :where(.newsletter-form__field:has(input:not(:placeholder-shown)))::after {
   color: color-mix(in oklab, var(--brand-strong) 70%, black);
   top: 0;
   transform: translateY(-50%) scale(.78);
 }
-.panel--subscribe :where(input[type="email"], input[type="text"], input[type="tel"]):focus {
+.panel--subscribe :where(.newsletter-form__field input[type="email"], .newsletter-form__field input[type="text"], .newsletter-form__field input[type="tel"]):focus {
   outline: none;
   border-color: color-mix(in oklab, var(--brand) 55%, white);
   background: var(--neutral100);

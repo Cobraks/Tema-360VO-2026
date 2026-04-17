@@ -216,24 +216,80 @@
 		const layout = document.querySelector(".layout--single");
 		const brandHighlight = document.querySelector("[data-brand-highlight-single]");
 		const article = document.querySelector(".layout--single .post-card");
+		const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 		if (!layout || !brandHighlight || !article) {
 			return;
 		}
 
 		let rafId = 0;
+		let currentCompactState = null;
+		let activeAnimation = null;
+
+		const applyCompactState = (shouldCompact) => {
+			const firstRect = brandHighlight.getBoundingClientRect();
+
+			layout.classList.toggle("has-compact-brand", shouldCompact);
+
+			if (prefersReducedMotion.matches) {
+				return;
+			}
+
+			const lastRect = brandHighlight.getBoundingClientRect();
+			const deltaX = firstRect.left - lastRect.left;
+			const deltaY = firstRect.top - lastRect.top;
+			const scaleX = firstRect.width > 0 && lastRect.width > 0 ? firstRect.width / lastRect.width : 1;
+			const scaleY = firstRect.height > 0 && lastRect.height > 0 ? firstRect.height / lastRect.height : 1;
+
+			if (activeAnimation) {
+				activeAnimation.cancel();
+			}
+
+			activeAnimation = brandHighlight.animate(
+				[
+					{
+						transformOrigin: "top right",
+						transform: `translate(${deltaX}px, ${deltaY}px) scale(${scaleX}, ${scaleY})`,
+						opacity: 0.98,
+					},
+					{
+						transformOrigin: "top right",
+						transform: "translate(0, 0) scale(1, 1)",
+						opacity: 1,
+					},
+				],
+				{
+					duration: 640,
+					easing: "cubic-bezier(.22, 1, .36, 1)",
+					fill: "both",
+				},
+			);
+		};
 
 		const syncState = () => {
 			rafId = 0;
 
 			if (!desktopQuery.matches) {
 				layout.classList.remove("has-compact-brand");
+				currentCompactState = false;
 				return;
 			}
 
 			const articleTop = article.getBoundingClientRect().top;
 			const shouldCompact = articleTop <= 140;
-			layout.classList.toggle("has-compact-brand", shouldCompact);
+
+			if (currentCompactState === null) {
+				layout.classList.toggle("has-compact-brand", shouldCompact);
+				currentCompactState = shouldCompact;
+				return;
+			}
+
+			if (currentCompactState === shouldCompact) {
+				return;
+			}
+
+			currentCompactState = shouldCompact;
+			applyCompactState(shouldCompact);
 		};
 
 		const requestSync = () => {

@@ -443,12 +443,20 @@
   .layout--single {
     grid-template-columns: repeat(12, minmax(0, 1fr));
     gap: 1.5rem;
-    --single-sidebar-top: calc(var(--altura-header) + 1.25rem);
+    --single-sidebar-top: calc(var(--altura-header) + 2.25rem);
+    --single-sidebar-top-hidden: calc(var(--altura-header) + 3.5rem);
+    --single-sidebar-top-logged-in: calc(var(--altura-WpAdminBaryHeader) + 5.5rem);
+    --single-sidebar-top-logged-in-hidden: calc(var(--altura-header) + var(--altura-WpAdminBar) + 3.5rem);
     --single-brand-stack-height: 10rem;
     --single-brand-stack-height-compact: 7.1rem;
-    --single-brand-stack-height-current: var(--single-brand-stack-height);
-    --single-brand-stack-gap-current: .9rem;
+    --single-brand-stack-height-current: 0px;
+    --single-brand-stack-gap-current: 0px;
     --single-brand-compact-max: clamp(290px, 24vw, 360px);
+  }
+
+  .layout--single.has-brand-highlight {
+    --single-brand-stack-height-current: var(--single-brand-stack-height);
+    --single-brand-stack-gap-current: 1.2rem;
   }
 
   body::before,
@@ -543,27 +551,27 @@
   }
 
   .hidden .layout--single .aside--single {
-    top: calc(var(--altura-header) + 2.5rem + var(--single-brand-stack-height-current) + var(--single-brand-stack-gap-current));
+    top: calc(var(--single-sidebar-top-hidden) + var(--single-brand-stack-height-current) + var(--single-brand-stack-gap-current));
   }
 
   .hidden .layout--single .brand-highlight--single {
-    top: calc(var(--altura-header) + 2.5rem);
+    top: var(--single-sidebar-top-hidden);
   }
 
   .logged-in .layout--single .brand-highlight--single {
-    top: calc(var(--altura-WpAdminBaryHeader) + 4.5rem);
+    top: var(--single-sidebar-top-logged-in);
   }
 
   .logged-in .layout--single .aside--single {
-    top: calc(var(--altura-WpAdminBaryHeader) + 4.5rem + var(--single-brand-stack-height-current) + var(--single-brand-stack-gap-current));
+    top: calc(var(--single-sidebar-top-logged-in) + var(--single-brand-stack-height-current) + var(--single-brand-stack-gap-current));
   }
 
   .logged-in.hidden .layout--single .brand-highlight--single {
-    top: calc(var(--altura-header) + var(--altura-WpAdminBar) + 2.5rem);
+    top: var(--single-sidebar-top-logged-in-hidden);
   }
 
   .logged-in.hidden .layout--single .aside--single {
-    top: calc(var(--altura-header) + var(--altura-WpAdminBar) + 2.5rem + var(--single-brand-stack-height-current) + var(--single-brand-stack-gap-current));
+    top: calc(var(--single-sidebar-top-logged-in-hidden) + var(--single-brand-stack-height-current) + var(--single-brand-stack-gap-current));
   }
 }
 

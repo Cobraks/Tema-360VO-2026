@@ -249,7 +249,7 @@ $related = new WP_Query($related_args);
     <?php endif; ?>
 
     <div class="blog-shell">
-        <div class="layout layout--single" <?php echo $activar_toc ? 'data-toc-enabled="1"' : ''; ?>>
+        <div class="layout layout--single<?php echo ($is_brand_mode && $brand_name !== '') ? ' has-brand-highlight' : ''; ?>" <?php echo $activar_toc ? 'data-toc-enabled="1"' : ''; ?>>
 
             <?php if ($is_brand_mode && $brand_name !== '') : ?>
                 <section class="brand-highlight brand-highlight--single" data-brand-highlight-single aria-label="<?php echo esc_attr(sprintf('Marca destacada: %s', $brand_name)); ?>">
@@ -386,9 +386,6 @@ $related = new WP_Query($related_args);
                         ) {
                             echo '<div class="newsletter-panel__form">';
                             echo do_shortcode($newsletter_shortcode);
-                            echo '</div>';
-                            echo '<div class="newsletter-panel__actions">';
-                            echo '<button type="button" class="newsletter-panel__cancel" data-newsletter-cancel>Cancelar</button>';
                             echo '</div>';
                         } else {
                         ?>

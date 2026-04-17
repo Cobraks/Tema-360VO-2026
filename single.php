@@ -78,9 +78,12 @@ $brand_slug = ($selected_brand instanceof WP_Term && !empty($selected_brand->slu
     ? (string) $selected_brand->slug
     : '';
 $brand_archive_url = (string) ($blog_context['brand_url'] ?? '');
-$brand_stock_url = $brand_slug !== ''
-    ? home_url('/stock/' . $brand_slug . '/')
-    : '#stock-marca';
+$brand_term_url = function_exists('th360_get_brand_term_url')
+    ? th360_get_brand_term_url($selected_brand)
+    : '';
+$brand_stock_url = $brand_term_url !== ''
+    ? $brand_term_url
+    : ($brand_slug !== '' ? home_url('/stock/' . $brand_slug . '/') : '#stock-marca');
 $brand_visual = function_exists('th360_get_brand_visual_data')
     ? th360_get_brand_visual_data($selected_brand instanceof WP_Term ? $selected_brand : null, true)
     : ['logo_id' => 0, 'shape' => 'circular', 'alt' => $brand_name, 'title' => $brand_name];
@@ -252,7 +255,7 @@ $related = new WP_Query($related_args);
         <div class="layout layout--single<?php echo ($is_brand_mode && $brand_name !== '') ? ' has-brand-highlight' : ''; ?>" <?php echo $activar_toc ? 'data-toc-enabled="1"' : ''; ?>>
 
             <?php if ($is_brand_mode && $brand_name !== '') : ?>
-                <section class="brand-highlight brand-highlight--single" data-brand-highlight-single aria-label="<?php echo esc_attr(sprintf('Marca destacada: %s', $brand_name)); ?>">
+                <section class="brand-highlight brand-highlight--single" data-brand-highlight-single data-brand-highlight-link="<?php echo esc_url($brand_stock_url); ?>" aria-label="<?php echo esc_attr(sprintf('Marca destacada: %s', $brand_name)); ?>">
                     <div class="brand-highlight__main">
                         <div class="brand-highlight__media brand-highlight__media--<?php echo esc_attr($brand_logo_shape); ?>">
                             <?php if ($brand_logo_id > 0) : ?>

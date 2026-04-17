@@ -322,6 +322,20 @@ function th360_get_blog_brand_archive_url($brand): string
 }
 
 /**
+ * Devuelve la URL canónica pública de una marca.
+ */
+function th360_get_brand_term_url($brand): string
+{
+    $brand_term = $brand instanceof WP_Term ? $brand : th360_resolve_acf_term($brand);
+    if (!$brand_term instanceof WP_Term || $brand_term->taxonomy !== 'marca') {
+        return '';
+    }
+
+    $url = get_term_link($brand_term, 'marca');
+    return is_wp_error($url) ? '' : (string) $url;
+}
+
+/**
  * Meta query tolerante con formatos legacy/ACF para la marca del post.
  */
 function th360_get_blog_brand_meta_query($brand): array

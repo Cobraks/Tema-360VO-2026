@@ -399,6 +399,10 @@
   width: 100%;
 }
 
+.single-search .search__field {
+  margin-left: auto;
+}
+
 .single-search__toggle {
   display: none;
 }
@@ -443,9 +447,9 @@
   .layout--single {
     grid-template-columns: repeat(12, minmax(0, 1fr));
     gap: 1.5rem;
-    --single-sidebar-top: calc(var(--altura-header) + 1.5rem);
+    --single-sidebar-top: calc(var(--altura-breadcrumbsYheader) + 1rem);
     --single-sidebar-top-hidden: calc(2rem + var(--altura-header));
-    --single-sidebar-top-logged-in: calc(var(--altura-WpAdminBaryHeader) + 1.5rem);
+    --single-sidebar-top-logged-in: calc(var(--altura-breadcrumbsYheader) + var(--altura-WpAdminBar) + 1rem);
     --single-sidebar-top-logged-in-hidden: calc(2rem + var(--altura-header) + var(--altura-WpAdminBar));
     --single-brand-stack-height: 10rem;
     --single-brand-stack-height-compact: 7.1rem;
@@ -456,7 +460,7 @@
 
   .layout--single.has-brand-highlight {
     --single-brand-stack-height-current: var(--single-brand-stack-height);
-    --single-brand-stack-gap-current: 2.2rem;
+    --single-brand-stack-gap-current: 3.2rem;
   }
 
   body::before,
@@ -502,11 +506,13 @@
   }
 
   .layout--single.has-compact-brand .brand-highlight--single {
-    max-width: none;
-    grid-column: 9 / 13;
+    width: min(100%, var(--single-brand-compact-max));
+    max-width: var(--single-brand-compact-max);
+    grid-column: 1 / -1;
     margin-inline: auto 0;
     flex-direction: column;
     align-items: stretch;
+    cursor: pointer;
   }
 
   .layout--single.has-compact-brand .brand-highlight--single .brand-highlight__main {
@@ -621,9 +627,6 @@
     grid-row: 2;
   }
 
-  .layout--single.has-compact-brand .brand-highlight--single {
-    grid-column: 10 / 13;
-  }
 }
 
 /* Toolbar */
@@ -2163,13 +2166,14 @@ body.toc-overlay-active::before {
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1080px) {
   .single-search__toggle {
     display: none;
   }
 
   .single-search .search--single {
     position: static;
+    margin-left: auto;
     opacity: 1;
     pointer-events: auto;
     transform: none;
@@ -2177,7 +2181,7 @@ body.toc-overlay-active::before {
   }
 }
 
-@media (min-width: 768px) and (max-width: 782px) {
+@media (min-width: 768px) and (max-width: 1079px) {
   .single-search {
     position: fixed;
     top: calc(var(--altura-breadcrumbsYheader) + 1rem);
@@ -2265,6 +2269,7 @@ body.toc-overlay-active::before {
   .single-search .search--single {
     position: absolute;
     inset: 0;
+    margin-left: auto;
     max-width: none;
     width: 100%;
     opacity: 0;

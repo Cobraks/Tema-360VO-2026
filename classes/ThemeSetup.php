@@ -244,10 +244,15 @@ class E360VO_ThemeSetup
     {
         add_theme_support('post-thumbnails');
         add_theme_support('wp-block-styles');
+        add_theme_support('editor-styles');
         add_theme_support('html5', ['search-form', 'gallery', 'caption', 'script', 'style']);
         add_theme_support('title-tag');
         add_theme_support('yoast-seo-breadcrumbs');
-        add_editor_style('style.css');
+        add_editor_style([
+            'style.css',
+            'public/assets/css/pages.css',
+            'public/assets/css/blog.css',
+        ]);
 
         add_theme_support('custom-logo', [
             'height'      => 68,

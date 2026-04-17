@@ -401,7 +401,7 @@ function th360_resolve_attachment_id($value): int
 /**
  * Devuelve los datos visuales de una marca para el front del blog.
  */
-function th360_get_brand_visual_data(?WP_Term $brand_term): array
+function th360_get_brand_visual_data(?WP_Term $brand_term, bool $prefer_white = false): array
 {
     $data = [
         'logo_id' => 0,
@@ -441,7 +441,9 @@ function th360_get_brand_visual_data(?WP_Term $brand_term): array
     }
 
     $logo_id = 0;
-    $logo_fields = ['logo_marca', 'logo_marca_png', 'imagen_marca'];
+    $logo_fields = $prefer_white
+        ? ['logo_marca_white', 'logo_marca_png', 'logo_marca', 'imagen_marca']
+        : ['logo_marca', 'logo_marca_png', 'logo_marca_white', 'imagen_marca'];
 
     if (function_exists('get_field')) {
         foreach ($logo_fields as $field_name) {

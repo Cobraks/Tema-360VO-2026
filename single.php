@@ -82,7 +82,7 @@ $brand_stock_url = $brand_slug !== ''
     ? home_url('/stock/' . $brand_slug . '/')
     : '#stock-marca';
 $brand_visual = function_exists('th360_get_brand_visual_data')
-    ? th360_get_brand_visual_data($selected_brand instanceof WP_Term ? $selected_brand : null)
+    ? th360_get_brand_visual_data($selected_brand instanceof WP_Term ? $selected_brand : null, true)
     : ['logo_id' => 0, 'shape' => 'circular', 'alt' => $brand_name, 'title' => $brand_name];
 $brand_logo_id = (int) ($brand_visual['logo_id'] ?? 0);
 $brand_logo_shape = (string) ($brand_visual['shape'] ?? 'circular');
@@ -98,6 +98,47 @@ if ($brand_summary !== '' && $site_name !== '') {
     $brand_summary .= ' en ' . $site_name;
 } elseif ($brand_summary === '') {
     $brand_summary = $brand_name;
+}
+
+$excerpt_links = [];
+if ($cat_name !== '' && $cat_url !== '') {
+    $excerpt_links[] = sprintf(
+        '<a class="meta__chip meta__chip--inline" href="%1$s">%2$s</a>',
+        esc_url($cat_url),
+        esc_html($cat_name)
+    );
+}
+
+if ($is_brand_mode && $brand_name !== '' && $brand_archive_url !== '') {
+    $excerpt_links[] = sprintf(
+        '<a class="meta__chip meta__chip--inline" href="%1$s">%2$s</a>',
+        esc_url($brand_archive_url),
+        esc_html($brand_name)
+    );
+}
+
+$excerpt_links_markup = '';
+if (!empty($excerpt_links)) {
+    $excerpt_links_markup = '<span class="meta__chip-group">' . implode(
+        '<span class="meta__chip-separator" aria-hidden="true">|</span>',
+        $excerpt_links
+    ) . '</span>';
+}
+
+$excerpt_html = '';
+if (trim(wp_strip_all_tags($intro)) !== '') {
+    $excerpt_html = $intro_safe;
+
+    if ($excerpt_links_markup !== '') {
+        $last_paragraph_pos = strripos($excerpt_html, '</p>');
+        if ($last_paragraph_pos !== false) {
+            $excerpt_html = substr_replace($excerpt_html, ' ' . $excerpt_links_markup . '</p>', $last_paragraph_pos, 4);
+        } else {
+            $excerpt_html .= '<p>' . $excerpt_links_markup . '</p>';
+        }
+    }
+} elseif ($excerpt_links_markup !== '') {
+    $excerpt_html = '<p>' . $excerpt_links_markup . '</p>';
 }
 
 $related_args = [
@@ -161,16 +202,10 @@ $related = new WP_Query($related_args);
                 <div class="post-hero__meta" aria-label="Metadatos del articulo">
                     <time class="post-hero__date" datetime="<?php echo esc_attr(get_the_date('c', $post_id)); ?>"><?php echo esc_html(get_the_date('j M, Y', $post_id)); ?></time>
                     <?php if ($reading) : ?><span class="post-hero__reading"><?php echo esc_html($reading); ?> de lectura</span><?php endif; ?>
-                    <?php if ($cat_name !== '' && $cat_url !== '') : ?>
-                        <a class="meta__chip" href="<?php echo esc_url($cat_url); ?>"><?php echo esc_html($cat_name); ?></a>
-                    <?php endif; ?>
-                    <?php if ($is_brand_mode && $brand_name !== '' && $brand_archive_url !== '') : ?>
-                        <a class="meta__chip" href="<?php echo esc_url($brand_archive_url); ?>"><?php echo esc_html($brand_name); ?></a>
-                    <?php endif; ?>
                 </div>
 
-                <?php if (trim(wp_strip_all_tags($intro)) !== '') : ?>
-                    <div class="post-hero__excerpt"><?php echo $intro_safe; ?></div>
+                <?php if ($excerpt_html !== '') : ?>
+                    <div class="post-hero__excerpt"><?php echo wp_kses_post($excerpt_html); ?></div>
                 <?php endif; ?>
             </div>
 

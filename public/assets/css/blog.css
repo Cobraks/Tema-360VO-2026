@@ -554,6 +554,37 @@
 
 .meta__chip:hover { text-decoration: underline; }
 
+.meta__chip--inline {
+  margin-left: .9rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  color: var(--primary30);
+  display: inline;
+  font-weight: var(--fw-m);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.meta__chip--inline:hover {
+  color: var(--primary20);
+}
+
+.meta__chip-group {
+  display: inline;
+}
+
+.meta__chip-group > .meta__chip--inline:first-child {
+  margin-left: 0;
+}
+
+.meta__chip-separator {
+  display: inline;
+  margin-left: .6rem;
+  color: var(--muted);
+}
+
 .meta__muted { color: var(--muted); }
 
 
@@ -1364,7 +1395,7 @@
   width: 64px;
   height: 64px;
   overflow: hidden;
-  background: rgba(255,255,255,.14);
+  background: transparent;
   display: inline-flex;
   align-items: center;
   justify-content: center;

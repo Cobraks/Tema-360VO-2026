@@ -27,20 +27,36 @@ function th360_enqueue_post_editor_theme_styles() {
         return;
     }
 
-    $style_path = get_template_directory() . '/style.min.css';
-    $style_uri  = get_template_directory_uri() . '/style.min.css';
+    $styles = [
+        'th360-editor-theme-style' => [
+            'min'  => '/style.min.css',
+            'src'  => '/style.css',
+            'deps' => [],
+        ],
+        'th360-editor-pages-style' => [
+            'min'  => '/public/assets/css/pages.min.css',
+            'src'  => '/public/assets/css/pages.css',
+            'deps' => [ 'th360-editor-theme-style' ],
+        ],
+        'th360-editor-blog-style' => [
+            'min'  => '/public/assets/css/blog.min.css',
+            'src'  => '/public/assets/css/blog.css',
+            'deps' => [ 'th360-editor-theme-style', 'th360-editor-pages-style' ],
+        ],
+    ];
 
-    if ( ! file_exists( $style_path ) ) {
-        $style_path = get_template_directory() . '/style.css';
-        $style_uri  = get_template_directory_uri() . '/style.css';
+    foreach ( $styles as $handle => $config ) {
+        $relative = file_exists( get_template_directory() . $config['min'] ) ? $config['min'] : $config['src'];
+        $path     = get_template_directory() . $relative;
+        $uri      = get_template_directory_uri() . $relative;
+
+        wp_enqueue_style(
+            $handle,
+            $uri,
+            $config['deps'],
+            file_exists( $path ) ? (string) filemtime( $path ) : null
+        );
     }
-
-    wp_enqueue_style(
-        'th360-editor-theme-style',
-        $style_uri,
-        [],
-        file_exists( $style_path ) ? (string) filemtime( $style_path ) : null
-    );
 }
 add_action( 'enqueue_block_assets', 'th360_enqueue_post_editor_theme_styles', 20 );
 

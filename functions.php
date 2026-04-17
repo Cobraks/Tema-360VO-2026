@@ -633,6 +633,39 @@ function th360_get_brand_vehicle_query_args(WP_Term $brand_term, array $args = [
 /**
  * Renderiza una selección automática de vehículos de la marca del post.
  */
+function th360_normalize_vehicle_card_icons(string $html): string
+{
+    if ($html === '' || !str_contains($html, 'icon-photo_camera')) {
+        return $html;
+    }
+
+    $camera_icon = class_exists('E360VO_Icon')
+        ? E360VO_Icon::get('camera', [
+            'class'       => 'vehicle-card__overlay-icon',
+            'aria-hidden' => 'true',
+        ])
+        : '';
+
+    if ($camera_icon === '') {
+        return $html;
+    }
+
+    return str_replace('<i class="icon-photo_camera"></i>', $camera_icon, $html);
+}
+
+add_filter('render_block', function (string $block_content, array $block): string {
+    if ($block_content === '') {
+        return $block_content;
+    }
+
+    $block_name = (string) ($block['blockName'] ?? '');
+    if (!in_array($block_name, ['acf/seleccion-coches', 'acf/catalogo-coches'], true)) {
+        return $block_content;
+    }
+
+    return th360_normalize_vehicle_card_icons($block_content);
+}, 10, 2);
+
 function th360_render_brand_vehicle_section(int $post_id, array $args = []): void
 {
     if (!th360_should_show_brand_vehicles($post_id)) {
@@ -684,7 +717,9 @@ function th360_render_brand_vehicle_section(int $post_id, array $args = []): voi
                     <?php
                     while ($query->have_posts()) :
                         $query->the_post();
+                        ob_start();
                         include $template_path;
+                        echo th360_normalize_vehicle_card_icons((string) ob_get_clean());
                     endwhile;
                     ?>
                 </div>

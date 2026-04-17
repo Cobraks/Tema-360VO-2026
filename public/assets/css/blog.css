@@ -1344,9 +1344,8 @@
 }
 
 .brand-highlight {
-  margin-top: 1.25rem;
+  margin-top: 3.5rem;
   padding: 1rem;
-  border-radius: 1.5rem;
   background: var(--primary30);
   color: white;
   display: flex;
@@ -1364,7 +1363,6 @@
 .brand-highlight__media {
   width: 64px;
   height: 64px;
-  border-radius: 1rem;
   overflow: hidden;
   background: rgba(255,255,255,.14);
   display: inline-flex;
@@ -1373,10 +1371,44 @@
   flex: 0 0 auto;
 }
 
+.brand-highlight__media--horizontal {
+  width: 88px;
+  height: 52px;
+}
+
+.brand-highlight__media--horizontal_corto {
+  width: 94px;
+  height: 48px;
+}
+
+.brand-highlight__media--horizontal_largo {
+  width: 116px;
+  height: 48px;
+}
+
+.brand-highlight__media--vertical {
+  width: 56px;
+  height: 76px;
+}
+
 .brand-highlight__logo {
-  width: 100%;
+  width: auto;
+  max-width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+}
+
+.brand-highlight__logo--horizontal,
+.brand-highlight__logo--horizontal_corto,
+.brand-highlight__logo--horizontal_largo {
+  width: 100%;
+  height: auto;
+}
+
+.brand-highlight__logo--circular,
+.brand-highlight__logo--vertical {
+  width: auto;
+  height: 100%;
 }
 
 .brand-highlight__logo-fallback {
@@ -1390,14 +1422,6 @@
   min-width: 0;
 }
 
-.brand-highlight__eyebrow {
-  margin: 0 0 .2rem;
-  font-size: .75rem;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,.72);
-}
-
 .brand-highlight__title {
   margin: 0;
   font-size: clamp(1.15rem, 1rem + .5vw, 1.5rem);
@@ -1407,8 +1431,8 @@
 
 .brand-highlight__text {
   margin: .35rem 0 0;
-  font-size: .95rem;
-  line-height: 1.45;
+  font-size: .88rem;
+  line-height: 1.35;
   color: rgba(255,255,255,.86);
 }
 

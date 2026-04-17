@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.2.12 - 2026-04-17
+- Added a shared blog-post context resolver for editorial category and selected brand, then reused it in blog single URLs, breadcrumbs, and the new brand archive route inside the blog without converting `marca` into a real post category.
+- Updated blog single posts to show both the editorial category and selected brand chips, render the selected brand logo with its ACF shape modifier, and tighten the brand highlight copy to the stock-complement pattern used elsewhere.
+- Reused the category archive template for `/noticias/marca/{marca}/`, wiring it to selected-brand post meta and surfacing brand/category chips across the archive cards so brand-mode articles can be browsed as their own editorial stream.
+
 ## 3.2.11 - 2026-04-16
 - Switched the single-post brand-mode detection to the actual ACF selector field `tipo_de_categoria`, keeping backward compatibility with the earlier experimental field name so the brand highlight block now appears in the intended posts.
 

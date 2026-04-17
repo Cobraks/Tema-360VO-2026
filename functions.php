@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 /**
  * Constantes del tema
  */
-define('THEME_VERSION', '3.2.11');
+define('THEME_VERSION', '3.2.12');
 define('THEME_DIR', get_template_directory());
 define('THEME_URI', get_template_directory_uri());
 
@@ -32,6 +32,18 @@ function th360_generar_min_assets()
     if (class_exists('E360VO_AssetMinifier')) {
         E360VO_AssetMinifier::maybe_minify_all();
     }
+}
+
+add_action('after_setup_theme', 'th360_maybe_flush_rewrites_on_version_change', 20);
+function th360_maybe_flush_rewrites_on_version_change()
+{
+    $stored_version = (string) get_option('th360_theme_version', '');
+    if ($stored_version === THEME_VERSION) {
+        return;
+    }
+
+    set_transient('th360_flush_rewrite_rules', 1, DAY_IN_SECONDS);
+    update_option('th360_theme_version', THEME_VERSION, false);
 }
 
 /**
@@ -208,6 +220,284 @@ function th360_resolve_acf_term($value): ?WP_Term
     }
 
     return null;
+}
+
+/**
+ * Devuelve la URL base del blog actual.
+ */
+function th360_get_blog_home_url(): string
+{
+    $blog_slug = class_exists('E360VO_ThemeSetup')
+        ? (string) E360VO_ThemeSetup::get_blog_slug()
+        : 'noticias';
+
+    return home_url('/' . trim($blog_slug, '/') . '/');
+}
+
+/**
+ * Devuelve la categoría editorial principal del post.
+ */
+function th360_get_post_primary_category(int $post_id): ?WP_Term
+{
+    if (function_exists('get_field')) {
+        $selected_category = th360_resolve_acf_term(get_field('seleccione_categoria', $post_id));
+        if ($selected_category instanceof WP_Term && $selected_category->taxonomy === 'category') {
+            return $selected_category;
+        }
+    }
+
+    $categories = get_the_category($post_id);
+    if (is_array($categories) && !empty($categories)) {
+        $category = reset($categories);
+        if ($category instanceof WP_Term) {
+            return $category;
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Devuelve la marca editorial principal del post.
+ */
+function th360_get_post_brand_term(int $post_id): ?WP_Term
+{
+    if (function_exists('get_field')) {
+        $selected_brand = th360_resolve_acf_term(get_field('seleccione_marca', $post_id));
+        if ($selected_brand instanceof WP_Term && $selected_brand->taxonomy === 'marca') {
+            return $selected_brand;
+        }
+    }
+
+    $brand_terms = get_the_terms($post_id, 'marca');
+    if (is_array($brand_terms) && !empty($brand_terms)) {
+        $brand = reset($brand_terms);
+        if ($brand instanceof WP_Term) {
+            return $brand;
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Devuelve el complemento editorial del stock.
+ */
+function th360_get_stock_complement(): string
+{
+    if (function_exists('gv360_get_variable')) {
+        $value = gv360_get_variable('stock_complement', '');
+        if (is_scalar($value) && trim((string) $value) !== '') {
+            return trim((string) $value);
+        }
+    }
+
+    if (function_exists('get_field')) {
+        foreach (['complemento_nombre', 'complemento-nombre'] as $field_name) {
+            $value = get_field($field_name, 'option');
+            if (is_scalar($value) && trim((string) $value) !== '') {
+                return trim((string) $value);
+            }
+        }
+    }
+
+    return '';
+}
+
+/**
+ * Construye la URL del archivo de blog por marca.
+ */
+function th360_get_blog_brand_archive_url($brand): string
+{
+    $brand_term = $brand instanceof WP_Term ? $brand : th360_resolve_acf_term($brand);
+    if (!$brand_term instanceof WP_Term || $brand_term->taxonomy !== 'marca') {
+        return '';
+    }
+
+    $blog_slug = class_exists('E360VO_ThemeSetup')
+        ? (string) E360VO_ThemeSetup::get_blog_slug()
+        : 'noticias';
+
+    return home_url('/' . trim($blog_slug, '/') . '/marca/' . $brand_term->slug . '/');
+}
+
+/**
+ * Meta query tolerante con formatos legacy/ACF para la marca del post.
+ */
+function th360_get_blog_brand_meta_query($brand): array
+{
+    $brand_term = $brand instanceof WP_Term ? $brand : th360_resolve_acf_term($brand);
+    if (!$brand_term instanceof WP_Term) {
+        return [];
+    }
+
+    $brand_id = (string) $brand_term->term_id;
+
+    return [
+        'relation' => 'OR',
+        [
+            'key'     => 'seleccione_marca',
+            'value'   => $brand_id,
+            'compare' => '=',
+        ],
+        [
+            'key'     => 'seleccione_marca',
+            'value'   => '"' . $brand_id . '"',
+            'compare' => 'LIKE',
+        ],
+    ];
+}
+
+/**
+ * Devuelve la marca del archivo de blog por marca actual.
+ */
+function th360_get_current_blog_brand_term(): ?WP_Term
+{
+    $brand_slug = get_query_var('th360_post_brand');
+    if (!is_scalar($brand_slug) || trim((string) $brand_slug) === '') {
+        return null;
+    }
+
+    $brand = get_term_by('slug', sanitize_title((string) $brand_slug), 'marca');
+    return ($brand instanceof WP_Term && !is_wp_error($brand)) ? $brand : null;
+}
+
+/**
+ * Indica si estamos en un archivo editorial de marca del blog.
+ */
+function th360_is_blog_brand_archive(): bool
+{
+    return th360_get_current_blog_brand_term() instanceof WP_Term;
+}
+
+/**
+ * Normaliza distintos formatos de imagen a attachment ID.
+ */
+function th360_resolve_attachment_id($value): int
+{
+    if (is_numeric($value)) {
+        return max(0, (int) $value);
+    }
+
+    if (is_array($value)) {
+        foreach (['ID', 'id'] as $key) {
+            if (isset($value[$key]) && is_numeric($value[$key])) {
+                return max(0, (int) $value[$key]);
+            }
+        }
+
+        if (!empty($value['url']) && is_string($value['url'])) {
+            return max(0, (int) attachment_url_to_postid($value['url']));
+        }
+    }
+
+    if (is_string($value) && filter_var($value, FILTER_VALIDATE_URL)) {
+        return max(0, (int) attachment_url_to_postid($value));
+    }
+
+    return 0;
+}
+
+/**
+ * Devuelve los datos visuales de una marca para el front del blog.
+ */
+function th360_get_brand_visual_data(?WP_Term $brand_term): array
+{
+    $data = [
+        'logo_id' => 0,
+        'shape'   => 'circular',
+        'alt'     => '',
+        'title'   => '',
+    ];
+
+    if (!$brand_term instanceof WP_Term) {
+        return $data;
+    }
+
+    $contexts = [
+        $brand_term,
+        'term_' . $brand_term->term_id,
+        $brand_term->taxonomy . '_' . $brand_term->term_id,
+    ];
+
+    $shape = '';
+    if (function_exists('get_field')) {
+        foreach ($contexts as $context) {
+            $maybe_shape = get_field('forma_del_logo', $context);
+            if (is_scalar($maybe_shape) && trim((string) $maybe_shape) !== '') {
+                $shape = trim((string) $maybe_shape);
+                break;
+            }
+        }
+    }
+
+    if ($shape === '') {
+        $shape = (string) get_term_meta($brand_term->term_id, 'forma_del_logo', true);
+    }
+
+    $allowed_shapes = ['circular', 'horizontal', 'horizontal_corto', 'horizontal_largo', 'vertical'];
+    if (!in_array($shape, $allowed_shapes, true)) {
+        $shape = 'circular';
+    }
+
+    $logo_id = 0;
+    $logo_fields = ['logo_marca', 'logo_marca_png', 'imagen_marca'];
+
+    if (function_exists('get_field')) {
+        foreach ($logo_fields as $field_name) {
+            foreach ($contexts as $context) {
+                $candidate = get_field($field_name, $context);
+                $logo_id = th360_resolve_attachment_id($candidate);
+                if ($logo_id > 0) {
+                    break 2;
+                }
+            }
+        }
+    }
+
+    if ($logo_id <= 0) {
+        foreach ($logo_fields as $field_name) {
+            $candidate = get_term_meta($brand_term->term_id, $field_name, true);
+            $logo_id = th360_resolve_attachment_id($candidate);
+            if ($logo_id > 0) {
+                break;
+            }
+        }
+    }
+
+    $stock_complement = th360_get_stock_complement();
+    $alt = trim(implode(' ', array_filter([(string) $brand_term->name, $stock_complement])));
+
+    $data['logo_id'] = $logo_id;
+    $data['shape']   = $shape;
+    $data['alt']     = $alt !== '' ? $alt : (string) $brand_term->name;
+    $data['title']   = (string) $brand_term->name;
+
+    return $data;
+}
+
+/**
+ * Devuelve el contexto editorial compartido de un post del blog.
+ */
+function th360_get_post_blog_context(int $post_id): array
+{
+    $category = th360_get_post_primary_category($post_id);
+    $brand    = th360_get_post_brand_term($post_id);
+    $cat_url  = $category instanceof WP_Term ? get_category_link($category->term_id) : '';
+
+    if (is_wp_error($cat_url)) {
+        $cat_url = '';
+    }
+
+    return [
+        'is_brand_mode' => th360_is_brand_mode_post($post_id),
+        'category'      => $category,
+        'category_name' => $category instanceof WP_Term ? (string) $category->name : '',
+        'category_url'  => (string) $cat_url,
+        'brand'         => $brand,
+        'brand_name'    => $brand instanceof WP_Term ? (string) $brand->name : '',
+        'brand_url'     => th360_get_blog_brand_archive_url($brand),
+    ];
 }
 
 /**

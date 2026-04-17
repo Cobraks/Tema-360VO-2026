@@ -35,12 +35,24 @@ if (!function_exists('th360_get_image_caption')) {
     }
 }
 
-$category = get_queried_object();
-$cat_id   = (isset($category->term_id) ? (int) $category->term_id : 0);
-$cat_name = single_cat_title('', false);
-$cat_desc = category_description();
+$is_brand_archive = function_exists('th360_is_blog_brand_archive') && th360_is_blog_brand_archive();
+$brand_term = $is_brand_archive && function_exists('th360_get_current_blog_brand_term')
+    ? th360_get_current_blog_brand_term()
+    : null;
 
-$blog_url = home_url('/noticias/');
+$category = $is_brand_archive ? null : get_queried_object();
+$cat_id   = (!$is_brand_archive && isset($category->term_id)) ? (int) $category->term_id : 0;
+$cat_name = $is_brand_archive && $brand_term instanceof WP_Term
+    ? (string) $brand_term->name
+    : single_cat_title('', false);
+$cat_desc = $is_brand_archive && $brand_term instanceof WP_Term
+    ? term_description($brand_term, 'marca')
+    : category_description();
+$archive_label = $is_brand_archive ? 'Marca' : 'Categoria';
+
+$blog_url = function_exists('th360_get_blog_home_url')
+    ? th360_get_blog_home_url()
+    : home_url('/noticias/');
 $search_q = get_search_query();
 
 $categories = get_categories([
@@ -61,12 +73,16 @@ $featured_args = [
     'update_post_term_cache' => true,
     'update_post_meta_cache' => true,
 ];
-if ($cat_id) $featured_args['cat'] = $cat_id;
+if ($is_brand_archive && $brand_term instanceof WP_Term && function_exists('th360_get_blog_brand_meta_query')) {
+    $featured_args['meta_query'] = th360_get_blog_brand_meta_query($brand_term);
+} elseif ($cat_id) {
+    $featured_args['cat'] = $cat_id;
+}
 
 $featured_posts = new WP_Query($featured_args);
 
 if (!$featured_posts->have_posts()) {
-    unset($featured_args['cat']);
+    unset($featured_args['cat'], $featured_args['meta_query']);
     $featured_posts = new WP_Query($featured_args);
 }
 ?>
@@ -79,7 +95,7 @@ if (!$featured_posts->have_posts()) {
                 <div class="blog-hero__content">
                     <p class="blog-hero__kicker">
                         <span class="blog-hero__dot" aria-hidden="true"></span>
-                        Blog · Categoría
+                        Blog · <?php echo esc_html($archive_label); ?>
                     </p>
 
                     <h1 class="blog-hero__title" id="blog-hero-title"><?php echo esc_html($cat_name); ?></h1>
@@ -89,7 +105,13 @@ if (!$featured_posts->have_posts()) {
                             <?php echo wp_kses_post($cat_desc); ?>
                         </div>
                     <?php else : ?>
-                        <p class="blog-hero__subtitle">Todo el contenido de <strong><?php echo esc_html($cat_name); ?></strong>, actualizado y ordenado.</p>
+                        <p class="blog-hero__subtitle">
+                            <?php if ($is_brand_archive) : ?>
+                                Todo el contenido editorial relacionado con <strong><?php echo esc_html($cat_name); ?></strong>, actualizado y ordenado.
+                            <?php else : ?>
+                                Todo el contenido de <strong><?php echo esc_html($cat_name); ?></strong>, actualizado y ordenado.
+                            <?php endif; ?>
+                        </p>
                     <?php endif; ?>
 
                     <p class="blog-hero__badge">
@@ -126,9 +148,8 @@ if (!$featured_posts->have_posts()) {
                                 <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
                                 <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                             </svg>
-                            <input id="blog-search" class="search__input" type="search" name="s" placeholder="Buscar noticias y guías…" value="<?php echo esc_attr($search_q); ?>" />
+                            <input id="blog-search" class="search__input" type="search" name="s" placeholder="Buscar noticias y guias..." value="<?php echo esc_attr($search_q); ?>" />
                         </div>
-                        
                     </form>
                 </aside>
             </div>
@@ -140,8 +161,8 @@ if (!$featured_posts->have_posts()) {
         <?php if ($featured_posts->have_posts()) : ?>
             <section class="section" aria-label="Te puede interesar">
                 <header class="section__header">
-                    <h2 class="section__title">Selección recomendada</h2>
-                    <p class="section__subtitle">Lecturas clave relacionadas con esta temática.</p>
+                    <h2 class="section__title">Seleccion recomendada</h2>
+                    <p class="section__subtitle">Lecturas clave relacionadas con esta tematica.</p>
                 </header>
 
                 <div class="featured">
@@ -150,6 +171,13 @@ if (!$featured_posts->have_posts()) {
                     while ($featured_posts->have_posts()) : $featured_posts->the_post();
                         $i++;
                         $is_big = ($i === 1);
+                        $card_context = function_exists('th360_get_post_blog_context')
+                            ? th360_get_post_blog_context((int) get_the_ID())
+                            : [];
+                        $card_cat_name = (string) ($card_context['category_name'] ?? '');
+                        $card_cat_url = (string) ($card_context['category_url'] ?? '');
+                        $card_brand_name = !empty($card_context['is_brand_mode']) ? (string) ($card_context['brand_name'] ?? '') : '';
+                        $card_brand_url = !empty($card_context['is_brand_mode']) ? (string) ($card_context['brand_url'] ?? '') : '';
                     ?>
                         <article class="card <?php echo $is_big ? 'card--big' : ''; ?>">
                             <a class="card__link" href="<?php the_permalink(); ?>">
@@ -170,10 +198,16 @@ if (!$featured_posts->have_posts()) {
                                     <div class="meta">
                                         <time class="meta__date" datetime="<?php echo esc_attr(get_the_date('c')); ?>"><?php echo esc_html(get_the_date('j M, Y')); ?></time>
                                         <span class="meta__muted"><?php echo esc_html(th360_reading_time_label((int) get_the_ID())); ?></span>
+                                        <?php if ($card_cat_name !== '' && $card_cat_url !== '') : ?>
+                                            <span class="meta__chip"><?php echo esc_html($card_cat_name); ?></span>
+                                        <?php endif; ?>
+                                        <?php if ($card_brand_name !== '' && $card_brand_url !== '') : ?>
+                                            <span class="meta__chip"><?php echo esc_html($card_brand_name); ?></span>
+                                        <?php endif; ?>
                                     </div>
 
                                     <h3 class="card__title"><?php the_title(); ?></h3>
-                                    <p class="card__excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), $is_big ? 28 : 18, '…')); ?></p>
+                                    <p class="card__excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), $is_big ? 28 : 18, '...')); ?></p>
                                     <span class="card__cta" aria-hidden="true">Leer →</span>
                                 </div>
                             </a>
@@ -185,7 +219,7 @@ if (!$featured_posts->have_posts()) {
         <?php endif; ?>
 
         <div class="layout">
-            <section class="section section--posts" aria-label="Publicaciones en la categoría">
+            <section class="section section--posts" aria-label="<?php echo esc_attr($is_brand_archive ? 'Publicaciones de la marca' : 'Publicaciones en la categoria'); ?>">
                 <?php if (have_posts()) :
                     the_post();
 
@@ -194,15 +228,28 @@ if (!$featured_posts->have_posts()) {
                     $latest_read   = th360_reading_time_label($latest_id);
                     $latest_views  = (int) (get_post_meta($latest_id, 'post_views_count', true) ?: 0);
                     $image_caption = th360_get_image_caption($latest_id);
+                    $latest_context = function_exists('th360_get_post_blog_context')
+                        ? th360_get_post_blog_context($latest_id)
+                        : [];
+                    $latest_cat_name = (string) ($latest_context['category_name'] ?? '');
+                    $latest_cat_url  = (string) ($latest_context['category_url'] ?? '');
+                    $latest_brand_name = !empty($latest_context['is_brand_mode']) ? (string) ($latest_context['brand_name'] ?? '') : '';
+                    $latest_brand_url = !empty($latest_context['is_brand_mode']) ? (string) ($latest_context['brand_url'] ?? '') : '';
 
                     $thumbnail_id = (int) get_post_thumbnail_id($latest_id);
                     $image_meta = $thumbnail_id ? wp_get_attachment_metadata($thumbnail_id) : null;
-                    $is_vertical = $image_meta && !empty($image_meta['height']) && !empty($image_meta['width']) && ((int)$image_meta['height'] > (int)$image_meta['width'] * 1.2);
+                    $is_vertical = $image_meta && !empty($image_meta['height']) && !empty($image_meta['width']) && ((int) $image_meta['height'] > (int) $image_meta['width'] * 1.2);
                 ?>
 
                     <header class="section__header">
-                        <h2 class="section__title">Últimos artículos en <?php echo esc_html($cat_name); ?></h2>
-                        <p class="section__subtitle">Orden cronológico, del más reciente al más antiguo.</p>
+                        <h2 class="section__title">
+                            <?php if ($is_brand_archive) : ?>
+                                Ultimos articulos sobre <?php echo esc_html($cat_name); ?>
+                            <?php else : ?>
+                                Ultimos articulos en <?php echo esc_html($cat_name); ?>
+                            <?php endif; ?>
+                        </h2>
+                        <p class="section__subtitle">Orden cronologico, del mas reciente al mas antiguo.</p>
                     </header>
 
                     <article class="lead" data-post-id="<?php echo (int) $latest_id; ?>" data-date="<?php echo esc_attr(get_the_date('Y-m-d')); ?>" data-views="<?php echo (int) $latest_views; ?>">
@@ -227,27 +274,33 @@ if (!$featured_posts->have_posts()) {
                             </a>
 
                             <div class="lead__body">
-                                <p class="lead__kicker"><?php echo esc_html($cat_name); ?></p>
+                                <p class="lead__kicker"><?php echo esc_html($is_brand_archive ? $cat_name : $latest_cat_name); ?></p>
 
                                 <div class="meta">
                                     <time class="meta__date" datetime="<?php echo esc_attr(get_the_date('c')); ?>"><?php echo esc_html(get_the_date('j M, Y')); ?></time>
                                     <?php if ($latest_read) : ?><span class="meta__muted"><?php echo esc_html($latest_read); ?></span><?php endif; ?>
+                                    <?php if ($latest_cat_name !== '' && $latest_cat_url !== '') : ?>
+                                        <a class="meta__chip" href="<?php echo esc_url($latest_cat_url); ?>"><?php echo esc_html($latest_cat_name); ?></a>
+                                    <?php endif; ?>
+                                    <?php if ($latest_brand_name !== '' && $latest_brand_url !== '') : ?>
+                                        <a class="meta__chip" href="<?php echo esc_url($latest_brand_url); ?>"><?php echo esc_html($latest_brand_name); ?></a>
+                                    <?php endif; ?>
                                 </div>
 
                                 <h3 class="lead__title">
                                     <a class="lead__title-link" href="<?php echo esc_url($latest_url); ?>"><?php the_title(); ?></a>
                                 </h3>
 
-                                <p class="lead__excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 40, '…')); ?></p>
+                                <p class="lead__excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 40, '...')); ?></p>
 
-                                <div class="lead__actions" aria-label="Acciones del artículo">
-                                    <a class="lead__read" href="<?php echo esc_url($latest_url); ?>">Leer artículo →</a>
+                                <div class="lead__actions" aria-label="Acciones del articulo">
+                                    <a class="lead__read" href="<?php echo esc_url($latest_url); ?>">Leer articulo →</a>
 
                                     <div class="lead__tools" role="group" aria-label="Herramientas">
-                                        <button class="icon-btn" type="button" data-action="save" data-id="<?php echo (int) $latest_id; ?>" aria-pressed="false" aria-label="Guardar artículo" title="Guardar">
+                                        <button class="icon-btn" type="button" data-action="save" data-id="<?php echo (int) $latest_id; ?>" aria-pressed="false" aria-label="Guardar articulo" title="Guardar">
                                             <?php echo E360VO_Icon::get('shield', ['aria-hidden' => 'true', 'width' => 24, 'height' => 24]); ?>
                                         </button>
-                                        <button class="icon-btn" type="button" data-action="share" data-url="<?php echo esc_url($latest_url); ?>" aria-label="Compartir artículo" title="Compartir">
+                                        <button class="icon-btn" type="button" data-action="share" data-url="<?php echo esc_url($latest_url); ?>" aria-label="Compartir articulo" title="Compartir">
                                             <?php echo E360VO_Icon::get('open_new', ['aria-hidden' => 'true', 'width' => 24, 'height' => 24]); ?>
                                         </button>
                                     </div>
@@ -257,7 +310,15 @@ if (!$featured_posts->have_posts()) {
                     </article>
 
                     <div class="grid">
-                        <?php while (have_posts()) : the_post(); ?>
+                        <?php while (have_posts()) : the_post();
+                            $tile_context = function_exists('th360_get_post_blog_context')
+                                ? th360_get_post_blog_context((int) get_the_ID())
+                                : [];
+                            $tile_cat_name = (string) ($tile_context['category_name'] ?? '');
+                            $tile_cat_url  = (string) ($tile_context['category_url'] ?? '');
+                            $tile_brand_name = !empty($tile_context['is_brand_mode']) ? (string) ($tile_context['brand_name'] ?? '') : '';
+                            $tile_brand_url = !empty($tile_context['is_brand_mode']) ? (string) ($tile_context['brand_url'] ?? '') : '';
+                        ?>
                             <article class="tile">
                                 <a class="tile__link" href="<?php the_permalink(); ?>">
                                     <div class="tile__media">
@@ -277,11 +338,17 @@ if (!$featured_posts->have_posts()) {
                                         <div class="meta">
                                             <time class="meta__date" datetime="<?php echo esc_attr(get_the_date('c')); ?>"><?php echo esc_html(get_the_date('j M')); ?></time>
                                             <span class="meta__muted"><?php echo esc_html(th360_reading_time_label((int) get_the_ID())); ?></span>
+                                            <?php if ($tile_cat_name !== '' && $tile_cat_url !== '') : ?>
+                                                <a class="meta__chip" href="<?php echo esc_url($tile_cat_url); ?>"><?php echo esc_html($tile_cat_name); ?></a>
+                                            <?php endif; ?>
+                                            <?php if ($tile_brand_name !== '' && $tile_brand_url !== '') : ?>
+                                                <a class="meta__chip" href="<?php echo esc_url($tile_brand_url); ?>"><?php echo esc_html($tile_brand_name); ?></a>
+                                            <?php endif; ?>
                                         </div>
 
                                         <h3 class="tile__title"><?php the_title(); ?></h3>
-                                        <p class="tile__excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 18, '…')); ?></p>
-                                        <div class="tile__footer"><span class="tile__cta">Leer artículo →</span></div>
+                                        <p class="tile__excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 18, '...')); ?></p>
+                                        <div class="tile__footer"><span class="tile__cta">Leer articulo →</span></div>
                                     </div>
                                 </a>
                             </article>
@@ -301,7 +368,7 @@ if (!$featured_posts->have_posts()) {
                     ]);
                     if (!empty($pagination) && is_array($pagination)) :
                     ?>
-                        <nav class="pagination" aria-label="Paginación">
+                        <nav class="pagination" aria-label="Paginacion">
                             <ul class="pagination__list">
                                 <?php foreach ($pagination as $link) : ?>
                                     <li class="pagination__item"><?php echo $link; ?></li>
@@ -312,8 +379,20 @@ if (!$featured_posts->have_posts()) {
 
                 <?php else : ?>
                     <div class="empty">
-                        <h3 class="empty__title">No hay artículos en esta categoría</h3>
-                        <p class="empty__text">Prueba con otra categoría o vuelve a la página de noticias.</p>
+                        <h3 class="empty__title">
+                            <?php if ($is_brand_archive) : ?>
+                                No hay articulos sobre esta marca
+                            <?php else : ?>
+                                No hay articulos en esta categoria
+                            <?php endif; ?>
+                        </h3>
+                        <p class="empty__text">
+                            <?php if ($is_brand_archive) : ?>
+                                Prueba con otra marca o vuelve a la pagina de noticias.
+                            <?php else : ?>
+                                Prueba con otra categoria o vuelve a la pagina de noticias.
+                            <?php endif; ?>
+                        </p>
                         <p class="u-mt-16"><a class="btn btn--primary" href="<?php echo esc_url($blog_url); ?>">Volver a noticias</a></p>
                     </div>
                 <?php endif; ?>
@@ -323,7 +402,7 @@ if (!$featured_posts->have_posts()) {
                 <section class="panel panel--subscribe" aria-label="Recibe novedades">
                     <div class="panel__title-row">
                         <h2 class="panel__title">Recibe novedades</h2>
-                        <button type="button" class="ayuda_garantia__button ayuda_garantia__button--mantenimiento panel__help-btn" aria-label="Más información sobre la newsletter" data-tip-toggle aria-expanded="false" aria-controls="newsletter-tip-category">
+                        <button type="button" class="ayuda_garantia__button ayuda_garantia__button--mantenimiento panel__help-btn" aria-label="Mas informacion sobre la newsletter" data-tip-toggle aria-expanded="false" aria-controls="newsletter-tip-category">
                             <?php echo E360VO_Icon::get('icon-help_outline', ['class' => 'ayuda_garantia__icon', 'aria-hidden' => 'true']); ?>
                         </button>
                     </div>
@@ -340,7 +419,7 @@ if (!$featured_posts->have_posts()) {
                     } else {
                     ?>
                         <p class="panel__note">
-                            Activa Contact Form 7 para mostrar el formulario de suscripción.
+                            Activa Contact Form 7 para mostrar el formulario de suscripcion.
                         </p>
                     <?php } ?>
                 </section>

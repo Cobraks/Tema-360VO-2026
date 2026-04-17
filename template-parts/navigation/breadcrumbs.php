@@ -22,7 +22,8 @@ if (! function_exists('theme360_ctx_get')) {
 
         if (function_exists('get_field')) {
             $map = array(
-                'stock_name' => 'nombre_del_stock',
+                'stock_name'       => 'nombre_del_stock',
+                'stock_complement' => 'complemento_nombre',
             );
 
             if (isset($map[$key])) {
@@ -75,6 +76,14 @@ if (! function_exists('theme360_breadcrumbs')) {
 
         if (is_home()) {
             $render_item_current($posts_page_title);
+        } elseif (function_exists('th360_is_blog_brand_archive') && th360_is_blog_brand_archive()) {
+            $render_item_link($posts_page_title, $posts_page_link);
+
+            $brand = function_exists('th360_get_current_blog_brand_term')
+                ? th360_get_current_blog_brand_term()
+                : null;
+
+            $render_item_current($brand instanceof WP_Term ? $brand->name : __('Marca', '360vo-theme'));
         } elseif (is_singular('coche')) {
             if (! empty($archive_link)) {
                 $render_item_link(ucfirst($stock_name), $archive_link);
@@ -108,15 +117,21 @@ if (! function_exists('theme360_breadcrumbs')) {
         } elseif (is_single() && 'post' === get_post_type()) {
             $render_item_link($posts_page_title, $posts_page_link);
 
-            $cats = get_the_category();
-            if (is_array($cats) && ! empty($cats)) {
-                $cat = reset($cats);
-                if ($cat instanceof WP_Term) {
-                    $cat_link = get_category_link($cat->term_id);
-                    if (! is_wp_error($cat_link)) {
-                        $render_item_link($cat->name, $cat_link);
-                    }
-                }
+            $context = function_exists('th360_get_post_blog_context')
+                ? th360_get_post_blog_context((int) get_the_ID())
+                : [];
+
+            if (!empty($context['category']) && $context['category'] instanceof WP_Term && !empty($context['category_url'])) {
+                $render_item_link($context['category']->name, $context['category_url']);
+            }
+
+            if (
+                !empty($context['is_brand_mode'])
+                && !empty($context['brand'])
+                && $context['brand'] instanceof WP_Term
+                && !empty($context['brand_url'])
+            ) {
+                $render_item_link($context['brand']->name, $context['brand_url']);
             }
 
             $render_item_current(get_the_title());

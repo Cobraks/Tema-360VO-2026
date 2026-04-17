@@ -34,15 +34,18 @@ if (!function_exists('th360_get_image_caption')) {
 
 $post_id = (int) get_the_ID();
 
-$blog_url = home_url('/noticias/');
+$blog_url = function_exists('th360_get_blog_home_url')
+    ? th360_get_blog_home_url()
+    : home_url('/noticias/');
 $permalink = get_permalink($post_id);
 
-$cats = get_the_category($post_id);
-$primary_cat = (!empty($cats) && !empty($cats[0])) ? $cats[0] : null;
+$blog_context = function_exists('th360_get_post_blog_context')
+    ? th360_get_post_blog_context($post_id)
+    : [];
 
-$cat_name = ($primary_cat && !empty($primary_cat->name)) ? (string) $primary_cat->name : '';
-$cat_url  = ($primary_cat) ? get_category_link($primary_cat) : '';
-if (is_wp_error($cat_url)) $cat_url = '';
+$primary_cat = $blog_context['category'] ?? null;
+$cat_name    = (string) ($blog_context['category_name'] ?? '');
+$cat_url     = (string) ($blog_context['category_url'] ?? '');
 
 $title_override = '';
 $intro_override = '';
@@ -66,44 +69,35 @@ $intro_safe = wp_kses_post(wpautop($intro));
 $reading = th360_reading_time_label($post_id);
 $caption = th360_get_image_caption($post_id);
 $activar_toc = true;
-$is_brand_mode = th360_is_brand_mode_post($post_id);
-$selected_brand = function_exists('get_field')
-    ? th360_resolve_acf_term(get_field('seleccione_marca', $post_id))
-    : null;
+$is_brand_mode = !empty($blog_context['is_brand_mode']);
+$selected_brand = $blog_context['brand'] ?? null;
 $brand_name = ($selected_brand instanceof WP_Term && !empty($selected_brand->name))
     ? (string) $selected_brand->name
     : '';
 $brand_slug = ($selected_brand instanceof WP_Term && !empty($selected_brand->slug))
     ? (string) $selected_brand->slug
     : '';
-$brand_summary = function_exists('get_field')
-    ? trim((string) get_field('resumen_entrada', $post_id))
-    : '';
+$brand_archive_url = (string) ($blog_context['brand_url'] ?? '');
 $brand_stock_url = $brand_slug !== ''
     ? home_url('/stock/' . $brand_slug . '/')
     : '#stock-marca';
-$brand_logo = null;
+$brand_visual = function_exists('th360_get_brand_visual_data')
+    ? th360_get_brand_visual_data($selected_brand instanceof WP_Term ? $selected_brand : null)
+    : ['logo_id' => 0, 'shape' => 'circular', 'alt' => $brand_name, 'title' => $brand_name];
+$brand_logo_id = (int) ($brand_visual['logo_id'] ?? 0);
+$brand_logo_shape = (string) ($brand_visual['shape'] ?? 'circular');
+$brand_logo_alt = (string) ($brand_visual['alt'] ?? $brand_name);
+$brand_logo_title = (string) ($brand_visual['title'] ?? $brand_name);
+$stock_complement = function_exists('th360_get_stock_complement')
+    ? th360_get_stock_complement()
+    : '';
+$site_name = trim((string) get_bloginfo('name'));
+$brand_summary = trim(implode(' ', array_filter([$brand_name, $stock_complement])));
 
-if ($selected_brand instanceof WP_Term && function_exists('get_field')) {
-    $brand_term_contexts = [
-        'term_' . $selected_brand->term_id,
-        $selected_brand->taxonomy . '_' . $selected_brand->term_id,
-    ];
-
-    foreach ($brand_term_contexts as $context) {
-        $maybe_logo = get_field('imagen_marca', $context);
-        if (is_array($maybe_logo) && !empty($maybe_logo['url'])) {
-            $brand_logo = $maybe_logo;
-            break;
-        }
-    }
-}
-
-if ($brand_summary === '' && $brand_name !== '') {
-    $brand_summary = sprintf(
-        'Descubre una selección de %s de segunda mano y encuentra modelos disponibles con un enfoque especial en esta marca.',
-        $brand_name
-    );
+if ($brand_summary !== '' && $site_name !== '') {
+    $brand_summary .= ' en ' . $site_name;
+} elseif ($brand_summary === '') {
+    $brand_summary = $brand_name;
 }
 
 $related_args = [
@@ -154,7 +148,7 @@ $related = new WP_Query($related_args);
                     <label class="sr-only" for="blog-search-single">Buscar en noticias</label>
                     <div class="search__field">
                         <span class="search__icon" aria-hidden="true"><?php echo E360VO_Icon::get('buscar', ['width' => 20, 'height' => 20]); ?></span>
-                        <input id="blog-search-single" class="search__input" type="search" name="s" placeholder="Buscar en el blog…" value="" />
+                        <input id="blog-search-single" class="search__input" type="search" name="s" placeholder="Buscar en el blog..." value="" />
                     </div>
                 </form>
             </div>
@@ -164,9 +158,15 @@ $related = new WP_Query($related_args);
             <h1 class="post-hero__title" id="post-title"><?php echo $title_safe; ?></h1>
 
             <div class="post-hero__summary">
-                <div class="post-hero__meta" aria-label="Metadatos del artículo">
+                <div class="post-hero__meta" aria-label="Metadatos del articulo">
                     <time class="post-hero__date" datetime="<?php echo esc_attr(get_the_date('c', $post_id)); ?>"><?php echo esc_html(get_the_date('j M, Y', $post_id)); ?></time>
                     <?php if ($reading) : ?><span class="post-hero__reading"><?php echo esc_html($reading); ?> de lectura</span><?php endif; ?>
+                    <?php if ($cat_name !== '' && $cat_url !== '') : ?>
+                        <a class="meta__chip" href="<?php echo esc_url($cat_url); ?>"><?php echo esc_html($cat_name); ?></a>
+                    <?php endif; ?>
+                    <?php if ($is_brand_mode && $brand_name !== '' && $brand_archive_url !== '') : ?>
+                        <a class="meta__chip" href="<?php echo esc_url($brand_archive_url); ?>"><?php echo esc_html($brand_name); ?></a>
+                    <?php endif; ?>
                 </div>
 
                 <?php if (trim(wp_strip_all_tags($intro)) !== '') : ?>
@@ -175,7 +175,7 @@ $related = new WP_Query($related_args);
             </div>
 
             <div class="post-tools" role="group" aria-label="Acciones">
-                <button class="icon-btn icon-btn--text" type="button" data-action="save" data-id="<?php echo (int) $post_id; ?>" aria-pressed="false" aria-label="Guardar artículo" title="Guardar">
+                <button class="icon-btn icon-btn--text" type="button" data-action="save" data-id="<?php echo (int) $post_id; ?>" aria-pressed="false" aria-label="Guardar articulo" title="Guardar">
                     <span class="icon-btn__icon icon-btn__icon--off" aria-hidden="true"><?php echo E360VO_Icon::get('blog_save', ['width' => 22, 'height' => 22]); ?></span>
                     <span class="icon-btn__icon icon-btn__icon--on" aria-hidden="true"><?php echo E360VO_Icon::get('blog_saved', ['width' => 22, 'height' => 22]); ?></span>
                     <span class="icon-btn__label">Guardar</span>
@@ -186,7 +186,7 @@ $related = new WP_Query($related_args);
                     <span class="icon-btn__label">Copiar enlace</span>
                 </button>
 
-                <button class="icon-btn icon-btn--text" type="button" data-action="share" data-url="<?php echo esc_url($permalink); ?>" aria-label="Compartir artículo" title="Compartir">
+                <button class="icon-btn icon-btn--text" type="button" data-action="share" data-url="<?php echo esc_url($permalink); ?>" aria-label="Compartir articulo" title="Compartir">
                     <span class="icon-btn__icon" aria-hidden="true"><?php echo E360VO_Icon::get('blog_share', ['width' => 22, 'height' => 22]); ?></span>
                     <span class="icon-btn__label">Compartir</span>
                 </button>
@@ -195,21 +195,21 @@ $related = new WP_Query($related_args);
             <?php if ($is_brand_mode && $brand_name !== '') : ?>
                 <section class="brand-highlight" aria-label="<?php echo esc_attr(sprintf('Marca destacada: %s', $brand_name)); ?>">
                     <div class="brand-highlight__main">
-                        <div class="brand-highlight__media" aria-hidden="true">
-                            <?php if (is_array($brand_logo) && !empty($brand_logo['url'])) : ?>
-                                <img
-                                    src="<?php echo esc_url((string) $brand_logo['url']); ?>"
-                                    alt="<?php echo esc_attr($brand_name); ?>"
-                                    class="brand-highlight__logo"
-                                    loading="lazy"
-                                    decoding="async">
+                        <div class="brand-highlight__media brand-highlight__media--<?php echo esc_attr($brand_logo_shape); ?>">
+                            <?php if ($brand_logo_id > 0) : ?>
+                                <?php echo wp_get_attachment_image($brand_logo_id, 'full', false, [
+                                    'alt'      => $brand_logo_alt,
+                                    'title'    => $brand_logo_title,
+                                    'class'    => 'brand-highlight__logo brand-highlight__logo--' . sanitize_html_class($brand_logo_shape),
+                                    'loading'  => 'lazy',
+                                    'decoding' => 'async',
+                                ]); ?>
                             <?php else : ?>
                                 <span class="brand-highlight__logo-fallback"><?php echo esc_html(mb_substr($brand_name, 0, 1)); ?></span>
                             <?php endif; ?>
                         </div>
 
                         <div class="brand-highlight__copy">
-                            <p class="brand-highlight__eyebrow">Marca destacada</p>
                             <h2 class="brand-highlight__title"><?php echo esc_html($brand_name); ?></h2>
                             <p class="brand-highlight__text"><?php echo esc_html($brand_summary); ?></p>
                         </div>
@@ -251,7 +251,7 @@ $related = new WP_Query($related_args);
                 ]); ?>
             <?php endif; ?>
 
-            <article class="post-card" aria-label="Contenido del artículo">
+            <article class="post-card" aria-label="Contenido del articulo">
 
                 <div class="entry-content entry-content--start" data-reading-progress-target>
                     <?php
@@ -260,7 +260,7 @@ $related = new WP_Query($related_args);
                     endwhile;
 
                     wp_link_pages([
-                        'before' => '<nav class="pagination" aria-label="Páginas del artículo"><ul class="pagination__list">',
+                        'before' => '<nav class="pagination" aria-label="Paginas del articulo"><ul class="pagination__list">',
                         'after'  => '</ul></nav>',
                         'link_before' => '<li class="pagination__item">',
                         'link_after'  => '</li>',
@@ -268,7 +268,7 @@ $related = new WP_Query($related_args);
                     ?>
                 </div>
 
-                <footer class="post-footer" aria-label="Enlaces del artículo">
+                <footer class="post-footer" aria-label="Enlaces del articulo">
                     <?php
                     $tags = get_the_tags($post_id);
                     if (!empty($tags)) :
@@ -284,12 +284,15 @@ $related = new WP_Query($related_args);
 
                 </footer>
 
-                <section class="post-related-inline" aria-label="Artículos relacionados">
+                <section class="post-related-inline" aria-label="Articulos relacionados">
                     <div class="post-related-inline__header">
                         <h2 class="post-related-inline__title">Sigue leyendo</h2>
                         <div class="post-related-inline__links">
                             <?php if ($cat_name && $cat_url) : ?>
                                 <a class="inline-link" href="<?php echo esc_url($cat_url); ?>">Ver todas las noticias de <?php echo esc_html($cat_name); ?></a>
+                            <?php endif; ?>
+                            <?php if ($is_brand_mode && $brand_name && $brand_archive_url) : ?>
+                                <a class="inline-link" href="<?php echo esc_url($brand_archive_url); ?>">Ver todas las noticias sobre <?php echo esc_html($brand_name); ?></a>
                             <?php endif; ?>
                             <a class="inline-link" href="<?php echo esc_url($blog_url); ?>">Volver a todas las noticias</a>
                         </div>
@@ -317,7 +320,7 @@ $related = new WP_Query($related_args);
                             wp_reset_postdata(); ?>
                         </div>
                     <?php else : ?>
-                        <p class="post-related-inline__empty">Todavía no hay más artículos relacionados en esta categoría.</p>
+                        <p class="post-related-inline__empty">Todavia no hay mas articulos relacionados en esta categoria.</p>
                     <?php endif; ?>
                 </section>
             </article>
@@ -327,7 +330,7 @@ $related = new WP_Query($related_args);
                 <section class="panel panel--subscribe" aria-label="Recibe novedades">
                     <div class="panel__title-row">
                         <h2 class="panel__title">Recibe novedades</h2>
-                        <button type="button" class="ayuda_garantia__button ayuda_garantia__button--mantenimiento panel__help-btn" aria-label="Más información sobre la newsletter" data-tip-toggle aria-expanded="false" aria-controls="newsletter-tip-single">
+                        <button type="button" class="ayuda_garantia__button ayuda_garantia__button--mantenimiento panel__help-btn" aria-label="Mas informacion sobre la newsletter" data-tip-toggle aria-expanded="false" aria-controls="newsletter-tip-single">
                             <?php echo E360VO_Icon::get('icon-help_outline', ['class' => 'ayuda_garantia__icon', 'aria-hidden' => 'true']); ?>
                         </button>
                     </div>
@@ -345,7 +348,7 @@ $related = new WP_Query($related_args);
                     } else {
                     ?>
                         <p class="panel__note">
-                            Activa Contact Form 7 para mostrar el formulario de suscripción.
+                            Activa Contact Form 7 para mostrar el formulario de suscripcion.
                         </p>
                     <?php } ?>
                 </section>

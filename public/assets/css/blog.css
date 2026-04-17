@@ -2530,6 +2530,73 @@ body.toc-overlay-active::before {
   color: var(--muted);
 }
 
+.single-brand-vehicles {
+  grid-column: 1 / -1;
+  margin-top: clamp(3rem, 5vw, 4.75rem);
+}
+
+.single-brand-vehicles__header {
+  margin-bottom: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.single-brand-vehicles__copy {
+  display: grid;
+  gap: .45rem;
+}
+
+.single-brand-vehicles__eyebrow {
+  margin: 0;
+  font-size: .8rem;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--primary40);
+}
+
+.single-brand-vehicles__title {
+  margin: 0;
+}
+
+.single-brand-vehicles__text {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--neutral35);
+}
+
+.single-brand-vehicles__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-height: 2.9rem;
+  padding: 0 1rem;
+  border: 1px solid color-mix(in oklab, var(--brand) 20%, white);
+  background: color-mix(in oklab, var(--brand-soft) 72%, white);
+  color: color-mix(in oklab, var(--brand-strong) 78%, black);
+  text-decoration: none;
+  transition: transform .18s ease, border-color .18s ease, background-color .18s ease;
+}
+
+.single-brand-vehicles__listing {
+  gap: 1.25rem;
+}
+
+.single-brand-vehicles__grid {
+  width: 100%;
+}
+
+.single-brand-vehicles__grid .vehicle-card {
+  max-width: 100%;
+}
+
+.single-brand-vehicles__controls {
+  margin-top: .35rem;
+}
+
 @media (min-width: 900px) {
   .post-nav-cards {
     grid-template-columns: 1fr 1fr;
@@ -2627,6 +2694,18 @@ body.toc-overlay-active::before {
     grid-template-columns: minmax(140px, 32%) minmax(0, 1fr);
     min-height: 152px;
   }
+
+  .single-brand-vehicles__header {
+    flex-direction: row;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .single-brand-vehicles__link {
+    margin-left: auto;
+    white-space: nowrap;
+  }
 }
 
 @media (hover:hover) and (pointer:fine) {
@@ -2650,6 +2729,12 @@ body.toc-overlay-active::before {
     transform: translateY(-2px);
     border-color: color-mix(in oklab, var(--brand) 35%, white);
     box-shadow: 0 14px 30px rgba(15,15,15,.08);
+  }
+
+  .single-brand-vehicles__link:hover {
+    transform: translateY(-1px);
+    border-color: color-mix(in oklab, var(--brand) 34%, white);
+    background: color-mix(in oklab, var(--brand-soft) 84%, white);
   }
 }
 

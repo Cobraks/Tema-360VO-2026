@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 /**
  * Constantes del tema
  */
-define('THEME_VERSION', '3.2.12');
+define('THEME_VERSION', '3.2.13');
 define('THEME_DIR', get_template_directory());
 define('THEME_URI', get_template_directory_uri());
 
@@ -537,6 +537,169 @@ function th360_is_brand_mode_post(int $post_id): bool
 
     $normalized_mode = sanitize_title((string) $mode);
     return str_contains($normalized_mode, 'marca');
+}
+
+/**
+ * Indica si debe mostrarse la selección automática de vehículos de marca.
+ */
+function th360_should_show_brand_vehicles(int $post_id): bool
+{
+    if (!th360_is_brand_mode_post($post_id)) {
+        return false;
+    }
+
+    if (!(th360_get_post_brand_term($post_id) instanceof WP_Term)) {
+        return false;
+    }
+
+    if (!function_exists('get_field')) {
+        return false;
+    }
+
+    $group_value = get_field('control_marca', $post_id);
+    if (is_array($group_value) && array_key_exists('mostrar_vehiculos_marca', $group_value)) {
+        return !empty($group_value['mostrar_vehiculos_marca']);
+    }
+
+    foreach (['control_marca_mostrar_vehiculos_marca', 'mostrar_vehiculos_marca'] as $field_name) {
+        $field_value = get_field($field_name, $post_id);
+        if ($field_value !== null && $field_value !== '') {
+            return !empty($field_value);
+        }
+    }
+
+    return false;
+}
+
+/**
+ * Encola los estilos mínimos del plugin para las tarjetas de vehículo.
+ */
+function th360_enqueue_brand_vehicle_assets(): void
+{
+    if (
+        !defined('GV360_PLUGIN_URL')
+        || !defined('GV360_PLUGIN_DIR')
+        || !file_exists(GV360_PLUGIN_DIR . 'public/assets/css/gv360_seleccion_coches_styles.css')
+    ) {
+        return;
+    }
+
+    wp_enqueue_style(
+        'th360-brand-vehicle-cards',
+        GV360_PLUGIN_URL . 'public/assets/css/gv360_seleccion_coches_styles.css',
+        [],
+        (string) filemtime(GV360_PLUGIN_DIR . 'public/assets/css/gv360_seleccion_coches_styles.css')
+    );
+}
+
+add_action('wp_enqueue_scripts', function (): void {
+    if (!is_singular('post')) {
+        return;
+    }
+
+    $post_id = (int) get_queried_object_id();
+    if ($post_id <= 0 || !th360_should_show_brand_vehicles($post_id)) {
+        return;
+    }
+
+    th360_enqueue_brand_vehicle_assets();
+}, 30);
+
+/**
+ * Construye la query base de coches para una marca concreta.
+ */
+function th360_get_brand_vehicle_query_args(WP_Term $brand_term, array $args = []): array
+{
+    $defaults = [
+        'post_type'           => 'coche',
+        'post_status'         => 'publish',
+        'posts_per_page'      => max(1, (int) apply_filters('th360_brand_vehicle_posts_per_page', 3, $brand_term)),
+        'no_found_rows'       => true,
+        'ignore_sticky_posts' => true,
+        'orderby'             => 'date',
+        'order'               => 'DESC',
+        'tax_query'           => [
+            [
+                'taxonomy' => 'marca',
+                'field'    => 'term_id',
+                'terms'    => [(int) $brand_term->term_id],
+            ],
+        ],
+    ];
+
+    return wp_parse_args($args, $defaults);
+}
+
+/**
+ * Renderiza una selección automática de vehículos de la marca del post.
+ */
+function th360_render_brand_vehicle_section(int $post_id, array $args = []): void
+{
+    if (!th360_should_show_brand_vehicles($post_id)) {
+        return;
+    }
+
+    if (!defined('GV360_PLUGIN_DIR') || !defined('GV360_PLUGIN_URL')) {
+        return;
+    }
+
+    $brand_term = th360_get_post_brand_term($post_id);
+    if (!$brand_term instanceof WP_Term) {
+        return;
+    }
+
+    $template_path = GV360_PLUGIN_DIR . 'includes/blocks/templates/template-part-coche.php';
+    if (!file_exists($template_path)) {
+        return;
+    }
+
+    $query = new WP_Query(th360_get_brand_vehicle_query_args($brand_term, $args));
+    if (!$query->have_posts()) {
+        wp_reset_postdata();
+        return;
+    }
+
+    $brand_name = (string) $brand_term->name;
+    $brand_term_url = th360_get_brand_term_url($brand_term);
+    $section_title = sprintf('Vehículos %s disponibles', $brand_name);
+    $section_text = sprintf('Una selección de unidades %s que ya puedes consultar dentro del stock actual.', $brand_name);
+?>
+    <section class="single-brand-vehicles" aria-label="<?php echo esc_attr($section_title); ?>">
+        <div class="single-brand-vehicles__header">
+            <div class="single-brand-vehicles__copy">
+                <p class="single-brand-vehicles__eyebrow">Stock de la marca</p>
+                <h2 class="single-brand-vehicles__title"><?php echo esc_html($section_title); ?></h2>
+                <p class="single-brand-vehicles__text"><?php echo esc_html($section_text); ?></p>
+            </div>
+
+            <?php if ($brand_term_url !== '') : ?>
+                <a class="single-brand-vehicles__link" href="<?php echo esc_url($brand_term_url); ?>">
+                    <?php echo esc_html(sprintf('Ver nuestros %s', $brand_name)); ?>
+                </a>
+            <?php endif; ?>
+        </div>
+
+        <div class="vehicle-card__container--global single-brand-vehicles__listing">
+            <div class="vehicle-card__container single-brand-vehicles__grid">
+                <?php
+                while ($query->have_posts()) :
+                    $query->the_post();
+                    include $template_path;
+                endwhile;
+                ?>
+            </div>
+
+            <?php if ($brand_term_url !== '') : ?>
+                <div class="vehicle-card__controls single-brand-vehicles__controls">
+                    <a href="<?php echo esc_url($brand_term_url); ?>" class="vehicle-card__btn vehicle-card__btn--ver-stock">
+                        <?php echo esc_html(sprintf('Ver nuestros %s', $brand_name)); ?>
+                    </a>
+                </div>
+            <?php endif; ?>
+        </div>
+    </section>
+<?php
+    wp_reset_postdata();
 }
 
 /**

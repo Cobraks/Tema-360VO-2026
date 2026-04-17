@@ -96,6 +96,9 @@ $stock_complement = function_exists('th360_get_stock_complement')
     : '';
 $site_name = trim((string) get_bloginfo('name'));
 $brand_summary = trim(implode(' ', array_filter([$brand_name, $stock_complement])));
+$show_brand_vehicles = function_exists('th360_should_show_brand_vehicles')
+    ? th360_should_show_brand_vehicles($post_id)
+    : false;
 
 if ($brand_summary !== '' && $site_name !== '') {
     $brand_summary .= ' en ' . $site_name;
@@ -378,6 +381,12 @@ $related = new WP_Query($related_args);
                     <?php endif; ?>
                 </section>
             </article>
+
+            <?php
+            if ($show_brand_vehicles && function_exists('th360_render_brand_vehicle_section')) {
+                th360_render_brand_vehicle_section($post_id);
+            }
+            ?>
 
             <aside class="aside aside--single" aria-label="Panel lateral">
 

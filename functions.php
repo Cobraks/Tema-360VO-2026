@@ -665,37 +665,30 @@ function th360_render_brand_vehicle_section(int $post_id, array $args = []): voi
     $section_text = sprintf('Una selección de unidades %s que ya puedes consultar dentro del stock actual.', $brand_name);
 ?>
     <section class="single-brand-vehicles" aria-label="<?php echo esc_attr($section_title); ?>">
-        <div class="single-brand-vehicles__header">
-            <div class="single-brand-vehicles__copy">
-                <p class="single-brand-vehicles__eyebrow">Stock de la marca</p>
-                <h2 class="single-brand-vehicles__title"><?php echo esc_html($section_title); ?></h2>
-                <p class="single-brand-vehicles__text"><?php echo esc_html($section_text); ?></p>
-            </div>
+        <div class="single-brand-vehicles__inner">
+            <div class="single-brand-vehicles__header">
+                <div class="single-brand-vehicles__copy">
+                    <h2 class="single-brand-vehicles__title"><?php echo esc_html($section_title); ?></h2>
+                    <p class="single-brand-vehicles__text"><?php echo esc_html($section_text); ?></p>
+                </div>
 
-            <?php if ($brand_term_url !== '') : ?>
-                <a class="single-brand-vehicles__link" href="<?php echo esc_url($brand_term_url); ?>">
-                    <?php echo esc_html(sprintf('Ver nuestros %s', $brand_name)); ?>
-                </a>
-            <?php endif; ?>
-        </div>
-
-        <div class="vehicle-card__container--global single-brand-vehicles__listing">
-            <div class="vehicle-card__container single-brand-vehicles__grid">
-                <?php
-                while ($query->have_posts()) :
-                    $query->the_post();
-                    include $template_path;
-                endwhile;
-                ?>
-            </div>
-
-            <?php if ($brand_term_url !== '') : ?>
-                <div class="vehicle-card__controls single-brand-vehicles__controls">
-                    <a href="<?php echo esc_url($brand_term_url); ?>" class="vehicle-card__btn vehicle-card__btn--ver-stock">
+                <?php if ($brand_term_url !== '') : ?>
+                    <a class="single-brand-vehicles__link" href="<?php echo esc_url($brand_term_url); ?>">
                         <?php echo esc_html(sprintf('Ver nuestros %s', $brand_name)); ?>
                     </a>
+                <?php endif; ?>
+            </div>
+
+            <div class="vehicle-card__container--global single-brand-vehicles__listing">
+                <div class="vehicle-card__container single-brand-vehicles__grid">
+                    <?php
+                    while ($query->have_posts()) :
+                        $query->the_post();
+                        include $template_path;
+                    endwhile;
+                    ?>
                 </div>
-            <?php endif; ?>
+            </div>
         </div>
     </section>
 <?php

@@ -382,12 +382,6 @@ $related = new WP_Query($related_args);
                 </section>
             </article>
 
-            <?php
-            if ($show_brand_vehicles && function_exists('th360_render_brand_vehicle_section')) {
-                th360_render_brand_vehicle_section($post_id);
-            }
-            ?>
-
             <aside class="aside aside--single" aria-label="Panel lateral">
 
                 <section class="panel panel--subscribe newsletter-panel" data-newsletter-panel aria-label="Recibe novedades">
@@ -426,6 +420,12 @@ $related = new WP_Query($related_args);
             </aside>
 
         </div>
+
+        <?php
+        if ($show_brand_vehicles && function_exists('th360_render_brand_vehicle_section')) {
+            th360_render_brand_vehicle_section($post_id);
+        }
+        ?>
     </div>
 
     <?php get_template_part('template-parts/blog/assets'); ?>

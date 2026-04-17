@@ -2570,6 +2570,7 @@ body.toc-overlay-active::before {
 .single-brand-vehicles__text {
   margin: 0;
   color: var(--neutral35);
+  text-wrap: balance;
 }
 
 .single-brand-vehicles__link {

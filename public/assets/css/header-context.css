@@ -45,7 +45,6 @@
 		font-size: 1rem;
 		line-height: 1;
 		letter-spacing: 0.01em;
-		color: var(--primary20);
 	}
 
 	.site-header__context-switcher .site-navigation {

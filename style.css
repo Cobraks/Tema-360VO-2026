@@ -134,7 +134,23 @@ h1,
 
 /* Base (por si algún navegador/herencia te mete pesos raros) */
 .site-header .site-navigation .item-navegacion {
+  color: var(--color-text);
   font-weight: 500;
+}
+
+.vehicle-card__overlay-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: 0 0 auto;
+}
+
+.vehicle-card__overlay-icon svg,
+.vehicle-card__overlay-icon path {
+  width: 100%;
+  height: 100%;
 }
 
 /* Activo (item actual) + Ancestor (padre de submenú activo) */

@@ -325,34 +325,49 @@ $related = new WP_Query($related_args);
 
                 <section class="post-related-inline" aria-label="Articulos relacionados">
                     <div class="post-related-inline__header">
-                        <h2 class="post-related-inline__title">Sigue leyendo</h2>
-                        <div class="post-related-inline__links">
-                            <?php if ($cat_name && $cat_url) : ?>
-                                <a class="inline-link" href="<?php echo esc_url($cat_url); ?>">Ver todas las noticias de <?php echo esc_html($cat_name); ?></a>
-                            <?php endif; ?>
-                            <?php if ($is_brand_mode && $brand_name && $brand_archive_url) : ?>
-                                <a class="inline-link" href="<?php echo esc_url($brand_archive_url); ?>">Ver todas las noticias sobre <?php echo esc_html($brand_name); ?></a>
-                            <?php endif; ?>
-                            <a class="inline-link" href="<?php echo esc_url($blog_url); ?>">Volver a todas las noticias</a>
+                        <div>
+                            <h2 class="post-related-inline__title">Sigue leyendo</h2>
+                            <div class="post-related-inline__chips" aria-label="Explorar noticias relacionadas">
+                                <?php if ($cat_name && $cat_url) : ?>
+                                    <a class="post-related-inline__chip" href="<?php echo esc_url($cat_url); ?>"><?php echo esc_html($cat_name); ?></a>
+                                <?php endif; ?>
+                                <?php if ($is_brand_mode && $brand_name && $brand_archive_url) : ?>
+                                    <a class="post-related-inline__chip" href="<?php echo esc_url($brand_archive_url); ?>"><?php echo esc_html($brand_name); ?></a>
+                                <?php endif; ?>
+                            </div>
                         </div>
+                        <a class="post-related-inline__back" href="<?php echo esc_url($blog_url); ?>">← Todas las noticias</a>
                     </div>
 
                     <?php if ($related->have_posts()) : ?>
                         <div class="post-nav-cards post-nav-cards--related">
                             <?php while ($related->have_posts()) : $related->the_post(); ?>
+                                <?php
+                                $related_id = (int) get_the_ID();
+                                $related_context = function_exists('th360_get_post_blog_context')
+                                    ? th360_get_post_blog_context($related_id)
+                                    : [];
+                                $related_cat_name = (string) ($related_context['category_name'] ?? '');
+                                $related_date = get_the_date('j M, Y', $related_id);
+                                ?>
                                 <a class="post-nav-card" href="<?php the_permalink(); ?>">
+                                    <div class="post-nav-card__thumb" aria-hidden="true">
+                                        <?php if (has_post_thumbnail()) : ?>
+                                            <?php the_post_thumbnail('medium', ['loading' => 'lazy', 'decoding' => 'async']); ?>
+                                        <?php else : ?>
+                                            <span class="post-nav-card__ph"></span>
+                                        <?php endif; ?>
+                                    </div>
                                     <div class="post-nav-card__content">
-                                        <div class="post-nav-card__thumb" aria-hidden="true">
-                                            <?php if (has_post_thumbnail()) : ?>
-                                                <?php the_post_thumbnail('thumbnail', ['loading' => 'lazy', 'decoding' => 'async']); ?>
-                                            <?php else : ?>
-                                                <span class="post-nav-card__ph"></span>
+                                        <div class="post-nav-card__meta">
+                                            <?php if ($related_cat_name !== '') : ?>
+                                                <span class="post-nav-card__category"><?php echo esc_html($related_cat_name); ?></span>
+                                            <?php endif; ?>
+                                            <?php if ($related_date) : ?>
+                                                <span class="post-nav-card__date"><?php echo esc_html($related_date); ?></span>
                                             <?php endif; ?>
                                         </div>
-                                        <div>
-                                            <span class="post-nav-card__label"><?php echo esc_html(get_the_date('j M, Y')); ?></span>
-                                            <span class="post-nav-card__title"><?php the_title(); ?></span>
-                                        </div>
+                                        <span class="post-nav-card__title"><?php the_title(); ?></span>
                                     </div>
                                 </a>
                             <?php endwhile;

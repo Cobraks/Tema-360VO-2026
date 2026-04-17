@@ -363,30 +363,40 @@ $related = new WP_Query($related_args);
 
             <aside class="aside aside--single" aria-label="Panel lateral">
 
-                <section class="panel panel--subscribe" aria-label="Recibe novedades">
-                    <div class="panel__title-row">
+                <section class="panel panel--subscribe newsletter-panel" data-newsletter-panel aria-label="Recibe novedades">
+                    <div class="panel__title-row newsletter-panel__header">
                         <h2 class="panel__title">Recibe novedades</h2>
                         <button type="button" class="ayuda_garantia__button ayuda_garantia__button--mantenimiento panel__help-btn" aria-label="Mas informacion sobre la newsletter" data-tip-toggle aria-expanded="false" aria-controls="newsletter-tip-single">
                             <?php echo E360VO_Icon::get('icon-help_outline', ['class' => 'ayuda_garantia__icon', 'aria-hidden' => 'true']); ?>
                         </button>
+                        <button type="button" class="newsletter-panel__trigger" data-newsletter-toggle aria-expanded="false" aria-controls="newsletter-form-shell-single">
+                            Suscribete
+                        </button>
                     </div>
                     <p class="panel__tip" id="newsletter-tip-single" hidden>Te enviaremos un correo cuando publiquemos contenido relevante para ti. Sin spam.</p>
 
-                    <?php
-                    $newsletter_shortcode = (string) apply_filters('th360_newsletter_shortcode', '[contact-form-7 id="04d14f1" title="Newsletter"]');
-                    if (
-                        $newsletter_shortcode !== ''
-                        && function_exists('do_shortcode')
-                        && function_exists('shortcode_exists')
-                        && shortcode_exists('contact-form-7')
-                    ) {
-                        echo do_shortcode($newsletter_shortcode);
-                    } else {
-                    ?>
-                        <p class="panel__note">
-                            Activa Contact Form 7 para mostrar el formulario de suscripcion.
-                        </p>
-                    <?php } ?>
+                    <div class="newsletter-panel__form-shell" id="newsletter-form-shell-single" data-newsletter-form hidden>
+                        <?php
+                        $newsletter_shortcode = (string) apply_filters('th360_newsletter_shortcode', '[contact-form-7 id="04d14f1" title="Newsletter"]');
+                        if (
+                            $newsletter_shortcode !== ''
+                            && function_exists('do_shortcode')
+                            && function_exists('shortcode_exists')
+                            && shortcode_exists('contact-form-7')
+                        ) {
+                            echo '<div class="newsletter-panel__form">';
+                            echo do_shortcode($newsletter_shortcode);
+                            echo '</div>';
+                            echo '<div class="newsletter-panel__actions">';
+                            echo '<button type="button" class="newsletter-panel__cancel" data-newsletter-cancel>Cancelar</button>';
+                            echo '</div>';
+                        } else {
+                        ?>
+                            <p class="panel__note">
+                                Activa Contact Form 7 para mostrar el formulario de suscripcion.
+                            </p>
+                        <?php } ?>
+                    </div>
                 </section>
 
             </aside>

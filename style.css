@@ -69,15 +69,30 @@ button, .button {
   align-items: center;
   justify-content: center;
   padding-inline: 1rem;
-  font-weight: 500;
-  letter-spacing: .5px;
+  font-size: 1rem;
   background: var(--color-accent);
   color: white;
-  border: solid 1px var(--border);
   font-family: var(--ff-primary);
   height: 3rem;
   width: fit-content;
   text-decoration: none;
+  transition: background-color .2s ease, color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+@media (hover:hover) and (pointer:fine) {
+  button:hover,
+  .button:hover {
+    background: var(--color-hover, var(--primary30));
+    color: white;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    transform: translateY(-1px);
+  }
+}
+
+button:focus-visible,
+.button:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-accent) 55%, white);
+  outline-offset: 2px;
 }
 
 

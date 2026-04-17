@@ -154,19 +154,6 @@ color: var(--primary40);
 
 
 
-/* 1. Enlaces normales y su <strong> interno */
-.entry-content a:not(.wp-block-button__link),
-.entry-content a:not(.wp-block-button__link) strong {
-	/* tu color corporativo */
-	color: var(--atc-primary);
-}
-
-/* 2. Enlaces creados por el bloque Botones:
-      heredan el color que defina ese bloque */
-/* .entry-content .wp-block-button__link {
-	
-} */
-
 .is-layout-flex > :is(*, div) {
 display: inline-flex;
 }

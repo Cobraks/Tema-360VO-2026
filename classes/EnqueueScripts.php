@@ -111,6 +111,7 @@ class E360VO_EnqueueScripts
             || is_tag()
             || is_author()
             || is_date()
+            || (function_exists('th360_is_blog_brand_archive') && th360_is_blog_brand_archive())
         ) {
             $pages = E360VO_AssetHelper::get_asset_info('/public/assets/css/pages', 'css');
             wp_enqueue_style('360vo-pages', $pages['url'], ['360vo-theme-style'], $pages['version']);
@@ -205,6 +206,8 @@ class E360VO_EnqueueScripts
 
     private function is_blog_context(): bool
     {
+        if (function_exists('th360_is_blog_brand_archive') && th360_is_blog_brand_archive()) return true;
+
         // Blog listing como Page Template
         if (is_page_template('home.php')) return true;
 

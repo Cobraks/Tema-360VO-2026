@@ -106,7 +106,6 @@ svg { vertical-align: middle; }
    Header
    ========================================================= */
 header.site-header {
-  color: var(--primary95);
   height: var(--altura-header);
   position: fixed;
   top: 0;

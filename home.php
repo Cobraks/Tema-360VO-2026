@@ -42,11 +42,53 @@ if (!function_exists('th360_get_image_caption')) {
     }
 }
 
+if (!function_exists('th360_get_blog_home_intro_html')) {
+    function th360_get_blog_home_intro_html($post): string
+    {
+        if (!$post instanceof WP_Post) {
+            return '';
+        }
+
+        $raw_content = trim((string) $post->post_content);
+        if ($raw_content === '') {
+            return '';
+        }
+
+        if (function_exists('parse_blocks') && function_exists('render_block')) {
+            $blocks = parse_blocks($raw_content);
+
+            if (is_array($blocks)) {
+                foreach ($blocks as $block) {
+                    $block_html = trim((string) render_block($block));
+
+                    if (wp_strip_all_tags($block_html) !== '') {
+                        return $block_html;
+                    }
+                }
+            }
+        }
+
+        return trim((string) apply_filters('the_content', $raw_content));
+    }
+}
+
 /**
  * URLs "estratégicas"
  */
 $inventory_url = home_url('/coches-segunda-mano/');
 $search_q = get_search_query();
+
+$blog_home_page_id = (int) get_option('page_for_posts');
+if ($blog_home_page_id <= 0) {
+    $blog_home_page_id = (int) get_queried_object_id();
+}
+
+$blog_home_page = $blog_home_page_id > 0 ? get_post($blog_home_page_id) : null;
+$blog_home_title = $blog_home_page instanceof WP_Post
+    ? trim((string) get_the_title($blog_home_page))
+    : '';
+$blog_home_title = $blog_home_title !== '' ? $blog_home_title : 'Blog';
+$blog_home_intro = th360_get_blog_home_intro_html($blog_home_page);
 
 /**
  * Featured (editorial)
@@ -117,6 +159,12 @@ $categories = get_categories([
     'number'     => 10,
 ]);
 
+$all_categories = get_categories([
+    'hide_empty' => true,
+    'orderby'    => 'name',
+    'order'      => 'ASC',
+]);
+
 $base_url = get_permalink();
 $pp_url_base = remove_query_arg(['pp', 'paged', 'page', 'orderby'], $base_url);
 
@@ -158,16 +206,22 @@ function th360_get_category_icon($category_name)
         <div class="blog-hero__inner">
             <div class="blog-hero__grid">
                 <div class="blog-hero__content">
-                    <p class="blog-hero__kicker">
-                        <span class="blog-hero__dot" aria-hidden="true"></span>
-                        Blog EdreamsCars
-                    </p>
+                    <h1 class="blog-hero__title" id="blog-hero-title"><?php echo esc_html($blog_home_title); ?></h1>
+                    <?php if ($blog_home_intro !== '') : ?>
+                        <div class="blog-hero__subtitle">
+                            <?php echo wp_kses_post($blog_home_intro); ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (false) : ?>
 
                     <h1 class="blog-hero__title" id="blog-hero-title">Blog de compra inteligente de coche de ocasión</h1>
                     <p class="blog-hero__subtitle">
                         Análisis claros, comparativas útiles y recomendaciones prácticas para decidir mejor.
                         <a class="inline-link" href="<?php echo esc_url($inventory_url); ?>">Ver catálogo de coches de ocasión</a> revisados con garantía.
                     </p>
+
+                    <?php endif; ?>
 
                     <?php if (!empty($categories)) : ?>
                         <nav class="topics" aria-label="Temas principales">
@@ -505,6 +559,35 @@ function th360_get_category_icon($category_name)
                     <?php } ?>
                     </div>
                 </section>
+
+                <?php if (!empty($all_categories)) : ?>
+                    <details class="panel blog-home-topics" aria-label="Categorias del blog">
+                        <summary class="blog-home-topics__summary">
+                            <span class="blog-home-topics__summary-copy">
+                                <span class="blog-home-topics__eyebrow">Explora</span>
+                                <span class="blog-home-topics__title">Categorias del blog</span>
+                            </span>
+                            <span class="blog-home-topics__summary-action" aria-hidden="true">Ver todas</span>
+                        </summary>
+
+                        <div class="blog-home-topics__body">
+                            <div class="topics__list blog-home-topics__list">
+                                <?php foreach ($all_categories as $cat) :
+                                    $name = trim((string) $cat->name);
+                                    if ($name === '' || preg_match('/^categor[iÃ­]a\s*\d+$/i', $name)) continue;
+                                    $icon_path = th360_get_category_icon($name);
+                                ?>
+                                    <a class="topics__link" href="<?php echo esc_url(get_category_link($cat)); ?>">
+                                        <svg class="topics__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <path d="<?php echo esc_attr($icon_path); ?>" />
+                                        </svg>
+                                        <span><?php echo esc_html($name); ?></span>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </details>
+                <?php endif; ?>
             </aside>
         </div>
     </div>

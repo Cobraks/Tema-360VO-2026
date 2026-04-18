@@ -39,14 +39,17 @@ $is_brand_archive = function_exists('th360_is_blog_brand_archive') && th360_is_b
 $brand_term = $is_brand_archive && function_exists('th360_get_current_blog_brand_term')
     ? th360_get_current_blog_brand_term()
     : null;
+$brand_blog_content = $is_brand_archive && function_exists('th360_get_brand_blog_archive_content')
+    ? th360_get_brand_blog_archive_content($brand_term)
+    : ['h1' => '', 'intro' => ''];
 
 $category = $is_brand_archive ? null : get_queried_object();
 $cat_id   = (!$is_brand_archive && isset($category->term_id)) ? (int) $category->term_id : 0;
 $cat_name = $is_brand_archive && $brand_term instanceof WP_Term
-    ? (string) $brand_term->name
+    ? (string) ($brand_blog_content['h1'] ?? $brand_term->name)
     : single_cat_title('', false);
 $cat_desc = $is_brand_archive && $brand_term instanceof WP_Term
-    ? term_description($brand_term, 'marca')
+    ? (string) ($brand_blog_content['intro'] ?? '')
     : category_description();
 $archive_label = $is_brand_archive ? 'Marca' : 'Categoria';
 

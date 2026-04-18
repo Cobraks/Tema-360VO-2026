@@ -385,6 +385,62 @@ function th360_is_blog_brand_archive(): bool
 }
 
 /**
+ * Lee un valor ACF de un termino usando varios contextos compatibles.
+ */
+function th360_get_term_acf_value(string $field_name, ?WP_Term $term)
+{
+    if (!$term instanceof WP_Term || !function_exists('get_field')) {
+        return null;
+    }
+
+    $contexts = [
+        $term,
+        'term_' . $term->term_id,
+        $term->taxonomy . '_' . $term->term_id,
+    ];
+
+    foreach ($contexts as $context) {
+        $value = get_field($field_name, $context);
+
+        if (is_string($value) && trim($value) !== '') {
+            return $value;
+        }
+
+        if (!is_string($value) && !empty($value)) {
+            return $value;
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Devuelve el contenido editorial del archivo de blog de una marca.
+ */
+function th360_get_brand_blog_archive_content(?WP_Term $brand_term): array
+{
+    $brand_name = $brand_term instanceof WP_Term ? (string) $brand_term->name : '';
+    $site_name  = trim((string) get_bloginfo('name'));
+
+    $custom_h1 = th360_get_term_acf_value('h1', $brand_term);
+    $custom_intro = th360_get_term_acf_value('parrafo_intro', $brand_term);
+
+    $default_intro = '';
+    if ($brand_name !== '') {
+        $default_intro = sprintf(
+            'Todas las novedades sobre %s en %s.',
+            $brand_name,
+            $site_name !== '' ? $site_name : 'el sitio'
+        );
+    }
+
+    return [
+        'h1'    => is_string($custom_h1) && trim($custom_h1) !== '' ? trim($custom_h1) : $brand_name,
+        'intro' => is_string($custom_intro) && trim($custom_intro) !== '' ? (string) $custom_intro : $default_intro,
+    ];
+}
+
+/**
  * Normaliza distintos formatos de imagen a attachment ID.
  */
 function th360_resolve_attachment_id($value): int

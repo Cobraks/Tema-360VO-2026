@@ -82,7 +82,7 @@ button, .button {
 @media (hover:hover) and (pointer:fine) {
   button:hover,
   .button:hover {
-    background: var(--color-hover, var(--primary30));
+    background: color-mix(in srgb, var(--color-accent) 88%, black);
     color: white;
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
     transform: translateY(-1px);

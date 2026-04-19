@@ -125,8 +125,9 @@ h1,
 
 
 .site-header__contact-button:hover {
-  background-color: var(--neutral90);
-  /* border-color: var(--primary80); */
+  background-color: var(--header-button-hover-bg);
+  color: var(--header-button-hover-text);
+  border-color: var(--header-button-border);
 }
 
 
@@ -148,7 +149,7 @@ h1,
 
 /* Base (por si algún navegador/herencia te mete pesos raros) */
 .site-header .site-navigation .item-navegacion {
-  color: var(--color-text);
+  color: var(--header-link);
   font-weight: 500;
 }
 
@@ -170,7 +171,7 @@ h1,
 /* Activo (item actual) + Ancestor (padre de submenú activo) */
 .site-header .current-menu-item > a .item-navegacion,
 .site-header .current-menu-ancestor > a .item-navegacion {
-  color: var(--primary40);
+  color: var(--header-link-active);
   font-weight: 500; /* fijo: NO usar 600 */
   text-decoration: underline;
   text-decoration-thickness: 2px;
@@ -190,7 +191,7 @@ h1,
 /* Subitem seleccionado dentro de un ancestor (mantiene el mismo estilo) */
 .site-header .current-menu-ancestor .sub-menu .current-menu-item > a .item-navegacion,
 .site-header .current-menu-ancestor .sub-menu .current-menu-item > a .item-navegacion span {
-  color: var(--primary40);
+  color: var(--header-link-active);
   font-weight: 500;
   text-decoration: underline;
   text-decoration-thickness: 2px;
@@ -219,7 +220,7 @@ h1,
   height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-bottom: 10px solid var(--color-border);
+  border-bottom: 10px solid var(--breadcrumbs-bg);
 }
 
 /* Ocultar triángulo en subitems (evita artefactos en dropdown) */
@@ -329,7 +330,7 @@ html {
 /*Breadcrumbs*/
 
 .nav-breadcrumb a:hover {
-  color: var(--color_hover_breadcrumbs);
+  color: var(--breadcrumbs-link-hover);
 }
 
 
@@ -338,7 +339,7 @@ html {
 .close-button:hover .close-button-line,
 .menu-button:focus .menu-button-line,
 .close-button:focus .close-button-line {
-  background-color: var(--primary20);
+  background-color: var(--header-link-hover);
 }
 
 /*backdrop*/
@@ -2370,7 +2371,7 @@ max-width: 320px;
 
  .site-header .site-navigation ul li a:hover {
   text-decoration: none;
-  color: var(--color-accent);
+  color: var(--header-link-hover);
   transition: all .3s ease-in-out ;
 }
 
@@ -2381,7 +2382,7 @@ max-width: 320px;
     margin-left: 6px; 
     fill: currentColor; 
     transition: transform 0.3s ease; 
-    fill: var(--primary40);
+    fill: currentColor;
 }
 
 /* Girar la flecha al hacer hover */
@@ -2392,7 +2393,7 @@ max-width: 320px;
  .site-header .site-navigation ul li a:hover .item-navegacion {
   /* text-decoration: underline; */
   transition: all .3s ease-in ;
-  color: var(--primary40);
+  color: var(--header-link-hover);
   text-decoration: underline;
     text-decoration-thickness: 2px;
     text-underline-offset: 6px;

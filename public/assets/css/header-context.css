@@ -71,6 +71,10 @@
 		filter: blur(0);
 		transition-delay: 0.04s, 0.04s, 0.04s, 0s;
 	}
+
+	body.header-oscuro.header-context-active .site-header__context-title-text {
+		color: var(--primary95);
+	}
 }
 
 @media (min-width: 1360px) {

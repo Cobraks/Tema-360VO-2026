@@ -114,7 +114,7 @@
 }
 @media (hover:hover) and (pointer:fine) {
   .blog .btn:hover { transform: translateY(-1px); }
-  .blog .btn--primary:hover { background: var(--primary15); }
+  .blog .btn--primary:hover { background: var(--primary20); }
 }
 
 .blog .btn--ghost {
@@ -1318,7 +1318,7 @@
   .newsletter-panel__trigger:hover,
   .panel--subscribe :where(input[type="submit"], button[type="submit"], .wpcf7-submit):hover,
   .newsletter-form__submit:hover {
-    background: color-mix(in oklab, var(--primary15) 90%, var(--neutral5));
+    background: color-mix(in oklab, var(--primary20) 90%, var(--neutral5));
     transform: translateY(-2px);
     box-shadow: 0 14px 30px rgba(15,15,15,.12);
   }
@@ -1603,7 +1603,7 @@
   margin-left: auto;
 }
 .panel--subscribe :where(input[type="submit"], button[type="submit"], .wpcf7-submit):hover {
-  background: color-mix(in oklab, var(--primary15) 90%, var(--neutral5));
+  background: color-mix(in oklab, var(--primary20) 90%, var(--neutral5));
   transform: translateY(-2px);
   box-shadow: 0 14px 30px rgba(15,15,15,.12);
 }
@@ -2696,7 +2696,7 @@ body.toc-overlay-active::before {
   padding: 0 1.35rem;
   border: 1px solid color-mix(in oklab, var(--brand) 28%, white);
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--primary20), var(--primary15));
+  background: linear-gradient(135deg, var(--primary20), var(--primary20));
   color: white;
   text-decoration: none;
   letter-spacing: .01em;
@@ -2867,7 +2867,7 @@ body.toc-overlay-active::before {
   .single-brand-vehicles__link:hover {
     transform: translateY(-1px);
     border-color: color-mix(in oklab, var(--brand) 42%, white);
-    background: linear-gradient(135deg, var(--primary15), var(--primary10));
+    background: linear-gradient(135deg, var(--primary20), var(--primary10));
     box-shadow: 0 18px 34px rgba(15,15,15,.12);
   }
 }

@@ -70,12 +70,11 @@
             background: linear-gradient(135deg,
                     var(--primary5) 0%,
                     var(--primary10) 25%,
-                    var(--primary15) 50%,
+                    var(--primary20) 50%,
                     var(--primary20) 75%,
                     var(--primary25) 100%);
 
-
-                    background: linear-gradient(135deg, var(--primary5) 0%, var(--primary10) 25%, var(--primary15) 50%, var(--primary30) 75%, var(--primary60) 100%);
+                    background: linear-gradient(135deg, var(--primary5) 0%, var(--primary10) 25%, var(--primary20) 50%, var(--primary30) 75%, var(--primary60) 100%);
             background-size: 200% 200%;
             animation: gradientFlow 15s ease infinite, heroFadeIn 1.2s cubic-bezier(0.4, 0, 0.2, 1);
             color: var(--neutral99);
@@ -95,7 +94,7 @@
             background: linear-gradient(135deg,
                     var(--primary5) 0%,
                     var(--primary10) 30%,
-                    var(--primary15) 70%,
+                    var(--primary20) 70%,
                     var(--primary20) 100%);
             opacity: 0.95;
             animation: subtlePulse 8s ease-in-out infinite;

@@ -130,7 +130,7 @@ max-width: 720px;
 margin-top: 1.5rem;
   background: var(--primary98);
   padding: 1rem;
-  color: var(--primary15);
+  color: var(--primary20);
   border-radius: .5rem;
   width: fit-content;
   line-height: 1.5;
@@ -681,7 +681,7 @@ color: white;
     background: var(--neutral5);
 
     border: none;
-  background: var(--primary15);
+  background: var(--primary20);
   color: var(--primary95);
   transition: all .3s ease-out;
   }

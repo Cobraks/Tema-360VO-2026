@@ -90,9 +90,8 @@ class E360VO_Customizer
 
         // Ajuste esquema de color
         $wp_customize->add_setting('th360_color_scheme', [
-            'default'   => 'amarillo',
+            'default'   => 'azul',
             'transport' => 'refresh',
-            'sanitize_callback' => [$this, 'sanitize_color_scheme'],
         ]);
 
         // Control esquema de color
@@ -102,7 +101,6 @@ class E360VO_Customizer
             'type'     => 'radio',
             'choices'  => [
                 'azul'          => __('Azul', '360vo-theme'),
-                'amarillo'      => __('Amarillo', '360vo-theme'),
                 'rojo'          => __('Rojo', '360vo-theme'),
                 'verde'         => __('Verde', '360vo-theme'),
                 'morado'        => __('Morado', '360vo-theme'),
@@ -128,172 +126,6 @@ class E360VO_Customizer
                 'description' => __('Elige el color base para generar la paleta primaria.', '360vo-theme'),
                 'section'     => 'th360_color_scheme_section',
                 'settings'    => 'th360_custom_color',
-                'active_callback' => [$this, 'is_custom_scheme_selected'],
-            ]
-        ));
-
-        $wp_customize->add_setting('th360_use_advanced_palette', [
-            'default'           => false,
-            'transport'         => 'refresh',
-            'sanitize_callback' => [$this, 'sanitize_checkbox'],
-        ]);
-
-        $wp_customize->add_control('th360_use_advanced_palette', [
-            'type'        => 'checkbox',
-            'section'     => 'th360_color_scheme_section',
-            'label'       => __('Activar ajustes avanzados de color', '360vo-theme'),
-            'description' => __('Permite afinar color de acción, sesgo neutral y colores específicos del encabezado oscuro sin romper el sistema actual.', '360vo-theme'),
-        ]);
-
-        $wp_customize->add_setting('th360_use_custom_action_color', [
-            'default'           => false,
-            'transport'         => 'refresh',
-            'sanitize_callback' => [$this, 'sanitize_checkbox'],
-        ]);
-
-        $wp_customize->add_control('th360_use_custom_action_color', [
-            'type'            => 'checkbox',
-            'section'         => 'th360_color_scheme_section',
-            'label'           => __('Usar color de acción personalizado', '360vo-theme'),
-            'description'     => __('Sobrescribe el color complementario automático para CTAs, botones destacados y estados activos.', '360vo-theme'),
-            'active_callback' => [$this, 'is_advanced_palette_enabled'],
-        ]);
-
-        $wp_customize->add_setting('th360_custom_action_color', [
-            'default'           => '#44664e',
-            'transport'         => 'refresh',
-            'sanitize_callback' => 'sanitize_hex_color',
-        ]);
-
-        $wp_customize->add_control(new WP_Customize_Color_Control(
-            $wp_customize,
-            'th360_custom_action_color',
-            [
-                'label'           => __('Color de acción', '360vo-theme'),
-                'description'     => __('Color fuerte para botones, llamadas a la acción, focos y elementos destacados.', '360vo-theme'),
-                'section'         => 'th360_color_scheme_section',
-                'settings'        => 'th360_custom_action_color',
-                'active_callback' => [$this, 'is_custom_action_color_enabled'],
-            ]
-        ));
-
-        $wp_customize->add_setting('th360_neutral_bias', [
-            'default'           => 'automatico',
-            'transport'         => 'refresh',
-            'sanitize_callback' => [$this, 'sanitize_neutral_bias'],
-        ]);
-
-        $wp_customize->add_control('th360_neutral_bias', [
-            'label'           => __('Sesgo neutral', '360vo-theme'),
-            'description'     => __('Controla si los fondos y neutros tiran a cálidos, neutros o fríos.', '360vo-theme'),
-            'section'         => 'th360_color_scheme_section',
-            'type'            => 'radio',
-            'choices'         => [
-                'automatico' => __('Automático', '360vo-theme'),
-                'calido'     => __('Cálido', '360vo-theme'),
-                'neutro'     => __('Neutro', '360vo-theme'),
-                'frio'       => __('Frío', '360vo-theme'),
-            ],
-            'active_callback' => [$this, 'is_advanced_palette_enabled'],
-        ]);
-
-        $wp_customize->add_setting('th360_use_custom_dark_header', [
-            'default'           => false,
-            'transport'         => 'refresh',
-            'sanitize_callback' => [$this, 'sanitize_checkbox'],
-        ]);
-
-        $wp_customize->add_control('th360_use_custom_dark_header', [
-            'type'            => 'checkbox',
-            'section'         => 'th360_color_scheme_section',
-            'label'           => __('Personalizar encabezado oscuro', '360vo-theme'),
-            'description'     => __('Permite ajustar el fondo, el color destacado y las migas cuando el encabezado está en modo oscuro.', '360vo-theme'),
-            'active_callback' => [$this, 'is_advanced_palette_enabled'],
-        ]);
-
-        $wp_customize->add_setting('th360_header_dark_bg', [
-            'default'           => '#100e09',
-            'transport'         => 'refresh',
-            'sanitize_callback' => 'sanitize_hex_color',
-        ]);
-
-        $wp_customize->add_control(new WP_Customize_Color_Control(
-            $wp_customize,
-            'th360_header_dark_bg',
-            [
-                'label'           => __('Fondo encabezado oscuro', '360vo-theme'),
-                'section'         => 'th360_color_scheme_section',
-                'settings'        => 'th360_header_dark_bg',
-                'active_callback' => [$this, 'is_custom_dark_header_enabled'],
-            ]
-        ));
-
-        $wp_customize->add_setting('th360_header_dark_text', [
-            'default'           => '#c9a900',
-            'transport'         => 'refresh',
-            'sanitize_callback' => 'sanitize_hex_color',
-        ]);
-
-        $wp_customize->add_control(new WP_Customize_Color_Control(
-            $wp_customize,
-            'th360_header_dark_text',
-            [
-                'label'           => __('Texto encabezado oscuro', '360vo-theme'),
-                'section'         => 'th360_color_scheme_section',
-                'settings'        => 'th360_header_dark_text',
-                'active_callback' => [$this, 'is_custom_dark_header_enabled'],
-            ]
-        ));
-
-        $wp_customize->add_setting('th360_header_dark_accent', [
-            'default'           => '#e9c400',
-            'transport'         => 'refresh',
-            'sanitize_callback' => 'sanitize_hex_color',
-        ]);
-
-        $wp_customize->add_control(new WP_Customize_Color_Control(
-            $wp_customize,
-            'th360_header_dark_accent',
-            [
-                'label'           => __('Acento encabezado oscuro', '360vo-theme'),
-                'description'     => __('Se usa en hover, estados activos, logo y elementos destacados del header oscuro.', '360vo-theme'),
-                'section'         => 'th360_color_scheme_section',
-                'settings'        => 'th360_header_dark_accent',
-                'active_callback' => [$this, 'is_custom_dark_header_enabled'],
-            ]
-        ));
-
-        $wp_customize->add_setting('th360_header_dark_button_bg', [
-            'default'           => '#221b00',
-            'transport'         => 'refresh',
-            'sanitize_callback' => 'sanitize_hex_color',
-        ]);
-
-        $wp_customize->add_control(new WP_Customize_Color_Control(
-            $wp_customize,
-            'th360_header_dark_button_bg',
-            [
-                'label'           => __('Fondo botones header oscuro', '360vo-theme'),
-                'section'         => 'th360_color_scheme_section',
-                'settings'        => 'th360_header_dark_button_bg',
-                'active_callback' => [$this, 'is_custom_dark_header_enabled'],
-            ]
-        ));
-
-        $wp_customize->add_setting('th360_header_dark_breadcrumb_bg', [
-            'default'           => '#1d1b16',
-            'transport'         => 'refresh',
-            'sanitize_callback' => 'sanitize_hex_color',
-        ]);
-
-        $wp_customize->add_control(new WP_Customize_Color_Control(
-            $wp_customize,
-            'th360_header_dark_breadcrumb_bg',
-            [
-                'label'           => __('Fondo migas en header oscuro', '360vo-theme'),
-                'section'         => 'th360_color_scheme_section',
-                'settings'        => 'th360_header_dark_breadcrumb_bg',
-                'active_callback' => [$this, 'is_custom_dark_header_enabled'],
             ]
         ));
 
@@ -301,7 +133,6 @@ class E360VO_Customizer
         $wp_customize->add_setting('th360_theme', [
             'default'   => 'light',
             'transport' => 'refresh',
-            'sanitize_callback' => [$this, 'sanitize_theme'],
         ]);
 
         // Control tema
@@ -319,7 +150,6 @@ class E360VO_Customizer
         $wp_customize->add_setting('th360_header', [
             'default'   => 'claro',
             'transport' => 'refresh',
-            'sanitize_callback' => [$this, 'sanitize_header'],
         ]);
 
         // Control encabezado
@@ -357,7 +187,7 @@ class E360VO_Customizer
      */
     public function add_color_scheme_class($classes)
     {
-        $color_scheme = get_theme_mod('th360_color_scheme', 'amarillo');
+        $color_scheme = get_theme_mod('th360_color_scheme', 'azul');
         $theme        = get_theme_mod('th360_theme', 'light');
         $header_class = get_theme_mod('th360_header', 'claro');
 
@@ -383,68 +213,5 @@ class E360VO_Customizer
         $style_path = get_template_directory_uri() . '/includes/assets/css/' . $handle . '.css';
 
         wp_enqueue_style('paleta_colores', $style_path, [], null);
-    }
-
-    public function sanitize_checkbox($checked)
-    {
-        return isset($checked) && (bool) $checked;
-    }
-
-    public function sanitize_color_scheme($value)
-    {
-        return $this->sanitize_choice($value, [
-            'azul',
-            'amarillo',
-            'rojo',
-            'verde',
-            'morado',
-            'naranja',
-            'cian',
-            'lima',
-            'personalizado',
-        ], 'amarillo');
-    }
-
-    public function sanitize_theme($value)
-    {
-        return $this->sanitize_choice($value, ['light', 'dark'], 'light');
-    }
-
-    public function sanitize_header($value)
-    {
-        return $this->sanitize_choice($value, ['claro', 'oscuro', 'color_principal'], 'claro');
-    }
-
-    public function sanitize_neutral_bias($value)
-    {
-        return $this->sanitize_choice($value, ['automatico', 'calido', 'neutro', 'frio'], 'automatico');
-    }
-
-    protected function sanitize_choice($value, array $allowed, $fallback)
-    {
-        $value = is_string($value) ? sanitize_key($value) : $fallback;
-        return in_array($value, $allowed, true) ? $value : $fallback;
-    }
-
-    public function is_custom_scheme_selected($control)
-    {
-        return 'personalizado' === $control->manager->get_setting('th360_color_scheme')->value();
-    }
-
-    public function is_advanced_palette_enabled($control)
-    {
-        return (bool) $control->manager->get_setting('th360_use_advanced_palette')->value();
-    }
-
-    public function is_custom_action_color_enabled($control)
-    {
-        return $this->is_advanced_palette_enabled($control)
-            && (bool) $control->manager->get_setting('th360_use_custom_action_color')->value();
-    }
-
-    public function is_custom_dark_header_enabled($control)
-    {
-        return $this->is_advanced_palette_enabled($control)
-            && (bool) $control->manager->get_setting('th360_use_custom_dark_header')->value();
     }
 }

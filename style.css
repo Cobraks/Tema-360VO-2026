@@ -284,6 +284,10 @@ html {
   scrollbar-width: thin;
 }
 
+html:has(body.header-oscuro) {
+  scrollbar-color: var(--neutral70) var(--neutral90);
+}
+
   .mobile-nav ul:first-child  {
     scrollbar-color: var(--primary60) var(--primary90);
     scrollbar-width: thin;

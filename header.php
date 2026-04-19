@@ -107,7 +107,20 @@ $logo_shape        = (string) get_theme_mod('th360_logo_shape', 'square');
 $header_logo_class = ' site-header--logo-' . sanitize_html_class($logo_shape);
 
 // Theme color dinámico (seguro)
-$theme_color = sanitize_hex_color((string) get_theme_mod('th360_custom_color', ''));
+$color_scheme = (string) get_theme_mod('th360_color_scheme', 'azul');
+$theme_color_map = [
+    'azul'        => '#3d73ff',
+    'rojo'        => '#d13b3b',
+    'verde'       => '#258a57',
+    'morado'      => '#7d43b6',
+    'naranja'     => '#e57a1f',
+    'cian'        => '#006579',
+    'lima'        => '#7aa62e',
+    'amarillo'    => '#ffd709',
+    'personalizado' => sanitize_hex_color((string) get_theme_mod('th360_custom_color', '')),
+];
+
+$theme_color = $theme_color_map[$color_scheme] ?? '#006579';
 if (!$theme_color) {
     $theme_color = '#006579';
 }

@@ -73,6 +73,9 @@ body.header-oscuro {
   --breadcrumbs-link-hover: var(--header-dark-breadcrumbs-hover);
   --breadcrumbs-gradient-bg: var(--header-dark-breadcrumbs-bg);
   --breadcrumbs-separator: var(--header-dark-breadcrumbs-separator);
+  --background_breadcrumbs: var(--header-dark-breadcrumbs-bg);
+  --color_breadcrumbs: var(--header-dark-breadcrumbs-link);
+  --color_hover_breadcrumbs: var(--header-dark-breadcrumbs-hover);
 }
 
 /* =========================================================

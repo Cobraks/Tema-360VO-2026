@@ -419,7 +419,7 @@ class E360VO_ColorPalette
 
     protected static function apply_runtime_overrides(array $palette, string $scheme): array
     {
-        if ((bool) get_theme_mod('th360_use_advanced_palette', false)) {
+        if ((bool) get_theme_mod('th360_use_advanced_palette', false) && in_array($scheme, ['amarillo', 'personalizado'], true)) {
             $neutral_hex = (string) get_theme_mod('th360_custom_neutral_color', '');
             if (self::is_hex_color($neutral_hex)) {
                 $neutral = self::generate_neutral_palette_from_hex($neutral_hex);
@@ -483,25 +483,20 @@ class E360VO_ColorPalette
     protected static function get_dark_header_defaults(string $scheme): array
     {
         $defaults = [
-            'bg'                  => '#121212',
-            'border'              => 'rgba(255,255,255,.04)',
-            'text'                => 'var(--primary70)',
-            'accent'              => 'var(--primary80)',
-            'logo'                => 'var(--primary50)',
-            'button_bg'           => 'var(--primary10)',
-            'button_text'         => 'var(--primary80)',
-            'button_border'       => 'rgba(255,255,255,.08)',
-            'button_hover_bg'     => 'var(--primary20)',
-            'button_hover_text'   => 'var(--primary90)',
-            'breadcrumb_bg'       => 'var(--neutral10)',
-            'breadcrumb_border'   => 'rgba(255,255,255,.04)',
-            'breadcrumb_separator'=> 'rgba(255,255,255,.38)',
+            'bg'                  => 'var(--neutral5)',
+            'border'              => 'transparent',
+            'text'                => 'var(--primary95)',
+            'accent'              => 'var(--primary90)',
+            'logo'                => 'var(--primary90)',
+            'button_bg'           => 'var(--primary95)',
+            'button_text'         => 'var(--primary50)',
+            'button_border'       => 'transparent',
+            'button_hover_bg'     => 'var(--primary90)',
+            'button_hover_text'   => 'var(--primary30)',
+            'breadcrumb_bg'       => 'var(--neutral20)',
+            'breadcrumb_border'   => 'transparent',
+            'breadcrumb_separator'=> 'var(--primary90)',
         ];
-
-        if ($scheme === 'amarillo') {
-            $defaults['bg'] = '#100e09';
-            $defaults['breadcrumb_bg'] = '#1d1b16';
-        }
 
         return $defaults;
     }
@@ -570,19 +565,19 @@ class E360VO_ColorPalette
     protected static function generate_neutral_palette_from_hex(string $hex): array
     {
         [$hue, $sat] = self::hex_to_hsl($hex);
-        $base_neutral = self::pick_vars(self::$bases['azul'], '--neutral');
+        $warm_reference = self::pick_vars(self::build_yellow_palette(), '--neutral');
         $levels = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 95, 96, 97, 98, 99];
         $neutral = [];
-        $sat_boost = min(max($sat * 0.08, 0.5), 5);
+        $sat_influence = min(max($sat * 0.22, 0.8), 4.2);
 
         foreach ($levels as $level) {
-            $val = $base_neutral["--neutral{$level}"] ?? 'hsla(0,0%,50%,1)';
-            [$unused, $base_sat, $light, $alpha] = self::parse_hsla($val);
-            $new_sat = min(14, max(0.8, $base_sat + $sat_boost));
+            $reference = $warm_reference["--neutral{$level}"] ?? '#f6f0e7';
+            [$unused_hue, $reference_sat, $reference_light] = self::hex_to_hsl($reference);
+            $new_sat = min(16, max(1.8, ($reference_sat * 0.82) + $sat_influence));
             if ($level >= 90) {
-                $new_sat = min(14, max($new_sat, 4));
+                $new_sat = min(16, max($new_sat, 5.2));
             }
-            $neutral["--neutral{$level}"] = self::build_hsla($hue, $new_sat, $light, $alpha);
+            $neutral["--neutral{$level}"] = self::build_hsla($hue, $new_sat, $reference_light, 1);
         }
 
         return $neutral;

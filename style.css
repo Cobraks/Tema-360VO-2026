@@ -153,6 +153,10 @@ h1,
   font-weight: 500;
 }
 
+.site-header .site-navigation ul li a {
+  color: var(--header-link);
+}
+
 .vehicle-card__overlay-icon {
   display: inline-flex;
   align-items: center;
@@ -1377,6 +1381,16 @@ letter-spacing: 0.25px;
 line-height: 1.71429;
 }
 
+body.header-oscuro .footer__bottom {
+  background: var(--header-dark-bg);
+  border-top: 0;
+}
+
+body.header-oscuro .footer__bottom a,
+body.header-oscuro .footer__bottom p {
+  color: var(--primary96);
+}
+
 .footer__logo_img {
   transition: all .3s ease-in-out;
   margin-inline: auto;
@@ -1384,6 +1398,10 @@ line-height: 1.71429;
 }
 .footer__bottom a:hover {
   color: #202124;
+}
+
+body.header-oscuro .footer__bottom a:hover {
+  color: var(--primary90);
 }
 
 
@@ -2298,6 +2316,10 @@ grid-template-columns: repeat(12, minmax(0, 1fr));
   .footer__bottom {
   border-top: 1px solid #E8E5DF;
   padding-block: 1.5rem;
+  }
+
+  body.header-oscuro .footer__bottom {
+    border-top: 0;
   }
 
   .footer__copyright p, 

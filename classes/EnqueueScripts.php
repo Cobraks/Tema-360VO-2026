@@ -230,11 +230,7 @@ class E360VO_EnqueueScripts
         }
 
         $media_attr = ($media && $media !== 'all') ? ' media="' . esc_attr($media) . '"' : '';
-
-        $out  = '<link rel="preload" as="style" href="' . esc_url($href) . '" onload="this.onload=null;this.rel=\'stylesheet\'"' . $media_attr . '>' . "\n";
-        $out .= '<noscript><link rel="stylesheet" href="' . esc_url($href) . '"' . $media_attr . '></noscript>' . "\n";
-
-        return $out;
+        return '<link rel="stylesheet" id="' . esc_attr($handle) . '-css" href="' . esc_url($href) . '"' . $media_attr . '>' . "\n";
     }
 
     private function should_load_footer_map_lazy(): bool

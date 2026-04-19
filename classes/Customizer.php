@@ -130,11 +130,10 @@ class E360VO_Customizer
             $wp_customize,
             'th360_custom_neutral_color',
             [
-                'label'           => __('Color fondos / neutrales', '360vo-theme'),
-                'description'     => __('Usalo para sesgar los neutros hacia asfalto, tierra, marron, gris calido, etc. El sistema lo suaviza para que no domine.', '360vo-theme'),
-                'section'         => 'th360_color_scheme_section',
-                'settings'        => 'th360_custom_neutral_color',
-                'active_callback' => [$this, 'is_advanced_palette_enabled'],
+                'label'       => __('Color fondos / neutrales', '360vo-theme'),
+                'description' => __('Solo se aplica si activas los ajustes avanzados. Usalo para sesgar los neutros hacia asfalto, tierra, marron o gris calido sin que dominen.', '360vo-theme'),
+                'section'     => 'th360_color_scheme_section',
+                'settings'    => 'th360_custom_neutral_color',
             ]
         ));
 
@@ -145,11 +144,10 @@ class E360VO_Customizer
         ]);
 
         $wp_customize->add_control('th360_use_custom_action_color', [
-            'type'            => 'checkbox',
-            'section'         => 'th360_color_scheme_section',
-            'label'           => __('Usar color de accion personalizado', '360vo-theme'),
-            'description'     => __('Si no lo activas, el sistema usa una armonia automatica y realista segun el esquema elegido.', '360vo-theme'),
-            'active_callback' => [$this, 'is_advanced_palette_enabled'],
+            'type'        => 'checkbox',
+            'section'     => 'th360_color_scheme_section',
+            'label'       => __('Usar color de accion personalizado', '360vo-theme'),
+            'description' => __('Solo se aplica si activas los ajustes avanzados. Si no lo marcas, el sistema mantiene una armonia automatica segun el esquema elegido.', '360vo-theme'),
         ]);
 
         $wp_customize->add_setting('th360_custom_action_color', [
@@ -162,11 +160,10 @@ class E360VO_Customizer
             $wp_customize,
             'th360_custom_action_color',
             [
-                'label'           => __('Color de accion', '360vo-theme'),
-                'description'     => __('Color principal para botones destacados, CTAs, hover fuertes y estados activos.', '360vo-theme'),
-                'section'         => 'th360_color_scheme_section',
-                'settings'        => 'th360_custom_action_color',
-                'active_callback' => [$this, 'is_custom_action_color_enabled'],
+                'label'       => __('Color de accion', '360vo-theme'),
+                'description' => __('Color principal para botones destacados, CTAs, hover fuertes y estados activos. Se usa cuando marcas la opcion de color de accion personalizado.', '360vo-theme'),
+                'section'     => 'th360_color_scheme_section',
+                'settings'    => 'th360_custom_action_color',
             ]
         ));
 
@@ -177,11 +174,10 @@ class E360VO_Customizer
         ]);
 
         $wp_customize->add_control('th360_use_custom_dark_header', [
-            'type'            => 'checkbox',
-            'section'         => 'th360_color_scheme_section',
-            'label'           => __('Personalizar encabezado oscuro', '360vo-theme'),
-            'description'     => __('Activa colores especificos para header y migas cuando el encabezado esta en modo oscuro.', '360vo-theme'),
-            'active_callback' => [$this, 'is_advanced_palette_enabled'],
+            'type'        => 'checkbox',
+            'section'     => 'th360_color_scheme_section',
+            'label'       => __('Personalizar encabezado oscuro', '360vo-theme'),
+            'description' => __('Solo se aplica si activas los ajustes avanzados. Permite definir colores especificos para header y migas cuando el encabezado esta en modo oscuro.', '360vo-theme'),
         ]);
 
         $wp_customize->add_setting('th360_header_dark_bg', [
@@ -194,10 +190,10 @@ class E360VO_Customizer
             $wp_customize,
             'th360_header_dark_bg',
             [
-                'label'           => __('Fondo encabezado oscuro', '360vo-theme'),
-                'section'         => 'th360_color_scheme_section',
-                'settings'        => 'th360_header_dark_bg',
-                'active_callback' => [$this, 'is_custom_dark_header_enabled'],
+                'label'       => __('Fondo encabezado oscuro', '360vo-theme'),
+                'description' => __('Se aplica cuando activas la personalizacion del encabezado oscuro.', '360vo-theme'),
+                'section'     => 'th360_color_scheme_section',
+                'settings'    => 'th360_header_dark_bg',
             ]
         ));
 
@@ -211,10 +207,9 @@ class E360VO_Customizer
             $wp_customize,
             'th360_header_dark_text',
             [
-                'label'           => __('Texto encabezado oscuro', '360vo-theme'),
-                'section'         => 'th360_color_scheme_section',
-                'settings'        => 'th360_header_dark_text',
-                'active_callback' => [$this, 'is_custom_dark_header_enabled'],
+                'label'       => __('Texto encabezado oscuro', '360vo-theme'),
+                'section'     => 'th360_color_scheme_section',
+                'settings'    => 'th360_header_dark_text',
             ]
         ));
 
@@ -228,11 +223,10 @@ class E360VO_Customizer
             $wp_customize,
             'th360_header_dark_accent',
             [
-                'label'           => __('Acento encabezado oscuro', '360vo-theme'),
-                'description'     => __('Hover, estados activos y elementos destacados del header oscuro.', '360vo-theme'),
-                'section'         => 'th360_color_scheme_section',
-                'settings'        => 'th360_header_dark_accent',
-                'active_callback' => [$this, 'is_custom_dark_header_enabled'],
+                'label'       => __('Acento encabezado oscuro', '360vo-theme'),
+                'description' => __('Hover, estados activos y elementos destacados del header oscuro.', '360vo-theme'),
+                'section'     => 'th360_color_scheme_section',
+                'settings'    => 'th360_header_dark_accent',
             ]
         ));
 
@@ -246,10 +240,9 @@ class E360VO_Customizer
             $wp_customize,
             'th360_header_dark_button_bg',
             [
-                'label'           => __('Fondo botones encabezado oscuro', '360vo-theme'),
-                'section'         => 'th360_color_scheme_section',
-                'settings'        => 'th360_header_dark_button_bg',
-                'active_callback' => [$this, 'is_custom_dark_header_enabled'],
+                'label'       => __('Fondo botones encabezado oscuro', '360vo-theme'),
+                'section'     => 'th360_color_scheme_section',
+                'settings'    => 'th360_header_dark_button_bg',
             ]
         ));
 
@@ -263,10 +256,9 @@ class E360VO_Customizer
             $wp_customize,
             'th360_header_dark_breadcrumb_bg',
             [
-                'label'           => __('Fondo migas en header oscuro', '360vo-theme'),
-                'section'         => 'th360_color_scheme_section',
-                'settings'        => 'th360_header_dark_breadcrumb_bg',
-                'active_callback' => [$this, 'is_custom_dark_header_enabled'],
+                'label'       => __('Fondo migas en header oscuro', '360vo-theme'),
+                'section'     => 'th360_color_scheme_section',
+                'settings'    => 'th360_header_dark_breadcrumb_bg',
             ]
         ));
 

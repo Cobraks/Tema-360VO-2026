@@ -659,12 +659,17 @@ color: white;
   
   
   
-  .share button {
+  .share .share__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     background: transparent;
     height: initial;
-    column-gap: .25rem;
+    column-gap: .4rem;
     color: currentColor;
-  } 
+    text-decoration: none;
+    white-space: nowrap;
+  }
   
   
   .entry__container .share {
@@ -690,32 +695,45 @@ color: white;
     background: var(--light-surface);
   }
   
-  .entry__container .share button {
-    background: var(--neutral90);
-    color: var(--neutral30);
+  .entry__container .share .share__button {
+    background: var(--neutral99);
+    color: var(--neutral20);
+    border: 1px solid var(--neutral90);
     border-radius: 4rem;
     height: 3.5rem;
-  }
-  
-  .entry__container--color-claro .share button {
-    color: var(--neutral90);
-    background: var(--neutral5);
-
-    border: none;
-  background: var(--primary20);
-  color: var(--primary95);
-  transition: all .3s ease-out;
+    padding-inline: 1rem;
+    transition:
+      background-color .24s ease,
+      color .24s ease,
+      border-color .24s ease,
+      transform .24s ease;
   }
 
-  .entry__container--color-claro .share button:hover {
-    background: var(--primary30);
-    transition: all ease-in .3s;
+  .entry__container .share .share__button:hover {
+    background: var(--neutral95);
+    border-color: var(--neutral80);
+    color: var(--neutral10);
+    text-decoration: none;
+    transform: translateY(-1px);
+  }
+
+  .entry__container--color-claro .share .share__button {
+    background: var(--neutral99);
+    color: var(--neutral20);
+    border-color: var(--neutral90);
   }
   
   .share .icon-link {
     font-size: 2rem;
   }
   
+  .share__button-svg {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
   .share__button-svg path {
     fill: currentColor;
   }
@@ -1010,7 +1028,7 @@ left: 50%;
       margin-top: 2rem;
     }
     
-    .share button.share__button {
+    .share .share__button {
       /* background: var(--neutral95); */
       height: 3rem;
       /* border-radius: .4rem;

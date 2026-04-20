@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 /**
  * Constantes del tema
  */
-define('THEME_VERSION', '3.2.15');
+define('THEME_VERSION', '3.2.16');
 define('THEME_DIR', get_template_directory());
 define('THEME_URI', get_template_directory_uri());
 
@@ -232,6 +232,419 @@ function th360_get_blog_home_url(): string
         : 'noticias';
 
     return home_url('/' . trim($blog_slug, '/') . '/');
+}
+
+/**
+ * Normaliza valores ACF de post object a un WP_Post.
+ */
+function th360_resolve_acf_post($value): ?WP_Post
+{
+    if ($value instanceof WP_Post) {
+        return $value;
+    }
+
+    if (is_array($value)) {
+        if (isset($value['ID'])) {
+            $post = get_post((int) $value['ID']);
+            return ($post instanceof WP_Post) ? $post : null;
+        }
+
+        if (isset($value[0])) {
+            return th360_resolve_acf_post($value[0]);
+        }
+    }
+
+    if (is_numeric($value)) {
+        $post = get_post((int) $value);
+        return ($post instanceof WP_Post) ? $post : null;
+    }
+
+    return null;
+}
+
+/**
+ * Devuelve la configuracion CTA de una pagina.
+ */
+function th360_get_page_cta_group(int $post_id): array
+{
+    if (!function_exists('get_field')) {
+        return [];
+    }
+
+    $group = get_field('llamada_a_la_accion', $post_id);
+    return is_array($group) ? $group : [];
+}
+
+/**
+ * Resuelve un subcampo CTA desde el grupo o por nombre directo.
+ */
+function th360_get_page_cta_field(array $cta_group, string $field_name, int $post_id)
+{
+    if (array_key_exists($field_name, $cta_group)) {
+        return $cta_group[$field_name];
+    }
+
+    if (!function_exists('get_field')) {
+        return null;
+    }
+
+    return get_field($field_name, $post_id);
+}
+
+/**
+ * Etiquetas fallback para las acciones CTA.
+ */
+function th360_get_page_cta_action_default_label(string $action): string
+{
+    $labels = [
+        'copiar' => 'Copiar link',
+        'compartir' => 'Compartir',
+        'stock' => 'Stock',
+        'marca' => 'Marca',
+        'carroceria' => 'Carroceria',
+        'modelo' => 'Modelo',
+        'coche' => 'Coche',
+        'home' => 'Inicio',
+        'post' => 'Entrada',
+        'categoria' => 'Categoria',
+        'blog' => 'Blog',
+        'pagina' => 'Pagina',
+        'externo' => 'Enlace externo',
+    ];
+
+    return $labels[$action] ?? 'Enlace';
+}
+
+/**
+ * Normaliza el valor ACF de acciones (checkbox con return format "Both").
+ */
+function th360_normalize_page_cta_actions($value): array
+{
+    if (!is_array($value)) {
+        return [];
+    }
+
+    $actions = [];
+
+    foreach ($value as $item) {
+        $action_value = '';
+        $label = '';
+
+        if (is_array($item)) {
+            if (isset($item['value'])) {
+                $action_value = (string) $item['value'];
+            } elseif (isset($item['key'])) {
+                $action_value = (string) $item['key'];
+            } elseif (isset($item[0]) && is_scalar($item[0])) {
+                $action_value = (string) $item[0];
+            }
+
+            if (isset($item['label'])) {
+                $label = (string) $item['label'];
+            } elseif (isset($item[1]) && is_scalar($item[1])) {
+                $label = (string) $item[1];
+            }
+        } elseif (is_scalar($item)) {
+            $action_value = (string) $item;
+        }
+
+        $action_value = sanitize_key($action_value);
+        if ($action_value === '') {
+            continue;
+        }
+
+        $actions[$action_value] = [
+            'value' => $action_value,
+            'label' => $label !== '' ? $label : th360_get_page_cta_action_default_label($action_value),
+        ];
+    }
+
+    return array_values($actions);
+}
+
+/**
+ * URL del archivo publico de stock.
+ */
+function th360_get_stock_archive_url(): string
+{
+    if (function_exists('gv360_get_variable')) {
+        $stock_url = gv360_get_variable('stock_archive_url', '');
+        if (is_scalar($stock_url) && trim((string) $stock_url) !== '') {
+            return trim((string) $stock_url);
+        }
+    }
+
+    $archive_url = get_post_type_archive_link('coche');
+    if (is_string($archive_url) && $archive_url !== '') {
+        return $archive_url;
+    }
+
+    return '';
+}
+
+/**
+ * Devuelve los items CTA renderizables para paginas.
+ */
+function th360_get_page_cta_items(?int $post_id = null): array
+{
+    $post_id = $post_id ?: get_queried_object_id();
+    if ($post_id <= 0) {
+        return [];
+    }
+
+    $cta_group = th360_get_page_cta_group($post_id);
+    $show_value = th360_get_page_cta_field($cta_group, 'mostrar_cta', $post_id);
+    $show_cta = ($show_value === null || $show_value === '') ? true : (bool) $show_value;
+
+    if (!$show_cta) {
+        return [];
+    }
+
+    $actions = th360_normalize_page_cta_actions(
+        th360_get_page_cta_field($cta_group, 'acciones', $post_id)
+    );
+
+    if (empty($actions)) {
+        $actions = [
+            ['value' => 'copiar', 'label' => th360_get_page_cta_action_default_label('copiar')],
+            ['value' => 'compartir', 'label' => th360_get_page_cta_action_default_label('compartir')],
+        ];
+    }
+
+    $page_url = get_permalink($post_id) ?: home_url('/');
+    $page_title = get_the_title($post_id) ?: get_bloginfo('name');
+    $items = [];
+
+    foreach ($actions as $action_config) {
+        $action = sanitize_key((string) ($action_config['value'] ?? ''));
+        $configured_label = trim((string) ($action_config['label'] ?? ''));
+
+        switch ($action) {
+            case 'copiar':
+                $default_label = $configured_label !== '' ? $configured_label : th360_get_page_cta_action_default_label($action);
+                $items[] = [
+                    'type' => 'button',
+                    'action' => 'copy',
+                    'label' => $default_label,
+                    'default_label' => $default_label,
+                    'success_label' => 'Enlace copiado',
+                    'url' => $page_url,
+                ];
+                break;
+
+            case 'compartir':
+                $items[] = [
+                    'type' => 'button',
+                    'action' => 'share',
+                    'label' => $configured_label !== '' ? $configured_label : th360_get_page_cta_action_default_label($action),
+                    'url' => $page_url,
+                    'title' => $page_title,
+                ];
+                break;
+
+            case 'stock':
+                $url = th360_get_stock_archive_url();
+                if ($url !== '') {
+                    $post_type = get_post_type_object('coche');
+                    $label = $post_type && isset($post_type->labels->name)
+                        ? (string) $post_type->labels->name
+                        : ($configured_label !== '' ? $configured_label : th360_get_page_cta_action_default_label($action));
+
+                    $items[] = [
+                        'type' => 'link',
+                        'action' => $action,
+                        'label' => $label,
+                        'url' => $url,
+                    ];
+                }
+                break;
+
+            case 'marca':
+            case 'carroceria':
+            case 'modelo':
+                $field_name = 'taxonomy_' . $action;
+                $term = th360_resolve_acf_term(th360_get_page_cta_field($cta_group, $field_name, $post_id));
+                if ($term instanceof WP_Term && $term->taxonomy === $action) {
+                    $url = get_term_link($term);
+                    if (!is_wp_error($url)) {
+                        $items[] = [
+                            'type' => 'link',
+                            'action' => $action,
+                            'label' => $term->name ?: ($configured_label !== '' ? $configured_label : th360_get_page_cta_action_default_label($action)),
+                            'url' => (string) $url,
+                        ];
+                    }
+                }
+                break;
+
+            case 'coche':
+                $vehicle = th360_resolve_acf_post(th360_get_page_cta_field($cta_group, 'seleccion_vehiculo', $post_id));
+                if ($vehicle instanceof WP_Post && get_post_status($vehicle) === 'publish') {
+                    $url = get_permalink($vehicle);
+                    if (is_string($url) && $url !== '') {
+                        $items[] = [
+                            'type' => 'link',
+                            'action' => $action,
+                            'label' => get_the_title($vehicle) ?: ($configured_label !== '' ? $configured_label : th360_get_page_cta_action_default_label($action)),
+                            'url' => $url,
+                        ];
+                    }
+                }
+                break;
+
+            case 'home':
+                $front_page_id = (int) get_option('page_on_front');
+                $url = $front_page_id > 0 ? get_permalink($front_page_id) : home_url('/');
+                if (is_string($url) && $url !== '') {
+                    $items[] = [
+                        'type' => 'link',
+                        'action' => $action,
+                        'label' => $front_page_id > 0
+                            ? (get_the_title($front_page_id) ?: th360_get_page_cta_action_default_label($action))
+                            : ($configured_label !== '' ? $configured_label : th360_get_page_cta_action_default_label($action)),
+                        'url' => $url,
+                    ];
+                }
+                break;
+
+            case 'blog':
+                $posts_page_id = (int) get_option('page_for_posts');
+                $url = th360_get_blog_home_url();
+                if ($url !== '') {
+                    $items[] = [
+                        'type' => 'link',
+                        'action' => $action,
+                        'label' => $posts_page_id > 0
+                            ? (get_the_title($posts_page_id) ?: th360_get_page_cta_action_default_label($action))
+                            : ($configured_label !== '' ? $configured_label : th360_get_page_cta_action_default_label($action)),
+                        'url' => $url,
+                    ];
+                }
+                break;
+
+            case 'post':
+                $selected_post = th360_resolve_acf_post(th360_get_page_cta_field($cta_group, 'seleccion_entrada', $post_id));
+                if ($selected_post instanceof WP_Post && get_post_status($selected_post) === 'publish') {
+                    $url = get_permalink($selected_post);
+                    if (is_string($url) && $url !== '') {
+                        $items[] = [
+                            'type' => 'link',
+                            'action' => $action,
+                            'label' => get_the_title($selected_post) ?: ($configured_label !== '' ? $configured_label : th360_get_page_cta_action_default_label($action)),
+                            'url' => $url,
+                        ];
+                    }
+                }
+                break;
+
+            case 'pagina':
+                $selected_page = th360_resolve_acf_post(th360_get_page_cta_field($cta_group, 'seleccion_pagina', $post_id));
+                if ($selected_page instanceof WP_Post && get_post_status($selected_page) === 'publish') {
+                    $url = get_permalink($selected_page);
+                    if (is_string($url) && $url !== '') {
+                        $items[] = [
+                            'type' => 'link',
+                            'action' => $action,
+                            'label' => get_the_title($selected_page) ?: ($configured_label !== '' ? $configured_label : th360_get_page_cta_action_default_label($action)),
+                            'url' => $url,
+                        ];
+                    }
+                }
+                break;
+
+            case 'categoria':
+                $term = th360_resolve_acf_term(th360_get_page_cta_field($cta_group, 'elegir_categoria', $post_id));
+                if ($term instanceof WP_Term && $term->taxonomy === 'category') {
+                    $url = get_term_link($term);
+                    if (!is_wp_error($url)) {
+                        $items[] = [
+                            'type' => 'link',
+                            'action' => $action,
+                            'label' => $term->name ?: ($configured_label !== '' ? $configured_label : th360_get_page_cta_action_default_label($action)),
+                            'url' => (string) $url,
+                        ];
+                    }
+                }
+                break;
+
+            case 'externo':
+                $url = trim((string) th360_get_page_cta_field($cta_group, 'enlace_externo', $post_id));
+                $url = $url !== '' ? esc_url_raw($url) : '';
+                if ($url !== '') {
+                    $host = wp_parse_url($url, PHP_URL_HOST);
+                    $items[] = [
+                        'type' => 'link',
+                        'action' => $action,
+                        'label' => $configured_label !== ''
+                            ? $configured_label
+                            : (is_string($host) && $host !== '' ? $host : th360_get_page_cta_action_default_label($action)),
+                        'url' => $url,
+                        'external' => true,
+                    ];
+                }
+                break;
+        }
+    }
+
+    return $items;
+}
+
+/**
+ * Iconos inline para los CTA de pagina.
+ */
+function th360_get_page_cta_icon_svg(string $action): string
+{
+    switch ($action) {
+        case 'copy':
+            return '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" aria-hidden="true" focusable="false"><path d="M360-240q-33 0-56.5-23.5T280-320v-480q0-33 23.5-56.5T360-880h360q33 0 56.5 23.5T800-800v480q0 33-23.5 56.5T720-240H360Zm0-80h360v-480H360v480ZM200-80q-33 0-56.5-23.5T120-160v-560h80v560h440v80H200Zm160-240v-480 480Z"></path></svg>';
+
+        case 'share':
+            return '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" aria-hidden="true" focusable="false"><path d="M720-80q-50 0-85-35t-35-85q0-7 1-14.5t3-13.5L322-392q-17 15-38 23.5t-44 8.5q-50 0-85-35t-35-85q0-50 35-85t85-35q23 0 44 8.5t38 23.5l282-164q-2-6-3-13.5t-1-14.5q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35q-23 0-44-8.5T638-672L356-508q2 6 3 13.5t1 14.5q0 7-1 14.5t-3 13.5l282 164q17-15 38-23.5t44-8.5q50 0 85 35t35 85q0 50-35 85t-85 35Zm0-640q17 0 28.5-11.5T760-760q0-17-11.5-28.5T720-800q-17 0-28.5 11.5T680-760q0 17 11.5 28.5T720-720ZM240-440q17 0 28.5-11.5T280-480q0-17-11.5-28.5T240-520q-17 0-28.5 11.5T200-480q0 17 11.5 28.5T240-440Zm480 280q17 0 28.5-11.5T760-200q0-17-11.5-28.5T720-240q-17 0-28.5 11.5T680-200q0 17 11.5 28.5T720-160Zm0-600ZM240-480Zm480 280Z"></path></svg>';
+
+        default:
+            return '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" aria-hidden="true" focusable="false"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"></path></svg>';
+    }
+}
+
+/**
+ * Render compartido de CTA para paginas.
+ */
+function th360_render_page_cta(?int $post_id = null): void
+{
+    $items = th360_get_page_cta_items($post_id);
+    if (empty($items)) {
+        return;
+    }
+?>
+    <div class="share" data-page-cta>
+        <?php foreach ($items as $item) : ?>
+            <?php if (($item['type'] ?? '') === 'button') : ?>
+                <button
+                    type="button"
+                    class="share__button share__button--<?php echo esc_attr($item['action']); ?>"
+                    <?php if (($item['action'] ?? '') === 'copy') : ?>
+                        data-copy-link="<?php echo esc_url($item['url']); ?>"
+                        data-default-label="<?php echo esc_attr($item['default_label'] ?? $item['label']); ?>"
+                        data-copy-success-label="<?php echo esc_attr($item['success_label'] ?? 'Enlace copiado'); ?>"
+                    <?php elseif (($item['action'] ?? '') === 'share') : ?>
+                        data-share-link="<?php echo esc_url($item['url']); ?>"
+                        data-share-title="<?php echo esc_attr($item['title'] ?? get_bloginfo('name')); ?>"
+                    <?php endif; ?>>
+                    <span class="share__button-svg"><?php echo th360_get_page_cta_icon_svg((string) $item['action']); ?></span>
+                    <span class="share__button-text"><?php echo esc_html((string) $item['label']); ?></span>
+                </button>
+            <?php else : ?>
+                <a
+                    class="share__button share__button--link share__button--link-<?php echo esc_attr((string) ($item['action'] ?? 'default')); ?>"
+                    href="<?php echo esc_url((string) ($item['url'] ?? '')); ?>"
+                    <?php if (!empty($item['external'])) : ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>>
+                    <span class="share__button-svg"><?php echo th360_get_page_cta_icon_svg('link'); ?></span>
+                    <span class="share__button-text"><?php echo esc_html((string) ($item['label'] ?? 'Enlace')); ?></span>
+                </a>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    </div>
+<?php
 }
 
 /**

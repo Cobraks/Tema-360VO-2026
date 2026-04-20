@@ -600,33 +600,65 @@ function initializeTableOfContents() {
 // =====================================================
 // Función: Inicializar el botón de copiar enlace
 // =====================================================
+async function copyTextToClipboard(text) {
+	if (navigator.clipboard?.writeText) {
+		await navigator.clipboard.writeText(text);
+		return true;
+	}
+
+	const tempInput = document.createElement("input");
+	tempInput.value = text;
+	tempInput.setAttribute("readonly", "readonly");
+	tempInput.style.position = "absolute";
+	tempInput.style.left = "-9999px";
+	document.body.appendChild(tempInput);
+	tempInput.select();
+
+	const copied = document.execCommand("copy");
+	document.body.removeChild(tempInput);
+
+	if (!copied) {
+		throw new Error("copy_failed");
+	}
+
+	return true;
+}
+
 function initializeCopyButton() {
-	const copyButton = document.getElementById("copy-button");
-	const copyButtonText = document.querySelector(".share__button-text");
+	document.querySelectorAll("[data-copy-link]").forEach((copyButton) => {
+		if (copyButton.dataset.copyBound === "1") return;
+		copyButton.dataset.copyBound = "1";
 
-	if (!copyButton || !copyButtonText) return;
+		const copyButtonText = copyButton.querySelector(".share__button-text");
+		const defaultLabel =
+			copyButton.dataset.defaultLabel ||
+			copyButtonText?.textContent?.trim() ||
+			"Copiar link";
+		const successLabel =
+			copyButton.dataset.copySuccessLabel || "Enlace copiado";
 
-	copyButton.addEventListener("click", async () => {
-		try {
-			if (navigator.clipboard?.writeText) {
-				await navigator.clipboard.writeText(window.location.href);
-			} else {
-				const tempInput = document.createElement("input");
-				tempInput.value = window.location.href;
-				document.body.appendChild(tempInput);
-				tempInput.select();
-				document.execCommand("copy");
-				document.body.removeChild(tempInput);
-			}
+		copyButton.addEventListener("click", async () => {
+			const targetUrl = copyButton.dataset.copyLink || window.location.href;
+			if (!targetUrl) return;
 
-			copyButtonText.textContent = "¡Link copiado!";
-			copyButton.disabled = true;
+			try {
+				await copyTextToClipboard(targetUrl);
 
-			setTimeout(() => {
-				copyButtonText.textContent = "Copiar enlace";
-				copyButton.disabled = false;
-			}, 3000);
-		} catch (_) {}
+				if (copyButtonText) {
+					copyButtonText.textContent = successLabel;
+				}
+
+				copyButton.disabled = true;
+
+				window.setTimeout(() => {
+					if (copyButtonText) {
+						copyButtonText.textContent = defaultLabel;
+					}
+
+					copyButton.disabled = false;
+				}, 3000);
+			} catch (_) {}
+		});
 	});
 }
 
@@ -634,19 +666,20 @@ function initializeCopyButton() {
 // Función: Inicializar el botón de compartir
 // =====================================================
 function initializeShareButton() {
-	const shareButton = document.getElementById("share-button");
-	if (!shareButton) return;
+	document.querySelectorAll("[data-share-link]").forEach((shareButton) => {
+		if (shareButton.dataset.shareBound === "1") return;
+		shareButton.dataset.shareBound = "1";
 
-	shareButton.addEventListener("click", () => {
-		if (navigator.share) {
+		shareButton.addEventListener("click", () => {
+			if (!navigator.share) return;
 			navigator
 				.share({
-					title: document.title,
-					text: "¡Mira este contenido increíble!",
-					url: window.location.href,
+					title: shareButton.dataset.shareTitle || document.title,
+					text: "Mira este contenido",
+					url: shareButton.dataset.shareLink || window.location.href,
 				})
 				.catch(() => {});
-		}
+		});
 	});
 }
 

@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 /**
  * Constantes del tema
  */
-define('THEME_VERSION', '3.2.17');
+define('THEME_VERSION', '3.2.18');
 define('THEME_DIR', get_template_directory());
 define('THEME_URI', get_template_directory_uri());
 
@@ -272,7 +272,51 @@ function th360_get_page_cta_group(int $post_id): array
     }
 
     $group = get_field('llamada_a_la_accion', $post_id);
-    return is_array($group) ? $group : [];
+    if (is_array($group) && !empty($group)) {
+        return $group;
+    }
+
+    if (!function_exists('get_fields')) {
+        return [];
+    }
+
+    $all_fields = get_fields($post_id);
+    if (!is_array($all_fields) || empty($all_fields)) {
+        return [];
+    }
+
+    $candidate_keys = [
+        'mostrar_cta',
+        'acciones',
+        'opciones_compartir',
+        'opciones_copiar_enlace',
+        'opciones_enlace_stock',
+        'opciones_enlace_a_marca',
+        'opciones_enlace_a_modelo',
+        'opciones_enlace_a_carroceria',
+        'opciones_enlace_a_categoria_blog',
+        'opciones_enlace_a_vehiculo',
+        'opciones_enlace_a_entrada_blog',
+        'opciones_enlace_a_pagina',
+        'opciones_enlace_externo',
+        'opciones_enlace_home',
+        'opciones_enlace_a_home',
+        'opciones_enlace_blog',
+        'opciones_enlace_a_blog',
+        'opciones_enlace_post',
+        'opciones_enlace_a_post',
+        'opciones_enlace_categoria',
+        'opciones_enlace_a_categoria',
+    ];
+
+    $resolved = [];
+    foreach ($candidate_keys as $candidate_key) {
+        if (array_key_exists($candidate_key, $all_fields)) {
+            $resolved[$candidate_key] = $all_fields[$candidate_key];
+        }
+    }
+
+    return $resolved;
 }
 
 /**
@@ -546,6 +590,12 @@ function th360_get_page_cta_icon_name(string $icon_choice, string $action, strin
     }
 
     switch ($normalized_choice) {
+        case 'copiar':
+            return 'blog_copy';
+
+        case 'compartir':
+            return 'blog_share';
+
         case 'atras':
             return 'back_arrow';
 
@@ -595,7 +645,7 @@ function th360_get_page_cta_icon_name(string $icon_choice, string $action, strin
 /**
  * Construye el HTML visual de un CTA (icono o logo de marca).
  */
-function th360_get_page_cta_visual_html(string $icon_choice, string $action, ?WP_Term $brand_term, string $side): string
+function th360_get_page_cta_visual_html(string $icon_choice, string $action, ?WP_Term $brand_term, string $side, bool $prefer_white_brand = false): string
 {
     $icon_name = th360_get_page_cta_icon_name($icon_choice, $action, $side);
     if ($icon_name === '') {
@@ -607,7 +657,7 @@ function th360_get_page_cta_visual_html(string $icon_choice, string $action, ?WP
             return '';
         }
 
-        $brand_data = th360_get_brand_visual_data($brand_term, false);
+        $brand_data = th360_get_brand_visual_data($brand_term, $prefer_white_brand);
         $logo_id = (int) ($brand_data['logo_id'] ?? 0);
         if ($logo_id <= 0) {
             return '';
@@ -790,8 +840,8 @@ function th360_get_page_cta_items(?int $post_id = null): array
                     'highlighted' => $visual_config['highlighted'],
                     'radius' => $visual_config['radius_css'],
                     'icon_size' => $visual_config['icon_size'],
-                    'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, null, 'left'),
-                    'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, null, 'right'),
+                    'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, null, 'left', (bool) $visual_config['highlighted']),
+                    'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, null, 'right', (bool) $visual_config['highlighted']),
                 ];
                 break;
 
@@ -806,8 +856,8 @@ function th360_get_page_cta_items(?int $post_id = null): array
                     'highlighted' => $visual_config['highlighted'],
                     'radius' => $visual_config['radius_css'],
                     'icon_size' => $visual_config['icon_size'],
-                    'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, null, 'left'),
-                    'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, null, 'right'),
+                    'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, null, 'left', (bool) $visual_config['highlighted']),
+                    'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, null, 'right', (bool) $visual_config['highlighted']),
                 ];
                 break;
 
@@ -828,8 +878,8 @@ function th360_get_page_cta_items(?int $post_id = null): array
                         'highlighted' => $visual_config['highlighted'],
                         'radius' => $visual_config['radius_css'],
                         'icon_size' => $visual_config['icon_size'],
-                        'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, null, 'left'),
-                        'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, null, 'right'),
+                        'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, null, 'left', (bool) $visual_config['highlighted']),
+                        'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, null, 'right', (bool) $visual_config['highlighted']),
                     ];
                 }
                 break;
@@ -853,8 +903,8 @@ function th360_get_page_cta_items(?int $post_id = null): array
                             'highlighted' => $visual_config['highlighted'],
                             'radius' => $visual_config['radius_css'],
                             'icon_size' => $visual_config['icon_size'],
-                            'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, $brand_term, 'left'),
-                            'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, $brand_term, 'right'),
+                            'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, $brand_term, 'left', (bool) $visual_config['highlighted']),
+                            'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, $brand_term, 'right', (bool) $visual_config['highlighted']),
                         ];
                     }
                 }
@@ -876,8 +926,8 @@ function th360_get_page_cta_items(?int $post_id = null): array
                             'highlighted' => $visual_config['highlighted'],
                             'radius' => $visual_config['radius_css'],
                             'icon_size' => $visual_config['icon_size'],
-                            'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, $brand_term, 'left'),
-                            'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, $brand_term, 'right'),
+                            'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, $brand_term, 'left', (bool) $visual_config['highlighted']),
+                            'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, $brand_term, 'right', (bool) $visual_config['highlighted']),
                         ];
                     }
                 }
@@ -897,8 +947,8 @@ function th360_get_page_cta_items(?int $post_id = null): array
                         'highlighted' => $visual_config['highlighted'],
                         'radius' => $visual_config['radius_css'],
                         'icon_size' => $visual_config['icon_size'],
-                        'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, null, 'left'),
-                        'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, null, 'right'),
+                        'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, null, 'left', (bool) $visual_config['highlighted']),
+                        'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, null, 'right', (bool) $visual_config['highlighted']),
                     ];
                 }
                 break;
@@ -917,8 +967,8 @@ function th360_get_page_cta_items(?int $post_id = null): array
                         'highlighted' => $visual_config['highlighted'],
                         'radius' => $visual_config['radius_css'],
                         'icon_size' => $visual_config['icon_size'],
-                        'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, null, 'left'),
-                        'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, null, 'right'),
+                        'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, null, 'left', (bool) $visual_config['highlighted']),
+                        'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, null, 'right', (bool) $visual_config['highlighted']),
                     ];
                 }
                 break;
@@ -938,8 +988,8 @@ function th360_get_page_cta_items(?int $post_id = null): array
                             'highlighted' => $visual_config['highlighted'],
                             'radius' => $visual_config['radius_css'],
                             'icon_size' => $visual_config['icon_size'],
-                            'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, null, 'left'),
-                            'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, null, 'right'),
+                            'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, null, 'left', (bool) $visual_config['highlighted']),
+                            'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, null, 'right', (bool) $visual_config['highlighted']),
                         ];
                     }
                 }
@@ -960,8 +1010,8 @@ function th360_get_page_cta_items(?int $post_id = null): array
                             'highlighted' => $visual_config['highlighted'],
                             'radius' => $visual_config['radius_css'],
                             'icon_size' => $visual_config['icon_size'],
-                            'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, null, 'left'),
-                            'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, null, 'right'),
+                            'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, null, 'left', (bool) $visual_config['highlighted']),
+                            'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, null, 'right', (bool) $visual_config['highlighted']),
                         ];
                     }
                 }
@@ -982,8 +1032,8 @@ function th360_get_page_cta_items(?int $post_id = null): array
                             'highlighted' => $visual_config['highlighted'],
                             'radius' => $visual_config['radius_css'],
                             'icon_size' => $visual_config['icon_size'],
-                            'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, null, 'left'),
-                            'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, null, 'right'),
+                            'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, null, 'left', (bool) $visual_config['highlighted']),
+                            'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, null, 'right', (bool) $visual_config['highlighted']),
                         ];
                     }
                 }
@@ -1005,8 +1055,8 @@ function th360_get_page_cta_items(?int $post_id = null): array
                         'highlighted' => $visual_config['highlighted'],
                         'radius' => $visual_config['radius_css'],
                         'icon_size' => $visual_config['icon_size'],
-                        'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, null, 'left'),
-                        'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, null, 'right'),
+                        'left_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['left_icon'], $action, null, 'left', (bool) $visual_config['highlighted']),
+                        'right_visual_html' => th360_get_page_cta_visual_html((string) $visual_config['right_icon'], $action, null, 'right', (bool) $visual_config['highlighted']),
                     ];
                 }
                 break;
@@ -1053,14 +1103,14 @@ function th360_render_page_cta(?int $post_id = null): void
                         data-share-title="<?php echo esc_attr($item['title'] ?? get_bloginfo('name')); ?>"
                     <?php endif; ?>>
                     <span class="share__button-main">
-                        <?php echo wp_kses_post((string) ($item['left_visual_html'] ?? '')); ?>
+                        <?php echo (string) ($item['left_visual_html'] ?? ''); ?>
                         <span class="share__button-copy">
                             <span class="share__button-text"><?php echo esc_html((string) $item['label']); ?></span>
                             <?php if (!empty($item['description'])) : ?>
                                 <span class="share__button-description"><?php echo esc_html((string) $item['description']); ?></span>
                             <?php endif; ?>
                         </span>
-                        <?php echo wp_kses_post((string) ($item['right_visual_html'] ?? '')); ?>
+                        <?php echo (string) ($item['right_visual_html'] ?? ''); ?>
                     </span>
                 </button>
             <?php else : ?>
@@ -1070,14 +1120,14 @@ function th360_render_page_cta(?int $post_id = null): void
                     style="<?php echo esc_attr($button_style); ?>"
                     <?php if (!empty($item['external'])) : ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>>
                     <span class="share__button-main">
-                        <?php echo wp_kses_post((string) ($item['left_visual_html'] ?? '')); ?>
+                        <?php echo (string) ($item['left_visual_html'] ?? ''); ?>
                         <span class="share__button-copy">
                             <span class="share__button-text"><?php echo esc_html((string) ($item['label'] ?? 'Enlace')); ?></span>
                             <?php if (!empty($item['description'])) : ?>
                                 <span class="share__button-description"><?php echo esc_html((string) $item['description']); ?></span>
                             <?php endif; ?>
                         </span>
-                        <?php echo wp_kses_post((string) ($item['right_visual_html'] ?? '')); ?>
+                        <?php echo (string) ($item['right_visual_html'] ?? ''); ?>
                     </span>
                 </a>
             <?php endif; ?>

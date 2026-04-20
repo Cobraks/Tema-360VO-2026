@@ -690,6 +690,7 @@ color: white;
     gap: 1rem;
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
   }
   
   
@@ -743,6 +744,12 @@ color: white;
   }
 
   .share .share__button--highlighted:hover {
+    background: color-mix(in srgb, var(--color-accent) 88%, black);
+    color: var(--color-on-accent);
+    border-color: color-mix(in srgb, var(--color-accent) 70%, black);
+  }
+
+  .entry__container .share .share__button--highlighted:hover {
     background: color-mix(in srgb, var(--color-accent) 88%, black);
     color: var(--color-on-accent);
     border-color: color-mix(in srgb, var(--color-accent) 70%, black);
@@ -803,6 +810,14 @@ color: white;
   .share__button-visual svg {
     width: var(--share-button-icon-size);
     height: var(--share-button-icon-size);
+    display: block;
+  }
+
+  .share__button-visual svg path,
+  .share__button-visual svg g,
+  .share__button-visual svg circle,
+  .share__button-visual svg rect {
+    fill: currentColor;
   }
 
   .share__button-visual--right {
@@ -821,6 +836,11 @@ color: white;
   .share__button--highlighted .share__button-visual--brand {
     background: rgba(255, 255, 255, .16);
     border-color: rgba(255, 255, 255, .2);
+  }
+
+  .share__button--highlighted .share__button-brand-logo,
+  .entry__container--color-oscuro .share__button-brand-logo {
+    filter: brightness(0) invert(1);
   }
 
   .share__button-visual--horizontal,

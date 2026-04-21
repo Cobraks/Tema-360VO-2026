@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 /**
  * Constantes del tema
  */
-define('THEME_VERSION', '3.2.19');
+define('THEME_VERSION', '3.2.20');
 define('THEME_DIR', get_template_directory());
 define('THEME_URI', get_template_directory_uri());
 
@@ -158,6 +158,68 @@ function obtener_estilo_fondo()
     }
 
     return '';
+}
+
+/**
+ * Devuelve el titulo visible de la cabecera de pagina.
+ * De momento mantiene compatibilidad con el override ACF.
+ */
+function th360_get_page_header_title(int $post_id): string
+{
+    if ($post_id > 0 && function_exists('get_field')) {
+        $custom_title = trim((string) get_field('titulo_h1', $post_id));
+        if ($custom_title !== '') {
+            return $custom_title;
+        }
+    }
+
+    return get_the_title($post_id);
+}
+
+/**
+ * Devuelve el titulo de cabecera listo para imprimir con un allowlist minimo.
+ */
+function th360_get_page_header_title_html(int $post_id): string
+{
+    $allowed_title_tags = [
+        'span'   => ['class' => true],
+        'br'     => true,
+        'em'     => true,
+        'strong' => true,
+    ];
+
+    return wp_kses(th360_get_page_header_title($post_id), $allowed_title_tags);
+}
+
+/**
+ * Renderiza la introduccion de pagina admitiendo texto plano o contenido WYSIWYG.
+ */
+function th360_get_page_intro_html(int $post_id): string
+{
+    if ($post_id <= 0 || !function_exists('get_field')) {
+        return '';
+    }
+
+    $intro = get_field('parrafo_introduccion', $post_id);
+    if (!is_string($intro)) {
+        return '';
+    }
+
+    $intro = trim($intro);
+    if ($intro === '') {
+        return '';
+    }
+
+    $has_html = (bool) preg_match('/<[^>]+>/', $intro) || str_contains($intro, '<!-- wp:');
+    $intro_markup = $has_html
+        ? wp_kses_post($intro)
+        : wp_kses_post(wpautop($intro));
+
+    if (trim($intro_markup) === '') {
+        return '';
+    }
+
+    return sprintf('<div class="intro-paragraph">%s</div>', $intro_markup);
 }
 
 /**

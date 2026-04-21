@@ -14,6 +14,7 @@ get_header(); ?>
 <?php
 $clases_entry_container = generar_clases_entry_container();
 $estilo_fondo = obtener_estilo_fondo();
+$post_id = get_queried_object_id();
 
 echo '<div class="' . esc_attr($clases_entry_container) . '" ' . $estilo_fondo . '>';
 ?>
@@ -21,23 +22,13 @@ echo '<div class="' . esc_attr($clases_entry_container) . '" ' . $estilo_fondo .
 <header class="entry-header">
     <div class="entry-text">
         <?php
-        if (get_field('titulo_h1')) {
-            $title = get_field('titulo_h1');
-        } else {
-            $title = get_the_title();
-        }
-
-        echo '<h1 class="entry-title">' . $title . '</h1>';
-
-        if (get_field('parrafo_introduccion')) {
-            echo '<p class="intro-paragraph">' . get_field('parrafo_introduccion') . '</p>';
-        }
-
-        echo obtener_tiempo_lectura(get_the_ID());
+        echo '<h1 class="entry-title">' . th360_get_page_header_title_html($post_id) . '</h1>';
+        echo th360_get_page_intro_html($post_id);
+        echo obtener_tiempo_lectura($post_id);
         ?>
     </div>
 
-    <?php th360_render_page_cta(get_queried_object_id()); ?>
+    <?php th360_render_page_cta($post_id); ?>
 </header>
 
 <?php
@@ -54,7 +45,7 @@ if (has_post_thumbnail()) {
     echo '</div>';
 }
 
-th360_render_page_scroll_button(get_queried_object_id());
+th360_render_page_scroll_button($post_id);
 
 echo '</div>';
 ?>

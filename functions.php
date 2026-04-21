@@ -369,6 +369,24 @@ function th360_get_page_featured_image_classes(int $post_id): string
 }
 
 /**
+ * Leyenda de la imagen destacada de la página.
+ */
+function th360_get_page_featured_image_caption(int $post_id): string
+{
+    if ($post_id <= 0) {
+        return '';
+    }
+
+    $thumbnail_id = get_post_thumbnail_id($post_id);
+    if (!$thumbnail_id) {
+        return '';
+    }
+
+    $caption = wp_get_attachment_caption($thumbnail_id);
+    return is_string($caption) ? trim($caption) : '';
+}
+
+/**
  * Devuelve el titulo visible de la cabecera de pagina.
  * De momento mantiene compatibilidad con el override ACF.
  */

@@ -21,6 +21,32 @@
 
 	const getCurrentY = () => window.scrollY || window.pageYOffset || 0;
 
+	const isElementVisible = (element) => {
+		if (!element) return false;
+		const styles = window.getComputedStyle(element);
+		if (
+			styles.display === "none" ||
+			styles.visibility === "hidden" ||
+			styles.opacity === "0" ||
+			element.hidden
+		) {
+			return false;
+		}
+
+		const rect = element.getBoundingClientRect();
+		return (
+			rect.width > 0 &&
+			rect.height > 0 &&
+			rect.bottom > 0 &&
+			rect.top < viewportHeight
+		);
+	};
+
+	const isHeroScrollButtonVisible = () =>
+		Array.from(document.querySelectorAll("[data-scroll-target]")).some((heroButton) =>
+			isElementVisible(heroButton),
+		);
+
 	const clearVisibilityTimer = () => {
 		if (!visibilityTimer) return;
 		window.clearTimeout(visibilityTimer);
@@ -75,6 +101,18 @@
 		const threshold = Math.max(viewportHeight * 0.9, 420);
 		const thresholdReached = currentY > threshold;
 		const delta = currentY - lastY;
+
+		if (isHeroScrollButtonVisible()) {
+			upwardGestures = 0;
+			downwardGestures = 0;
+			lastDirection = "";
+			clearVisibilityTimer();
+			setCompact(false);
+			setVisible(false);
+			updateFooterDocking();
+			lastY = currentY;
+			return;
+		}
 
 		if (!thresholdReached) {
 			upwardGestures = 0;

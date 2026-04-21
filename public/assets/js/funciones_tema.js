@@ -701,10 +701,62 @@ function initializePageScrollButton() {
 		return element.offsetHeight || 0;
 	};
 
+	const prefersReducedMotion =
+		window.matchMedia &&
+		window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+	let scrollFrame = null;
+
 	const getPageScrollOffset = () => {
 		const header = document.querySelector("header.site-header");
 		const breadcrumbs = document.querySelector(".nav-breadcrumb");
 		return getVisibleHeight(header) + getVisibleHeight(breadcrumbs) + 24;
+	};
+
+	const smoothScrollToPosition = (targetY) => {
+		const destination = Math.max(0, Math.round(targetY));
+
+		if (prefersReducedMotion) {
+			window.scrollTo(0, destination);
+			return;
+		}
+
+		if (scrollFrame) {
+			cancelAnimationFrame(scrollFrame);
+			scrollFrame = null;
+		}
+
+		const startY = window.scrollY || window.pageYOffset || 0;
+		const distance = destination - startY;
+		if (Math.abs(distance) < 2) {
+			window.scrollTo(0, destination);
+			return;
+		}
+
+		const duration = Math.min(760, Math.max(420, Math.abs(distance) * 0.55));
+		const startTime = performance.now();
+		const easeInOutCubic = (progress) =>
+			progress < 0.5
+				? 4 * progress * progress * progress
+				: 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+		const step = (now) => {
+			const progress = Math.min(1, (now - startTime) / duration);
+			const eased = easeInOutCubic(progress);
+			const nextY = startY + distance * eased;
+
+			window.scrollTo(0, nextY);
+
+			if (progress < 1) {
+				scrollFrame = requestAnimationFrame(step);
+				return;
+			}
+
+			scrollFrame = null;
+			window.scrollTo(0, destination);
+		};
+
+		scrollFrame = requestAnimationFrame(step);
 	};
 
 	document.querySelectorAll("[data-scroll-target]").forEach((button) => {
@@ -726,10 +778,7 @@ function initializePageScrollButton() {
 			button.classList.add("is-pressed");
 			window.setTimeout(() => button.classList.remove("is-pressed"), 220);
 
-			window.scrollTo({
-				top: Math.max(0, top),
-				behavior: "smooth",
-			});
+			smoothScrollToPosition(top);
 		});
 	});
 }

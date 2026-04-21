@@ -36,8 +36,13 @@ if (th360_should_render_page_featured_image($post_id)) {
     $sizes = '(max-width: 640px) 640px, (max-width: 768px) 768px, (max-width: 1024px) 1024px, 3000px';
     $img_url = get_the_post_thumbnail_url();
     $alt = get_the_title();
+    $caption = th360_get_page_featured_image_caption($post_id);
 
     echo '<img src="' . $img_url . '" srcset="' . $srcset . '" sizes="' . $sizes . '" alt="' . $alt . '">';
+
+    if ($caption !== '') {
+        echo '<div class="entry-image__caption">' . esc_html($caption) . '</div>';
+    }
 
     echo '</div>';
 }

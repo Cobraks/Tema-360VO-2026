@@ -89,45 +89,38 @@ function debug_list_scripts_styles()
  */
 function generar_clases_entry_container()
 {
+    $post_id = get_queried_object_id();
     $clases = ['entry__container'];
+    $header_settings = th360_get_page_header_settings($post_id);
+    $image_settings = th360_get_page_featured_image_settings($post_id);
+    $has_featured_image = th360_should_render_page_featured_image($post_id);
 
-    if (function_exists('get_field') && get_field('cabecera_imagen_de_fondo')) {
-        $imagen_diferente_id = get_field('cabecera_imagen_diferente');
-        $background_image = '';
-
-        if ($imagen_diferente_id) {
-            $background_image = wp_get_attachment_url($imagen_diferente_id);
-        } elseif (has_post_thumbnail()) {
-            $background_image = get_the_post_thumbnail_url();
-        }
-
-        if ($background_image) {
-            $clases[] = 'entry__container--image-background';
-        }
+    if ($header_settings['image_background'] && th360_get_page_background_image_url($post_id) !== '') {
+        $clases[] = 'entry__container--image-background';
     }
 
-    if (function_exists('get_field') && get_field('cabecera_hero_pantalla_completa')) {
+    if ($header_settings['full_screen']) {
         $clases[] = 'entry__container--full_screen';
     }
 
-    if (function_exists('get_field') && get_field('cabecera_claramente_visible')) {
+    if ($header_settings['visible']) {
         $clases[] = 'entry__container--visible';
     }
 
-    if (function_exists('get_field')) {
-        $color_hero = get_field('cabecera_color_hero');
-        if ($color_hero) {
-            $clases[] = 'entry__container--color-' . sanitize_html_class($color_hero);
-        }
+    if ($header_settings['color'] !== '') {
+        $clases[] = 'entry__container--color-' . sanitize_html_class($header_settings['color']);
+    }
 
-        $formato_imagen = get_field('imagen_destacada_formato_imagen');
-        if ($formato_imagen) {
-            $clases[] = 'entry__container--image-' . sanitize_html_class($formato_imagen);
-        }
+    if ($image_settings['format'] !== '') {
+        $clases[] = 'entry__container--image-' . sanitize_html_class($image_settings['format']);
+    }
 
-        // Esquinas redondeadas (grupo imagen_destacada)
-        $imagen_destacada = get_field('imagen_destacada');
-        if (is_array($imagen_destacada) && !empty($imagen_destacada['esquinas_redondeadas'])) {
+    $clases[] = $has_featured_image ? 'entry__container--with-image' : 'entry__container--without-image';
+    $clases[] = 'entry__container--justify-' . sanitize_html_class($header_settings['justification']);
+
+    if ($image_settings['radius'] !== '') {
+        $clases[] = 'entry__container--image-radius-' . sanitize_html_class($image_settings['radius']);
+        if ($image_settings['radius'] !== '0') {
             $clases[] = 'entry__container--image-border-radius';
         }
     }
@@ -140,24 +133,239 @@ function generar_clases_entry_container()
  */
 function obtener_estilo_fondo()
 {
-    if (!function_exists('get_field') || !get_field('cabecera_imagen_de_fondo')) {
+    $post_id = get_queried_object_id();
+    $header_settings = th360_get_page_header_settings($post_id);
+
+    if (!$header_settings['image_background']) {
         return '';
     }
 
-    $imagen_diferente_id = get_field('cabecera_imagen_diferente');
-    $background_image = '';
-
-    if ($imagen_diferente_id) {
-        $background_image = wp_get_attachment_url($imagen_diferente_id);
-    } elseif (has_post_thumbnail()) {
-        $background_image = get_the_post_thumbnail_url();
-    }
+    $background_image = th360_get_page_background_image_url($post_id);
 
     if ($background_image) {
         return 'style="--background-image: url(' . esc_url($background_image) . ');"';
     }
 
     return '';
+}
+
+/**
+ * Normaliza un valor choice de ACF con return format "Both" o variantes.
+ */
+function th360_get_acf_choice_value($value): string
+{
+    if (is_array($value)) {
+        foreach (['value', 'key', 'slug', 'name'] as $candidate_key) {
+            if (isset($value[$candidate_key]) && is_scalar($value[$candidate_key])) {
+                return trim((string) $value[$candidate_key]);
+            }
+        }
+
+        if (isset($value[0]) && is_scalar($value[0])) {
+            return trim((string) $value[0]);
+        }
+    }
+
+    if (is_bool($value)) {
+        return $value ? '1' : '0';
+    }
+
+    if (is_scalar($value)) {
+        return trim((string) $value);
+    }
+
+    return '';
+}
+
+/**
+ * Normaliza un valor ACF de imagen a attachment ID.
+ */
+function th360_get_acf_attachment_id($value): int
+{
+    if (is_array($value)) {
+        foreach (['ID', 'id'] as $candidate_key) {
+            if (isset($value[$candidate_key]) && is_numeric($value[$candidate_key])) {
+                return (int) $value[$candidate_key];
+            }
+        }
+    }
+
+    return is_numeric($value) ? (int) $value : 0;
+}
+
+/**
+ * Devuelve la configuración actual del grupo cabecera para páginas.
+ */
+function th360_get_page_header_settings(int $post_id): array
+{
+    $group = [];
+
+    if ($post_id > 0 && function_exists('get_field')) {
+        $group_value = get_field('cabecera', $post_id);
+        if (is_array($group_value)) {
+            $group = $group_value;
+        }
+    }
+
+    $image_background = array_key_exists('imagen_de_fondo', $group)
+        ? !empty($group['imagen_de_fondo'])
+        : (function_exists('get_field') ? !empty(get_field('cabecera_imagen_de_fondo', $post_id)) : false);
+
+    $visible = array_key_exists('claramente_visible', $group)
+        ? !empty($group['claramente_visible'])
+        : (function_exists('get_field') ? !empty(get_field('cabecera_claramente_visible', $post_id)) : false);
+
+    $full_screen = array_key_exists('hero_pantalla_completa', $group)
+        ? !empty($group['hero_pantalla_completa'])
+        : (function_exists('get_field') ? !empty(get_field('cabecera_hero_pantalla_completa', $post_id)) : false);
+
+    $image_different_id = array_key_exists('imagen_diferente', $group)
+        ? th360_get_acf_attachment_id($group['imagen_diferente'])
+        : (function_exists('get_field') ? th360_get_acf_attachment_id(get_field('cabecera_imagen_diferente', $post_id)) : 0);
+
+    $color = array_key_exists('color_hero', $group)
+        ? th360_get_acf_choice_value($group['color_hero'])
+        : (function_exists('get_field') ? th360_get_acf_choice_value(get_field('cabecera_color_hero', $post_id)) : '');
+
+    $justification = array_key_exists('justificacion', $group)
+        ? th360_get_acf_choice_value($group['justificacion'])
+        : (function_exists('get_field') ? th360_get_acf_choice_value(get_field('cabecera_justificacion', $post_id)) : '');
+
+    $justification = in_array($justification, ['centro', 'izquierda', 'derecha'], true)
+        ? $justification
+        : 'centro';
+
+    return [
+        'image_background'   => $image_background,
+        'visible'            => $visible,
+        'full_screen'        => $full_screen,
+        'image_different_id' => $image_different_id,
+        'color'              => $color,
+        'justification'      => $justification,
+    ];
+}
+
+/**
+ * Devuelve la configuración de imagen destacada para páginas.
+ */
+function th360_get_page_featured_image_settings(int $post_id): array
+{
+    $group = [];
+
+    if ($post_id > 0 && function_exists('get_field')) {
+        $group_value = get_field('imagen_destacada', $post_id);
+        if (is_array($group_value)) {
+            $group = $group_value;
+        }
+    }
+
+    $format = array_key_exists('formato_imagen', $group)
+        ? th360_get_acf_choice_value($group['formato_imagen'])
+        : (function_exists('get_field') ? th360_get_acf_choice_value(get_field('imagen_destacada_formato_imagen', $post_id)) : '');
+
+    if (!in_array($format, ['horizontal', 'vertical', 'cuadrado'], true)) {
+        $format = 'horizontal';
+    }
+
+    $show_image = array_key_exists('mostrar_imagen', $group)
+        ? !empty($group['mostrar_imagen'])
+        : (function_exists('get_field')
+            ? !empty(get_field('imagen_destacada_mostrar_imagen', $post_id)) || !empty(get_field('mostrar_imagen', $post_id))
+            : false);
+
+    $radius_value = array_key_exists('esquinas_redondeadas', $group)
+        ? $group['esquinas_redondeadas']
+        : (function_exists('get_field')
+            ? (get_field('imagen_destacada_esquinas_redondeadas', $post_id) ?? get_field('esquinas_redondeadas', $post_id))
+            : '');
+
+    $radius = th360_get_acf_choice_value($radius_value);
+    if ($radius === '1') {
+        $radius = '25';
+    } elseif ($radius === '') {
+        $radius = '0';
+    }
+
+    if (!in_array($radius, ['0', '25', '50', '100'], true)) {
+        $radius = '25';
+    }
+
+    return [
+        'format'     => $format,
+        'show_image' => $show_image,
+        'radius'     => $radius,
+    ];
+}
+
+/**
+ * Indica si la tabla de contenidos de la página está activada.
+ */
+function th360_is_page_toc_enabled(int $post_id): bool
+{
+    if ($post_id <= 0 || !function_exists('get_field')) {
+        return false;
+    }
+
+    $group = get_field('tabla_de_contenidos', $post_id);
+    if (is_array($group) && array_key_exists('activar_desactivar_tabla', $group)) {
+        return !empty($group['activar_desactivar_tabla']);
+    }
+
+    return !empty(get_field('tabla_de_contenidos_activar_desactivar_tabla', $post_id));
+}
+
+/**
+ * Determina si la imagen destacada de la página debe renderizarse.
+ */
+function th360_should_render_page_featured_image(int $post_id): bool
+{
+    if ($post_id <= 0 || !has_post_thumbnail($post_id)) {
+        return false;
+    }
+
+    $image_settings = th360_get_page_featured_image_settings($post_id);
+    return !empty($image_settings['show_image']);
+}
+
+/**
+ * URL de imagen de fondo del hero para páginas.
+ */
+function th360_get_page_background_image_url(int $post_id): string
+{
+    if ($post_id <= 0) {
+        return '';
+    }
+
+    $header_settings = th360_get_page_header_settings($post_id);
+    if (!$header_settings['image_background']) {
+        return '';
+    }
+
+    if ($header_settings['image_different_id'] > 0) {
+        $image_url = wp_get_attachment_url($header_settings['image_different_id']);
+        if (is_string($image_url) && $image_url !== '') {
+            return $image_url;
+        }
+    }
+
+    $thumbnail_url = get_the_post_thumbnail_url($post_id);
+    return is_string($thumbnail_url) ? $thumbnail_url : '';
+}
+
+/**
+ * Clases BEM del bloque visual de imagen destacada de la página.
+ */
+function th360_get_page_featured_image_classes(int $post_id): string
+{
+    $image_settings = th360_get_page_featured_image_settings($post_id);
+
+    $classes = [
+        'entry-image',
+        'entry-image--' . sanitize_html_class($image_settings['format']),
+        'entry-image--radius-' . sanitize_html_class($image_settings['radius']),
+    ];
+
+    return implode(' ', $classes);
 }
 
 /**
@@ -1204,11 +1412,12 @@ function th360_render_page_cta(?int $post_id = null): void
 function th360_render_page_scroll_button(?int $post_id = null): void
 {
     $post_id = $post_id ?: get_queried_object_id();
-    if ($post_id <= 0 || !function_exists('get_field')) {
+    if ($post_id <= 0) {
         return;
     }
 
-    if (!get_field('cabecera_hero_pantalla_completa', $post_id)) {
+    $header_settings = th360_get_page_header_settings($post_id);
+    if (!$header_settings['full_screen']) {
         return;
     }
 ?>

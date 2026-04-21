@@ -5,7 +5,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-$activar_toc = get_field('tabla_de_contenidos_activar_desactivar_tabla');
+$activar_toc = th360_is_page_toc_enabled(get_the_ID());
 ?>
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?> <?php echo $activar_toc ? 'data-toc-enabled="1"' : ''; ?>>
 

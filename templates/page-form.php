@@ -32,8 +32,8 @@ echo '<div class="' . esc_attr($clases_entry_container) . '" ' . $estilo_fondo .
 </header>
 
 <?php
-if (has_post_thumbnail()) {
-    echo '<div class="entry-image">';
+if (th360_should_render_page_featured_image($post_id)) {
+    echo '<div class="' . esc_attr(th360_get_page_featured_image_classes($post_id)) . '">';
 
     $srcset = wp_get_attachment_image_srcset(get_post_thumbnail_id(), 'full');
     $sizes = '(max-width: 640px) 640px, (max-width: 768px) 768px, (max-width: 1024px) 1024px, 3000px';

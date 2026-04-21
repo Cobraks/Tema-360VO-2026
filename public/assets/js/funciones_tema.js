@@ -684,6 +684,57 @@ function initializeShareButton() {
 }
 
 // =====================================================
+// Función: Scroll del hero a contenido
+// =====================================================
+function initializePageScrollButton() {
+	const getVisibleHeight = (element) => {
+		if (!element) return 0;
+		const styles = window.getComputedStyle(element);
+		if (
+			styles.display === "none" ||
+			styles.visibility === "hidden" ||
+			element.classList.contains("hidden")
+		) {
+			return 0;
+		}
+
+		return element.offsetHeight || 0;
+	};
+
+	const getPageScrollOffset = () => {
+		const header = document.querySelector("header.site-header");
+		const breadcrumbs = document.querySelector(".nav-breadcrumb");
+		return getVisibleHeight(header) + getVisibleHeight(breadcrumbs) + 24;
+	};
+
+	document.querySelectorAll("[data-scroll-target]").forEach((button) => {
+		if (button.dataset.scrollBound === "1") return;
+		button.dataset.scrollBound = "1";
+
+		button.addEventListener("click", () => {
+			const selector = button.dataset.scrollTarget;
+			if (!selector) return;
+
+			const target = document.querySelector(selector);
+			if (!target) return;
+
+			const top =
+				window.scrollY +
+				target.getBoundingClientRect().top -
+				getPageScrollOffset();
+
+			button.classList.add("is-pressed");
+			window.setTimeout(() => button.classList.remove("is-pressed"), 220);
+
+			window.scrollTo({
+				top: Math.max(0, top),
+				behavior: "smooth",
+			});
+		});
+	});
+}
+
+// =====================================================
 // Formularios CF7: mantener estado is-filled
 // =====================================================
 function initCf7FilledState() {
@@ -737,6 +788,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	initializeCopyButton();
 	initializeShareButton();
+	initializePageScrollButton();
 
 	initCf7FilledState();
 });

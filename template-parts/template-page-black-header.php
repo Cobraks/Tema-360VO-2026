@@ -16,56 +16,27 @@ $estilo_fondo = obtener_estilo_fondo();
 echo '<div class="' . esc_attr($clases_entry_container) . '" ' . $estilo_fondo . '>';
 ?>
 
-
-
-
-
-
 <header class="entry-header">
     <div class="entry-text">
         <?php
-        // Si existe un título personalizado, lo mostramos. Si no, mostramos el título de la página.
         if (get_field('titulo_h1')) {
             $title = get_field('titulo_h1');
         } else {
             $title = get_the_title();
         }
 
-        // Mostramos el título
         echo '<h1 class="entry-title">' . $title . '</h1>';
 
-        // Si existe un párrafo de introducción, lo mostramos.
         if (get_field('parrafo_introduccion')) {
             echo '<p class="intro-paragraph">' . get_field('parrafo_introduccion') . '</p>';
         }
-
-
-
-        // Obtén la URL y el título de la página actual
-        /* $url = urlencode(get_permalink());
-            $title = urlencode(get_the_title()); */
-
         ?>
-
-
-
-
-
-
     </div>
-
-
 </header>
-
-
-
 
 <?php th360_render_page_cta(get_queried_object_id()); ?>
 
-
-
 <?php
-// Si existe una imagen destacada, la mostramos
 if (has_post_thumbnail()) {
     echo '<div class="entry-image">';
 
@@ -79,24 +50,20 @@ if (has_post_thumbnail()) {
     echo '</div>';
 }
 
+th360_render_page_scroll_button(get_queried_object_id());
 ?>
-
-
-
-
 
 </div>
 
 <div class="content-wrapper custom-page custom-page--black">
-
     <main class="custom-page__content">
         <?php
-        while (have_posts()) : the_post();
+        while (have_posts()) :
+            the_post();
             get_template_part('template-parts/content', 'page-black-header');
         endwhile;
         ?>
     </main>
-
 
     <aside class="custom-page__related">
         <!-- Los enlaces relacionados irán aquí -->

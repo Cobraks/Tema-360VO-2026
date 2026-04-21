@@ -15,64 +15,32 @@ get_header(); ?>
 $clases_entry_container = generar_clases_entry_container();
 $estilo_fondo = obtener_estilo_fondo();
 
-
 echo '<div class="' . esc_attr($clases_entry_container) . '" ' . $estilo_fondo . '>';
 ?>
-
-
-
-
-
 
 <header class="entry-header">
     <div class="entry-text">
         <?php
-        // Si existe un título personalizado, lo mostramos. Si no, mostramos el título de la página.
         if (get_field('titulo_h1')) {
             $title = get_field('titulo_h1');
         } else {
             $title = get_the_title();
         }
 
-        // Mostramos el título
         echo '<h1 class="entry-title">' . $title . '</h1>';
 
-        // Si existe un párrafo de introducción, lo mostramos.
         if (get_field('parrafo_introduccion')) {
             echo '<p class="intro-paragraph">' . get_field('parrafo_introduccion') . '</p>';
         }
 
-
-
-        // Obtén la URL y el título de la página actual
-        /* $url = urlencode(get_permalink());
-            $title = urlencode(get_the_title()); */
-
-        ?>
-
-
-
-
-        <?php
-        // Obtener el tiempo de lectura para el post actual
         echo obtener_tiempo_lectura(get_the_ID());
-
         ?>
-
     </div>
-    <?php th360_render_page_cta(get_queried_object_id()); ?>
 
+    <?php th360_render_page_cta(get_queried_object_id()); ?>
 </header>
 
-
-
-
-
-
-
-
 <?php
-// Si existe una imagen destacada, la mostramos
 if (has_post_thumbnail()) {
     echo '<div class="entry-image">';
 
@@ -86,35 +54,20 @@ if (has_post_thumbnail()) {
     echo '</div>';
 }
 
+th360_render_page_scroll_button(get_queried_object_id());
 
-
-
-// Verificar si la opción cabecera_hero_pantalla_completa está seleccionada 
-if (get_field('cabecera_hero_pantalla_completa')) {
-    echo '<div class="button_scroll_home button_scroll--page">
-        <button id="scrollButtonPage">
-            <span class="material-symbols-outlined">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white">
-                    <path d="M440-800v487L216-537l-56 57 320 320 320-320-56-57-224 224v-487h-80Z"></path>
-                </svg></span>
-        </button>
-
-    </div>';
-}
-
-echo '</div>' //Entry header;
+echo '</div>';
 ?>
 
 <div class="content-wrapper custom-page">
-
     <main class="custom-page__content">
         <?php
-        while (have_posts()) : the_post();
+        while (have_posts()) :
+            the_post();
             get_template_part('template-parts/content', 'page');
         endwhile;
         ?>
     </main>
-
 
     <aside class="custom-page__related">
         <!-- Los enlaces relacionados irán aquí -->

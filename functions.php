@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 /**
  * Constantes del tema
  */
-define('THEME_VERSION', '3.2.18');
+define('THEME_VERSION', '3.2.19');
 define('THEME_DIR', get_template_directory());
 define('THEME_URI', get_template_directory_uri());
 
@@ -1132,6 +1132,40 @@ function th360_render_page_cta(?int $post_id = null): void
                 </a>
             <?php endif; ?>
         <?php endforeach; ?>
+    </div>
+<?php
+}
+
+/**
+ * Renderiza el boton de scroll del hero de pagina.
+ */
+function th360_render_page_scroll_button(?int $post_id = null): void
+{
+    $post_id = $post_id ?: get_queried_object_id();
+    if ($post_id <= 0 || !function_exists('get_field')) {
+        return;
+    }
+
+    if (!get_field('cabecera_hero_pantalla_completa', $post_id)) {
+        return;
+    }
+?>
+    <div class="button_scroll_home button_scroll--page">
+        <button
+            id="scrollButtonPage"
+            class="scroll-button-page"
+            type="button"
+            data-scroll-target="#entry-content--start"
+            aria-label="<?php echo esc_attr__('Ir al contenido', '360vo-theme'); ?>">
+            <span class="scroll-button-page__label"><?php echo esc_html__('Ver contenido', '360vo-theme'); ?></span>
+            <span class="scroll-button-page__icon" aria-hidden="true">
+                <?php echo E360VO_Icon::get('scroll_up', [
+                    'class' => 'scroll-button-page__icon-svg',
+                    'aria-hidden' => 'true',
+                    'focusable' => 'false',
+                ]); ?>
+            </span>
+        </button>
     </div>
 <?php
 }

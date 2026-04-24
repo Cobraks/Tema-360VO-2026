@@ -126,14 +126,71 @@ if (!$theme_color) {
 }
 
 $site_name = (string) get_bloginfo('name');
-$header_context_title = '';
+$header_context = array(
+    'title'      => '',
+    'subtitle'   => '',
+    'logo_id'    => 0,
+    'logo_url'   => '',
+    'logo_alt'   => '',
+    'logo_shape' => '',
+    'variant'    => '',
+);
 
 if (is_page() || is_singular('post')) {
-    $header_context_title = trim(wp_strip_all_tags(get_the_title()));
-    if ($header_context_title === '') {
-        $header_context_title = $site_name;
+    $header_context['title'] = trim(wp_strip_all_tags(get_the_title()));
+    if ($header_context['title'] === '') {
+        $header_context['title'] = $site_name;
+    }
+} elseif (is_singular('coche')) {
+    $post_id = get_queried_object_id();
+    $brand_name = '';
+    $model_name = '';
+    $version_name = function_exists('get_field') ? trim((string) get_field('datos_generales_version', $post_id)) : '';
+    $brand_logo = null;
+
+    $brands = get_the_terms($post_id, 'marca');
+    if ($brands && !is_wp_error($brands)) {
+        $brand = reset($brands);
+        if ($brand instanceof WP_Term) {
+            $brand_name = trim((string) $brand->name);
+
+            if (function_exists('get_field')) {
+                $brand_logo = get_field('logo_marca', $brand);
+                $header_context['logo_shape'] = sanitize_html_class((string) get_field('forma_del_logo', $brand));
+            }
+        }
+    }
+
+    $models = get_the_terms($post_id, 'modelo');
+    if ($models && !is_wp_error($models)) {
+        $model = reset($models);
+        if ($model instanceof WP_Term) {
+            $model_name = trim((string) $model->name);
+        }
+    }
+
+    $vehicle_title = trim($brand_name . ' ' . $model_name);
+    $header_context['title'] = $vehicle_title !== '' ? $vehicle_title : trim(wp_strip_all_tags(get_the_title($post_id)));
+    $header_context['subtitle'] = $version_name;
+    $header_context['logo_alt'] = $brand_name !== '' ? $brand_name : $header_context['title'];
+    $header_context['variant'] = 'vehicle';
+
+    if (is_numeric($brand_logo)) {
+        $header_context['logo_id'] = (int) $brand_logo;
+    } elseif (is_array($brand_logo)) {
+        if (!empty($brand_logo['ID'])) {
+            $header_context['logo_id'] = (int) $brand_logo['ID'];
+        } elseif (!empty($brand_logo['id'])) {
+            $header_context['logo_id'] = (int) $brand_logo['id'];
+        } elseif (!empty($brand_logo['url'])) {
+            $header_context['logo_url'] = (string) $brand_logo['url'];
+        }
+    } elseif (is_string($brand_logo) && trim($brand_logo) !== '') {
+        $header_context['logo_url'] = trim($brand_logo);
     }
 }
+
+$header_context = apply_filters('th360_header_context', $header_context, get_queried_object_id());
 
 /**
  * ---------------------------------------------------------
@@ -332,9 +389,40 @@ $logo_svg_safe = ($logo_svg_raw !== '') ? theme360_prepare_inline_logo_svg($logo
                 ));
                 ?>
 
-                <?php if ($header_context_title !== '') : ?>
-                    <div class="site-header__context-title" data-header-context-title aria-hidden="true">
-                        <span class="site-header__context-title-text"><?php echo esc_html($header_context_title); ?></span>
+                <?php if (!empty($header_context['title'])) : ?>
+                    <?php
+                    $header_context_variant = !empty($header_context['variant']) ? sanitize_html_class((string) $header_context['variant']) : 'default';
+                    $header_context_classes = 'site-header__context-title site-header__context-title--' . $header_context_variant;
+                    $header_context_logo_shape = !empty($header_context['logo_shape']) ? sanitize_html_class((string) $header_context['logo_shape']) : 'default';
+                    ?>
+                    <div
+                        class="<?php echo esc_attr($header_context_classes); ?>"
+                        data-header-context-title
+                        data-header-context-variant="<?php echo esc_attr($header_context_variant); ?>"
+                        aria-hidden="true">
+                        <?php if ($header_context_variant === 'vehicle' && (!empty($header_context['logo_id']) || !empty($header_context['logo_url']))) : ?>
+                            <span class="site-header__context-logo site-header__context-logo--<?php echo esc_attr($header_context_logo_shape); ?>" aria-hidden="true">
+                                <?php
+                                if (!empty($header_context['logo_id'])) {
+                                    echo wp_get_attachment_image((int) $header_context['logo_id'], 'medium', false, array(
+                                        'class' => 'site-header__context-logo-img',
+                                        'alt' => esc_attr((string) $header_context['logo_alt']),
+                                        'loading' => 'eager',
+                                        'decoding' => 'async',
+                                    ));
+                                } else {
+                                    echo '<img class="site-header__context-logo-img" src="' . esc_url((string) $header_context['logo_url']) . '" alt="' . esc_attr((string) $header_context['logo_alt']) . '" loading="eager" decoding="async">';
+                                }
+                                ?>
+                            </span>
+                        <?php endif; ?>
+
+                        <span class="site-header__context-copy">
+                            <span class="site-header__context-title-text"><?php echo esc_html((string) $header_context['title']); ?></span>
+                            <?php if (!empty($header_context['subtitle'])) : ?>
+                                <span class="site-header__context-subtitle"><?php echo esc_html((string) $header_context['subtitle']); ?></span>
+                            <?php endif; ?>
+                        </span>
                     </div>
                 <?php endif; ?>
             </div>

@@ -166,7 +166,7 @@ class E360VO_EnqueueScripts
             );
         }
 
-        if (is_page() || is_singular('post')) {
+        if (is_page() || is_singular(['post', 'coche'])) {
             $header_context_css = E360VO_AssetHelper::get_asset_info('/public/assets/css/header-context', 'css');
             wp_enqueue_style(
                 '360vo-header-context',
@@ -183,7 +183,9 @@ class E360VO_EnqueueScripts
                 $header_context_js['version'],
                 true
             );
+        }
 
+        if (is_page() || is_singular('post')) {
             $scroll_top_css = E360VO_AssetHelper::get_asset_info('/public/assets/css/scroll-top', 'css');
             wp_enqueue_style(
                 '360vo-scroll-top',

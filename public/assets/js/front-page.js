@@ -3,20 +3,6 @@
 
 	const hero = document.querySelector(".home-hero");
 	const gallery = document.querySelector(".home-hero__gallery");
-	const scrollButton = document.querySelector(".home-hero__scroll");
-	const services = document.querySelector(".featured-services");
-
-	if (scrollButton && services) {
-		scrollButton.addEventListener("click", function () {
-			const rootStyles = window.getComputedStyle(document.documentElement);
-			const headerHeight = Number.parseFloat(rootStyles.getPropertyValue("--altura-header")) || 80;
-			const targetTop = services.getBoundingClientRect().top + window.scrollY - headerHeight;
-			window.scrollTo({
-				top: Math.max(0, targetTop),
-				behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
-			});
-		});
-	}
 
 	if (!gallery) return;
 
@@ -65,6 +51,10 @@
 		return [car && car.marca, car && car.modelo].filter(Boolean).join(" ") || "Vehículo destacado";
 	}
 
+	function getMonthlyText(car) {
+		return car && car.cuota ? "desde " + car.cuota + " al mes" : "Financiación a medida";
+	}
+
 	function renderLogo(car) {
 		if (!logoBox) return;
 		logoBox.textContent = "";
@@ -89,11 +79,11 @@
 		const car = cars[index] || {};
 
 		renderLogo(car);
-		setText(kickerEl, car.marca || car.modelo ? "Última entrada" : "Stock destacado");
+		setText(kickerEl, "");
 		setText(titleEl, getVehicleTitle(car));
 		setText(subtitleEl, car.version || "Vehículo revisado por Escarpa Motor");
-		setText(priceLabelEl, car.precioLabel || "Precio anunciado");
-		setText(priceEl, car.precio || "Consultar");
+		setText(priceLabelEl, "Cuota mensual");
+		setText(priceEl, getMonthlyText(car));
 
 		if (linkEl) {
 			const fallbackHref = linkEl.getAttribute("href") || "/";
@@ -101,9 +91,6 @@
 			linkEl.setAttribute("aria-label", car.link ? "Ver ficha de " + getVehicleTitle(car) : "Ver vehículos disponibles");
 		}
 
-		panel.classList.remove("is-updating");
-		void panel.offsetWidth;
-		panel.classList.add("is-updating");
 	}
 
 	function updateControls(index) {

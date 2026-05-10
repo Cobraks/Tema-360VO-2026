@@ -46,9 +46,12 @@ if ($hero_query->have_posts()) {
         // ACF
         $version = get_field('datos_generales_version', $car_id);
         $precio  = get_field('precio_y_descuentos_precio', $car_id);
+        $cuota   = get_field('financiacion_cuota_minima', $car_id);
 
         $precio_num = is_numeric($precio) ? (float) $precio : 0.0;
         $precio_formateado = $precio_num ? number_format($precio_num, 0, ',', '.') . ' €' : '';
+        $cuota_num = is_numeric($cuota) ? (float) $cuota : 0.0;
+        $cuota_formateada = $cuota_num ? number_format($cuota_num, 0, ',', '.') . '€' : '';
 
         // Portada
         $image_id = get_field('otros_datos_portada_coche', $car_id);
@@ -96,7 +99,7 @@ if ($hero_query->have_posts()) {
             'modelo'  => $nombre_modelo,
             'version' => (string) $version,
             'precio'  => $precio_formateado,
-            'precioLabel' => 'Precio anunciado',
+            'cuota'   => $cuota_formateada,
             'img'     => $image_url,
             'imgAlt'  => $image_alt,
             'logo'    => $logo_url,
@@ -112,8 +115,8 @@ if (!$stock_url) {
     $stock_url = home_url('/coches-de-segunda-mano/');
 }
 
-$sell_page = get_page_by_path('vendemos-tu-coche');
-$sell_url = $sell_page ? get_permalink($sell_page) : home_url('/vendemos-tu-coche/');
+$finance_page = get_page_by_path('coches-con-financiacion-segunda-mano');
+$finance_url = $finance_page ? get_permalink($finance_page) : home_url('/coches-con-financiacion-segunda-mano/');
 
 $phone_raw = function_exists('theme360_ctx_get') ? (string) theme360_ctx_get('phone_primary', '') : '';
 $phone_e164_raw = function_exists('theme360_ctx_get') ? (string) theme360_ctx_get('phone_e164', '') : '';
@@ -122,6 +125,7 @@ if ($phone_digits && strlen($phone_digits) === 9) {
     $phone_digits = '34' . $phone_digits;
 }
 $whatsapp_url = $phone_digits ? 'https://wa.me/' . $phone_digits . '?text=' . rawurlencode('Hola Escarpa Motor, quiero informacion sobre un coche de segunda mano.') : '';
+$whatsapp_cta_url = $whatsapp_url ?: ($phone_digits ? 'tel:+' . $phone_digits : $stock_url);
 
 $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7l4-9.3c0.1-0.2,0-0.4-0.2-0.5c0,0-0.1,0-0.1,0H24.7c-0.2,0-0.4-0.2-0.4-0.4c0-0.1,0-0.1,0-0.2l1.6-3c0.2-0.3,0.5-0.5,0.9-0.5h17.9c3.1,0,5.9-1.8,7.1-4.7l4-9.2c0.1-0.2,0-0.4-0.2-0.5c0,0-0.1,0-0.1,0H13.3c-0.2,0-0.4-0.2-0.4-0.4c0-0.1,0-0.1,0-0.2l1.6-3c0.2-0.3,0.5-0.5,0.9-0.5h37.4c3.1,0,5.9-1.9,7.1-4.7l4.2-9.7c0.1-0.2,0-0.4-0.2-0.5c0,0-0.1,0-0.1,0h-63c-0.2,0-0.4,0.2-0.4,0.4c0,0,0,0.1,0,0.1L22.7,61.8z';
 ?>
@@ -151,9 +155,6 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
                     <p class="home-hero__lead">
                         En Escarpa Motor hemos creado una forma más clara, cuidada y segura de comprar un coche de segunda mano en Madrid: vehículos revisados, garantía clara, financiación transparente y una entrega preparada al detalle.
                     </p>
-                    <p class="home-hero__support">
-                        Desde Arganda del Rey trabajamos cada coche para que sepas qué compras, cómo lo compras y con qué tranquilidad te lo llevas.
-                    </p>
                 </div>
 
                 <div class="home-hero__actions" aria-label="Acciones principales">
@@ -163,50 +164,12 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
                             <path d="M5 12h12.17l-4.58-4.59L14 6l7 7-7 7-1.41-1.41L17.17 14H5v-2Z"></path>
                         </svg>
                     </a>
-                    <a class="home-hero__button home-hero__button--secondary" href="<?php echo esc_url($sell_url); ?>">
-                        <span>Quiero vender mi coche</span>
+                    <a class="home-hero__button home-hero__button--secondary" href="<?php echo esc_url($whatsapp_cta_url); ?>"<?php echo $whatsapp_url ? ' target="_blank" rel="noopener noreferrer"' : ''; ?>>
+                        <span>Hablar por WhatsApp</span>
                     </a>
-                    <?php if (!empty($whatsapp_url)) : ?>
-                        <a class="home-hero__text-link" href="<?php echo esc_url($whatsapp_url); ?>" target="_blank" rel="noopener noreferrer">
-                            Hablar con un asesor
-                        </a>
-                    <?php endif; ?>
-                </div>
-
-                <div class="home-hero__trust" aria-label="Compromisos de Escarpa Motor">
-                    <article class="home-hero__trust-item">
-                        <span class="home-hero__trust-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2Z"></path>
-                            </svg>
-                        </span>
-                        <div>
-                            <strong>Revisión documentada</strong>
-                            <span>Estado, historial y preparación visibles desde el primer contacto.</span>
-                        </div>
-                    </article>
-                    <article class="home-hero__trust-item">
-                        <span class="home-hero__trust-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M12 2 4 5v6c0 5.1 3.4 9.9 8 11 4.6-1.1 8-5.9 8-11V5l-8-3Zm0 17.9C8.5 18.8 6 15 6 11V6.3l6-2.25 6 2.25V11c0 4-2.5 7.8-6 8.9Z"></path>
-                            </svg>
-                        </span>
-                        <div>
-                            <strong>Garantía clara</strong>
-                            <span>Sin letra pequeña innecesaria: cobertura explicada antes de reservar.</span>
-                        </div>
-                    </article>
-                    <article class="home-hero__trust-item">
-                        <span class="home-hero__trust-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M3 6h18v12H3V6Zm2 2v8h14V8H5Zm2 2h6v2H7v-2Zm0 3h10v2H7v-2Z"></path>
-                            </svg>
-                        </span>
-                        <div>
-                            <strong>Financiación transparente</strong>
-                            <span>Opciones explicadas con números claros y sin decisiones a ciegas.</span>
-                        </div>
-                    </article>
+                    <a class="home-hero__text-link" href="<?php echo esc_url($finance_url); ?>">
+                        Calcular financiación
+                    </a>
                 </div>
             </div>
 
@@ -242,36 +205,35 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
                                 </article>
                             <?php endif; ?>
                             <div class="home-hero__image-shade" aria-hidden="true"></div>
-                        </div>
 
-                        <?php $active_car = $hero_cars[0] ?? null; ?>
-                        <div class="home-hero__vehicle-panel" aria-live="polite" aria-atomic="true">
-                            <div class="home-hero__vehicle-main">
-                                <div class="home-hero__vehicle-logo" aria-hidden="true">
-                                    <?php if (!empty($active_car['logo'])) : ?>
-                                        <img src="<?php echo esc_url($active_car['logo']); ?>" alt="" loading="lazy" decoding="async">
-                                    <?php else : ?>
-                                        <span><?php echo esc_html(substr((string) ($active_car['marca'] ?? 'E'), 0, 1)); ?></span>
-                                    <?php endif; ?>
+                            <?php $active_car = $hero_cars[0] ?? null; ?>
+                            <div class="home-hero__vehicle-panel" aria-live="polite" aria-atomic="true">
+                                <div class="home-hero__vehicle-main">
+                                    <div class="home-hero__vehicle-logo" aria-hidden="true">
+                                        <?php if (!empty($active_car['logo'])) : ?>
+                                            <img src="<?php echo esc_url($active_car['logo']); ?>" alt="" loading="lazy" decoding="async">
+                                        <?php else : ?>
+                                            <span><?php echo esc_html(substr((string) ($active_car['marca'] ?? 'E'), 0, 1)); ?></span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="home-hero__vehicle-copy">
+                                        <strong class="home-hero__vehicle-title"><?php echo esc_html(trim(($active_car['marca'] ?? '') . ' ' . ($active_car['modelo'] ?? 'Vehículo destacado'))); ?></strong>
+                                        <span class="home-hero__vehicle-subtitle"><?php echo esc_html($active_car['version'] ?? 'Stock revisado y actualizado'); ?></span>
+                                    </div>
                                 </div>
-                                <div class="home-hero__vehicle-copy">
-                                    <span class="home-hero__vehicle-kicker">Última entrada</span>
-                                    <strong class="home-hero__vehicle-title"><?php echo esc_html(trim(($active_car['marca'] ?? '') . ' ' . ($active_car['modelo'] ?? 'Vehículo destacado'))); ?></strong>
-                                    <span class="home-hero__vehicle-subtitle"><?php echo esc_html($active_car['version'] ?? 'Stock revisado y actualizado'); ?></span>
-                                </div>
-                            </div>
 
-                            <div class="home-hero__vehicle-side">
-                                <div class="home-hero__vehicle-price-wrap">
-                                    <span class="home-hero__vehicle-price-label"><?php echo esc_html($active_car['precioLabel'] ?? 'Precio anunciado'); ?></span>
-                                    <strong class="home-hero__vehicle-price"><?php echo esc_html($active_car['precio'] ?? 'Consultar'); ?></strong>
+                                <div class="home-hero__vehicle-side">
+                                    <div class="home-hero__vehicle-price-wrap">
+                                        <span class="home-hero__vehicle-price-label">Cuota mensual</span>
+                                        <strong class="home-hero__vehicle-price"><?php echo !empty($active_car['cuota']) ? esc_html('desde ' . $active_car['cuota'] . ' al mes') : 'Financiación a medida'; ?></strong>
+                                    </div>
+                                    <a class="home-hero__vehicle-link" href="<?php echo esc_url($active_car['link'] ?? $stock_url); ?>">
+                                        <span>Ver ficha</span>
+                                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                                            <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3ZM5 5h6v2H7v10h10v-4h2v6H5V5Z"></path>
+                                        </svg>
+                                    </a>
                                 </div>
-                                <a class="home-hero__vehicle-link" href="<?php echo esc_url($active_car['link'] ?? $stock_url); ?>">
-                                    <span>Ver ficha</span>
-                                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                                        <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3ZM5 5h6v2H7v10h10v-4h2v6H5V5Z"></path>
-                                    </svg>
-                                </a>
                             </div>
                         </div>
                     </div>
@@ -299,18 +261,44 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
                         </button>
                     </div>
                 </div>
+            </div>
 
-                <div class="home-hero__media-note">
-                    <span>Stock real, fotos reales y preparación antes de entrega.</span>
-                </div>
+            <div class="home-hero__trust" aria-label="Compromisos de Escarpa Motor">
+                <article class="home-hero__trust-item">
+                    <span class="home-hero__trust-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2Z"></path>
+                        </svg>
+                    </span>
+                    <div>
+                        <strong>Revisión documentada</strong>
+                        <span>Estado, historial y preparación visibles desde el primer contacto.</span>
+                    </div>
+                </article>
+                <article class="home-hero__trust-item">
+                    <span class="home-hero__trust-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2 4 5v6c0 5.1 3.4 9.9 8 11 4.6-1.1 8-5.9 8-11V5l-8-3Zm0 17.9C8.5 18.8 6 15 6 11V6.3l6-2.25 6 2.25V11c0 4-2.5 7.8-6 8.9Z"></path>
+                        </svg>
+                    </span>
+                    <div>
+                        <strong>Garantía clara</strong>
+                        <span>Cobertura explicada antes de reservar, con la misma claridad que el precio.</span>
+                    </div>
+                </article>
+                <article class="home-hero__trust-item">
+                    <span class="home-hero__trust-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 6h18v12H3V6Zm2 2v8h14V8H5Zm2 2h6v2H7v-2Zm0 3h10v2H7v-2Z"></path>
+                        </svg>
+                    </span>
+                    <div>
+                        <strong>Financiación transparente</strong>
+                        <span>Cuotas y condiciones explicadas con números claros antes de firmar.</span>
+                    </div>
+                </article>
             </div>
         </div>
-
-        <button class="home-hero__scroll" type="button" aria-label="Ver más contenido">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 16.5 5.5 10l1.4-1.4 5.1 5.1 5.1-5.1 1.4 1.4-6.5 6.5Z"></path>
-            </svg>
-        </button>
     </section>
 
     <!-- SERVICIOS DESTACADOS -->

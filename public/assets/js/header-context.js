@@ -6,6 +6,7 @@ function initializeHeaderContextSwitcher() {
 	const navigation = switcher?.querySelector(".site-navigation");
 
 	if (!body || !header || !switcher || !title || !navigation) return;
+	if (body.classList.contains("home") || body.classList.contains("front-page")) return;
 
 	const navigationFocusables = Array.from(
 		navigation.querySelectorAll("a, button, input, select, textarea, [tabindex]"),

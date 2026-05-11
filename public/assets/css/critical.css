@@ -218,7 +218,7 @@ body.header-oscuro header.site-header {
   text-decoration:none; */
   color:var(--header-logo);
   transition:transform .14s ease,color .14s ease,opacity .14s ease;
-  max-width: 208px;
+  max-width: none;
 }
 
 .site-header__logo svg{
@@ -240,8 +240,8 @@ body.header-oscuro header.site-header {
 .site-header__logo-img{
   display:block;
   width:auto;
-  height:42px;
-  max-width: min(100%, 400px);
+  height:60px;
+  max-width: none;
   object-fit: contain;
 }
 
@@ -712,7 +712,7 @@ width: fit-content;
 }
 
 .site-header__logo {
-  max-width: 300px;
+  max-width: none;
 }
 
 }

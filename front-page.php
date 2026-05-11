@@ -84,6 +84,7 @@ if ($hero_query->have_posts()) {
         // Logo marca
         $logo_marca_white_id = $marca_term ? get_field('logo_marca_white', $marca_term) : null;
         $logo_marca_id       = $marca_term ? get_field('logo_marca', $marca_term) : null;
+        $logo_marca_shape    = $marca_term ? sanitize_html_class((string) get_field('forma_del_logo', $marca_term)) : '';
 
         $logo_url = '';
         if (!empty($logo_marca_white_id)) {
@@ -103,6 +104,7 @@ if ($hero_query->have_posts()) {
             'img'     => $image_url,
             'imgAlt'  => $image_alt,
             'logo'    => $logo_url,
+            'logoShape' => $logo_marca_shape ?: 'default',
             'imageId' => $image_id,
         ];
     }
@@ -197,7 +199,8 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
                             <?php $active_car = $hero_cars[0] ?? null; ?>
                             <div class="home-hero__vehicle-panel" aria-live="polite" aria-atomic="true">
                                 <div class="home-hero__vehicle-main">
-                                    <div class="home-hero__vehicle-logo" aria-hidden="true">
+                                    <?php $active_logo_shape = !empty($active_car['logoShape']) ? sanitize_html_class((string) $active_car['logoShape']) : 'default'; ?>
+                                    <div class="home-hero__vehicle-logo home-hero__vehicle-logo--<?php echo esc_attr($active_logo_shape); ?>" aria-hidden="true">
                                         <?php if (!empty($active_car['logo'])) : ?>
                                             <img src="<?php echo esc_url($active_car['logo']); ?>" alt="" loading="lazy" decoding="async">
                                         <?php else : ?>
@@ -252,8 +255,12 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
             <div class="home-hero__trust" aria-label="Compromisos de Escarpa Motor">
                 <article class="home-hero__trust-item">
                     <span class="home-hero__trust-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2Z"></path>
+                        <svg viewBox="0 0 64 64">
+                            <path d="M19 9h23l9 9v36H19z"></path>
+                            <path d="M42 9v10h10"></path>
+                            <path d="M27 30h18"></path>
+                            <path d="M27 39h10"></path>
+                            <path class="home-hero__trust-check" d="m18 39 6 6 13-15"></path>
                         </svg>
                     </span>
                     <div>
@@ -263,8 +270,9 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
                 </article>
                 <article class="home-hero__trust-item">
                     <span class="home-hero__trust-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M12 2 4 5v6c0 5.1 3.4 9.9 8 11 4.6-1.1 8-5.9 8-11V5l-8-3Zm0 17.9C8.5 18.8 6 15 6 11V6.3l6-2.25 6 2.25V11c0 4-2.5 7.8-6 8.9Z"></path>
+                        <svg viewBox="0 0 64 64">
+                            <path d="M32 8 14 15v14c0 12 7.6 22.6 18 27 10.4-4.4 18-15 18-27V15z"></path>
+                            <path class="home-hero__trust-check" d="m23 32 6 6 13-15"></path>
                         </svg>
                     </span>
                     <div>
@@ -274,8 +282,12 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
                 </article>
                 <article class="home-hero__trust-item">
                     <span class="home-hero__trust-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M3 6h18v12H3V6Zm2 2v8h14V8H5Zm2 2h6v2H7v-2Zm0 3h10v2H7v-2Z"></path>
+                        <svg viewBox="0 0 64 64">
+                            <path d="M10 20h44v28H10z"></path>
+                            <path d="M16 28h14"></path>
+                            <path d="M16 38h22"></path>
+                            <path d="M44 29c4 0 7 3 7 7s-3 7-7 7-7-3-7-7 3-7 7-7z"></path>
+                            <path class="home-hero__trust-check" d="m40 36 3 3 6-7"></path>
                         </svg>
                     </span>
                     <div>

@@ -2528,6 +2528,13 @@ body .is-layout-flex {
 
     @media (min-width:1360px) {
 
+nav.site-navigation {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+}
+
 .footer-section__item--mapa {
   grid-column: 8 / 13;
     grid-row: 1 / 3;

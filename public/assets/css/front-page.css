@@ -809,43 +809,38 @@
 .home-hero.home-hero--front {
   --home-hero-radius: 0.75rem;
   --home-hero-shadow: 0 1rem 2.2rem color-mix(in srgb, var(--primary10) 11%, transparent);
-  background: linear-gradient(116deg, color-mix(in srgb, var(--primary95) 78%, var(--neutral99)) 0%, var(--neutral99) 46%, var(--neutral97) 100%);
+  background: #fff;
 }
 
 .home-hero.home-hero--front::before {
-  display: block;
+  display: none;
 }
 
 .home-hero__wash {
-  border-radius: 0;
-  filter: none;
-  will-change: transform, opacity;
-}
-
-.home-hero__wash--primary {
-  top: 0;
-  right: -12vw;
-  width: min(64rem, 68vw);
-  height: 100%;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--primary40) 14%, transparent), transparent 68%);
-  clip-path: polygon(22% 0, 100% 0, 78% 100%, 0 100%);
-  opacity: 0.9;
-  animation: homeHeroWashPrimary 22s ease-in-out infinite alternate;
-}
-
-.home-hero__wash--accent {
-  bottom: 0;
-  left: 0;
-  width: min(52rem, 72vw);
-  height: 42%;
-  background: linear-gradient(35deg, color-mix(in srgb, var(--color-accent) 18%, transparent), transparent 72%);
-  clip-path: polygon(0 36%, 82% 0, 100% 100%, 0 100%);
-  opacity: 0.9;
-  animation: homeHeroWashAccent 24s ease-in-out infinite alternate;
+  display: none;
 }
 
 .home-hero__mark {
   display: block;
+  opacity: 0.045;
+  filter: blur(0.2px);
+}
+
+.home-hero__mark--one {
+  top: 5%;
+  right: -1vw;
+  width: clamp(20rem, 34vw, 42rem);
+  color: var(--primary30);
+  animation: homeHeroMarkFloatOne 28s ease-in-out infinite alternate;
+}
+
+.home-hero__mark--two {
+  left: -4rem;
+  bottom: 2%;
+  width: clamp(14rem, 24vw, 30rem);
+  color: var(--color-accent);
+  opacity: 0.04;
+  animation: homeHeroMarkFloatTwo 32s ease-in-out infinite alternate;
 }
 
 .home-hero__container {
@@ -867,7 +862,7 @@
 
 .home-hero__title {
   max-width: 20ch;
-  font-size: clamp(2.55rem, 6.15vw, 6.8rem);
+  font-size: clamp(2.45rem, 5.35vw, 5.9rem);
   line-height: 0.96;
 }
 
@@ -924,7 +919,7 @@
 }
 
 .home-hero__viewport {
-  min-height: clamp(23rem, 34vw, 34rem);
+  min-height: clamp(21rem, 30vw, 30rem);
 }
 
 .home-hero__slide {
@@ -1010,6 +1005,8 @@
 }
 
 .home-hero__vehicle-side {
+  display: grid;
+  gap: 0.75rem;
   justify-content: flex-end;
 }
 
@@ -1049,13 +1046,13 @@
   min-height: 0;
   padding: 0;
   overflow: hidden;
-  border-radius: 0;
-  background: transparent;
-  color: color-mix(in srgb, var(--neutral99) 88%, transparent);
-  box-shadow: none;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: var(--neutral99);
+  box-shadow: 0 0.75rem 1.4rem color-mix(in srgb, var(--color-accent) 18%, transparent);
   opacity: 0;
   transform: translateY(0.55rem);
-  transition: max-height 0.24s ease, padding-top 0.24s ease, opacity 0.24s ease, transform 0.24s ease, color 0.24s ease;
+  transition: max-height 0.24s ease, padding 0.24s ease, opacity 0.24s ease, transform 0.24s ease, background-color 0.24s ease;
 }
 
 .home-hero__gallery:hover .home-hero__vehicle-price-wrap,
@@ -1066,8 +1063,8 @@
 
 .home-hero__gallery:hover .home-hero__vehicle-link,
 .home-hero__gallery:focus-within .home-hero__vehicle-link {
-  max-height: 2rem;
-  padding-top: 0.2rem;
+  max-height: 3rem;
+  padding: 0.75rem 1rem;
   opacity: 1;
   transform: translateY(0);
 }
@@ -1153,7 +1150,14 @@
   align-items: center;
   grid-template-columns: auto minmax(0, 1fr);
   padding: clamp(1.15rem, 1.9vw, 2rem);
-  background: color-mix(in srgb, var(--neutral99) 82%, transparent);
+  border-color: color-mix(in srgb, var(--primary40) 18%, var(--color-border));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--primary98) 86%, transparent), transparent 72%),
+    var(--neutral99);
+  color: inherit;
+  text-decoration: none;
+  box-shadow: 0 1rem 2rem color-mix(in srgb, var(--primary10) 6%, transparent);
+  transition: transform 0.24s ease, border-color 0.24s ease, background-color 0.24s ease, box-shadow 0.24s ease;
 }
 
 .home-hero__trust-icon {
@@ -1193,6 +1197,13 @@
   transform: translateY(-0.2rem) scale(1.03);
 }
 
+.home-hero__trust-item:hover,
+.home-hero__trust-item:focus-visible {
+  border-color: color-mix(in srgb, var(--color-accent) 32%, var(--primary80));
+  box-shadow: 0 1.15rem 2.25rem color-mix(in srgb, var(--primary10) 9%, transparent);
+  transform: translateY(-0.18rem);
+}
+
 .home-hero__trust-item:hover .home-hero__trust-icon svg,
 .home-hero__trust-item:focus-within .home-hero__trust-icon svg {
   transform: rotate(-2deg) scale(1.06);
@@ -1220,19 +1231,20 @@
 .featured-services__header {
   display: block;
   max-width: 58rem;
-  margin: 0 0 clamp(2rem, 4vw, 3.75rem);
-  text-align: left;
+  margin: 0 auto clamp(2rem, 4vw, 3.75rem);
+  text-align: center;
 }
 
 .featured-services__title {
   max-width: 22ch;
+  margin-inline: auto;
   font-size: clamp(2rem, 3.1vw, 3.4rem);
   line-height: 1.04;
 }
 
 .featured-services__description {
   max-width: 44rem;
-  margin: 1rem 0 0;
+  margin: 1rem auto 0;
   font-size: clamp(1rem, 1.15vw, 1.18rem);
 }
 
@@ -1296,23 +1308,37 @@
   justify-content: flex-end;
 }
 
-@keyframes homeHeroWashPrimary {
+@keyframes homeHeroMarkFloatOne {
   0% {
-    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.035;
+    transform: translate3d(0, 0, 0) rotate(-12deg) scale(0.96);
+  }
+
+  45% {
+    opacity: 0.062;
+    transform: translate3d(-2vw, 1.2vh, 0) rotate(-8deg) scale(1.05);
   }
 
   100% {
-    transform: translate3d(-1.5vw, 1vh, 0) scale(1.04);
+    opacity: 0.045;
+    transform: translate3d(1vw, -1vh, 0) rotate(-10deg) scale(1.01);
   }
 }
 
-@keyframes homeHeroWashAccent {
+@keyframes homeHeroMarkFloatTwo {
   0% {
-    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.028;
+    transform: translate3d(0, 0, 0) rotate(17deg) scale(1);
+  }
+
+  50% {
+    opacity: 0.055;
+    transform: translate3d(2.2vw, -1.4vh, 0) rotate(12deg) scale(1.1);
   }
 
   100% {
-    transform: translate3d(1.8vw, -1vh, 0) scale(1.06);
+    opacity: 0.036;
+    transform: translate3d(-1vw, 1vh, 0) rotate(15deg) scale(0.94);
   }
 }
 

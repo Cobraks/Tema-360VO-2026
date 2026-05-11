@@ -119,6 +119,12 @@ if (!$stock_url) {
 
 $sell_car_page = get_page_by_path('vendemos-tu-coche');
 $sell_car_url = $sell_car_page ? get_permalink($sell_car_page) : home_url('/vendemos-tu-coche/');
+$method_page = get_page_by_path('metodo-escarpa');
+$method_url = $method_page ? get_permalink($method_page) : home_url('/metodo-escarpa/');
+$warranty_page = get_page_by_path('coches-de-segunda-mano-con-garantia');
+$warranty_url = $warranty_page ? get_permalink($warranty_page) : home_url('/coches-de-segunda-mano-con-garantia/');
+$finance_page = get_page_by_path('coches-con-financiacion-segunda-mano');
+$finance_url = $finance_page ? get_permalink($finance_page) : home_url('/coches-con-financiacion-segunda-mano/');
 
 $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7l4-9.3c0.1-0.2,0-0.4-0.2-0.5c0,0-0.1,0-0.1,0H24.7c-0.2,0-0.4-0.2-0.4-0.4c0-0.1,0-0.1,0-0.2l1.6-3c0.2-0.3,0.5-0.5,0.9-0.5h17.9c3.1,0,5.9-1.8,7.1-4.7l4-9.2c0.1-0.2,0-0.4-0.2-0.5c0,0-0.1,0-0.1,0H13.3c-0.2,0-0.4-0.2-0.4-0.4c0-0.1,0-0.1,0-0.2l1.6-3c0.2-0.3,0.5-0.5,0.9-0.5h37.4c3.1,0,5.9-1.9,7.1-4.7l4.2-9.7c0.1-0.2,0-0.4-0.2-0.5c0,0-0.1,0-0.1,0h-63c-0.2,0-0.4,0.2-0.4,0.4c0,0,0,0.1,0,0.1L22.7,61.8z';
 ?>
@@ -220,13 +226,13 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
                                         <?php else : ?>
                                             <strong class="home-hero__vehicle-price home-hero__vehicle-price--fallback">Financiación a medida</strong>
                                         <?php endif; ?>
-                                        <a class="home-hero__vehicle-link" href="<?php echo esc_url($active_car['link'] ?? $stock_url); ?>">
-                                            <span>Ver ficha</span>
-                                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                                                <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3ZM5 5h6v2H7v10h10v-4h2v6H5V5Z"></path>
-                                            </svg>
-                                        </a>
                                     </div>
+                                    <a class="home-hero__vehicle-link" href="<?php echo esc_url($active_car['link'] ?? $stock_url); ?>">
+                                        <span>Ver ficha</span>
+                                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                                            <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3ZM5 5h6v2H7v10h10v-4h2v6H5V5Z"></path>
+                                        </svg>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -253,7 +259,7 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
             </div>
 
             <div class="home-hero__trust" aria-label="Compromisos de Escarpa Motor">
-                <article class="home-hero__trust-item">
+                <a class="home-hero__trust-item" href="<?php echo esc_url($method_url); ?>">
                     <span class="home-hero__trust-icon" aria-hidden="true">
                         <svg viewBox="0 0 64 64">
                             <path d="M19 9h23l9 9v36H19z"></path>
@@ -267,8 +273,8 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
                         <strong>Revisión documentada</strong>
                         <span>Estado, historial y preparación visibles desde el primer contacto.</span>
                     </div>
-                </article>
-                <article class="home-hero__trust-item">
+                </a>
+                <a class="home-hero__trust-item" href="<?php echo esc_url($warranty_url); ?>">
                     <span class="home-hero__trust-icon" aria-hidden="true">
                         <svg viewBox="0 0 64 64">
                             <path d="M32 8 14 15v14c0 12 7.6 22.6 18 27 10.4-4.4 18-15 18-27V15z"></path>
@@ -279,8 +285,8 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
                         <strong>Garantía clara</strong>
                         <span>Cobertura explicada antes de reservar, con la misma claridad que el precio.</span>
                     </div>
-                </article>
-                <article class="home-hero__trust-item">
+                </a>
+                <a class="home-hero__trust-item" href="<?php echo esc_url($finance_url); ?>">
                     <span class="home-hero__trust-icon" aria-hidden="true">
                         <svg viewBox="0 0 64 64">
                             <path d="M10 20h44v28H10z"></path>
@@ -294,7 +300,7 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
                         <strong>Financiación transparente</strong>
                         <span>Cuotas y condiciones explicadas con números claros antes de firmar.</span>
                     </div>
-                </article>
+                </a>
             </div>
         </div>
     </section>

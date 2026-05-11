@@ -200,6 +200,7 @@ body.header-oscuro.header-context-active .site-header__context-subtitle {
 
 @media (min-width: 1080px) {
 	.site-header__context-switcher {
+		position: static;
 		justify-content: center;
 	}
 

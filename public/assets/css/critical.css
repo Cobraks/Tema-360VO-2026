@@ -552,10 +552,10 @@ body.header-oscuro header.site-header {
     margin: 0;
     display: block;
     height: 100%;
-    /* top: 50%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    position: absolute; */
+    position: absolute;
   }
 
   .site-header .site-navigation ul {

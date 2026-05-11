@@ -2392,6 +2392,13 @@ max-width: 320px;
 
   @media (min-width:1080px) { 
     .bottom-bar {display:flex;}
+
+    .site-header .site-navigation {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
     
 
  .site-header .site-navigation ul li a:hover {
@@ -2656,4 +2663,126 @@ max-width: 400px;
     .marcas__logo {
       height: 8rem;
     } /*??*/
+}
+
+.section--servicios.section--claro {
+  background: linear-gradient(180deg, var(--neutral99), color-mix(in srgb, var(--primary98) 72%, var(--neutral99)));
+}
+
+.section--servicios .section__info {
+  max-width: 780px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.section--servicios .section__title {
+  color: var(--primary15);
+  text-wrap: balance;
+}
+
+.section--servicios .section__intro {
+  color: var(--color-text-2);
+  text-wrap: pretty;
+}
+
+.section--servicios .section__items--clasico.section__items--count-6 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1rem, 2vw, 1.5rem);
+  width: 100%;
+}
+
+.section--servicios .section__items--clasico.section__items--count-6 .section__item--borde {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 0.9rem;
+  min-width: 0;
+  min-height: 100%;
+  padding: clamp(1.25rem, 2vw, 2rem);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--primary40) 14%, var(--color-border));
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--neutral99) 94%, var(--primary98));
+  box-shadow: none;
+  transition: transform 0.22s ease, border-color 0.22s ease, background-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.section--servicios .section__items--clasico.section__items--count-6 .section__item--borde::after {
+  content: "";
+  position: absolute;
+  right: -18%;
+  bottom: -22%;
+  width: 58%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--primary50) 7%, transparent);
+  transition: transform 0.28s ease, opacity 0.28s ease;
+}
+
+.section--servicios .section__items--clasico.section__items--count-6 .section__item--borde:hover {
+  border-color: color-mix(in srgb, var(--color-accent) 26%, var(--primary80));
+  background: var(--neutral99);
+  box-shadow: 0 1rem 2rem color-mix(in srgb, var(--primary10) 8%, transparent);
+  transform: translateY(-0.18rem);
+}
+
+.section--servicios .section__items--clasico.section__items--count-6 .section__item--borde:hover::after {
+  opacity: 0.82;
+  transform: scale(1.14);
+}
+
+.section--servicios .section__items--clasico.section__items--count-6 .servicios__icon {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  width: clamp(3.25rem, 5vw, 5rem);
+  height: clamp(3.25rem, 5vw, 5rem);
+  padding: 0.85rem;
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--primary95) 82%, var(--neutral99));
+  color: var(--primary25);
+  fill: currentColor;
+  transition: transform 0.22s ease, color 0.22s ease, background-color 0.22s ease;
+}
+
+.section--servicios .section__items--clasico.section__items--count-6 .servicios__icon path {
+  fill: currentColor;
+}
+
+.section--servicios .section__items--clasico.section__items--count-6 .section__item--borde:hover .servicios__icon {
+  color: var(--primary10);
+  background: color-mix(in srgb, var(--color-accent) 12%, var(--primary95));
+  transform: translateY(-0.12rem) rotate(-2deg) scale(1.04);
+}
+
+.section--servicios .section__items--clasico.section__items--count-6 .section__item-title {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  color: var(--primary15);
+  font-size: clamp(1.15rem, 1.35vw, 1.45rem);
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+.section--servicios .section__items--clasico.section__items--count-6 .section__item-info {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  color: var(--color-text-2);
+  line-height: 1.58;
+  text-wrap: pretty;
+}
+
+@media (min-width: 700px) {
+  .section--servicios .section__items--clasico.section__items--count-6 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1120px) {
+  .section--servicios .section__items--clasico.section__items--count-6 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }

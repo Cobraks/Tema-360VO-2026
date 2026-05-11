@@ -195,7 +195,7 @@ $header_context = apply_filters('th360_header_context', $header_context, get_que
 /**
  * ---------------------------------------------------------
  * Logo SVG inline desde ACF Options (logo_svg)
- * Prioridad: logo_svg (ACF) > custom_logo (WP) > texto
+ * Prioridad: custom_logo (WP) > logo_svg (ACF) > texto
  * ---------------------------------------------------------
  */
 if (!function_exists('theme360_get_logo_svg_option')) {
@@ -343,16 +343,7 @@ $logo_svg_safe = ($logo_svg_raw !== '') ? theme360_prepare_inline_logo_svg($logo
                 <span class="menu-button-line"></span>
             </button>
 
-            <?php if ($logo_svg_safe !== '') : ?>
-                <a
-                    href="<?php echo esc_url(home_url('/')); ?>"
-                    class="site-header__logo"
-                    rel="home"
-                    aria-label="<?php echo esc_attr($site_name); ?>">
-                    <?php echo $logo_svg_safe; ?>
-                </a>
-
-            <?php elseif (has_custom_logo() && is_array($logo) && !empty($logo[0])) : ?>
+            <?php if (has_custom_logo() && is_array($logo) && !empty($logo[0])) : ?>
                 <a
                     href="<?php echo esc_url(home_url('/')); ?>"
                     class="site-header__logo"
@@ -367,6 +358,15 @@ $logo_svg_safe = ($logo_svg_raw !== '') ? theme360_prepare_inline_logo_svg($logo
                         decoding="async"
                         loading="eager"
                         fetchpriority="high">
+                </a>
+
+            <?php elseif ($logo_svg_safe !== '') : ?>
+                <a
+                    href="<?php echo esc_url(home_url('/')); ?>"
+                    class="site-header__logo"
+                    rel="home"
+                    aria-label="<?php echo esc_attr($site_name); ?>">
+                    <?php echo $logo_svg_safe; ?>
                 </a>
 
             <?php else : ?>
@@ -453,15 +453,7 @@ $logo_svg_safe = ($logo_svg_raw !== '') ? theme360_prepare_inline_logo_svg($logo
 
     <nav class="mobile-nav initially-hidden">
         <div class="mobile-nav-header wrapper-padding flex items-center justify-between">
-            <?php if ($logo_svg_safe !== '') : ?>
-                <a
-                    href="<?php echo esc_url(home_url('/')); ?>"
-                    class="menu-mobile__logo site-header__logo--mobile"
-                    rel="home"
-                    aria-label="<?php echo esc_attr($site_name); ?>">
-                    <?php echo $logo_svg_safe; ?>
-                </a>
-            <?php elseif (has_custom_logo() && is_array($logo) && !empty($logo[0])) : ?>
+            <?php if (has_custom_logo() && is_array($logo) && !empty($logo[0])) : ?>
                 <a
                     href="<?php echo esc_url(home_url('/')); ?>"
                     class="menu-mobile__logo site-header__logo--mobile"
@@ -475,6 +467,14 @@ $logo_svg_safe = ($logo_svg_raw !== '') ? theme360_prepare_inline_logo_svg($logo
                         class="site-header__logo-img site-header__logo-img--mobile"
                         decoding="async"
                         loading="lazy">
+                </a>
+            <?php elseif ($logo_svg_safe !== '') : ?>
+                <a
+                    href="<?php echo esc_url(home_url('/')); ?>"
+                    class="menu-mobile__logo site-header__logo--mobile"
+                    rel="home"
+                    aria-label="<?php echo esc_attr($site_name); ?>">
+                    <?php echo $logo_svg_safe; ?>
                 </a>
             <?php else : ?>
                 <a

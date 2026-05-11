@@ -177,9 +177,7 @@ h1,
 .site-header .current-menu-ancestor > a .item-navegacion {
   color: var(--header-link-active);
   font-weight: 500; /* fijo: NO usar 600 */
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 6px;
+  text-decoration: none;
 }
 
 /* Si dentro llevas spans adicionales, garantizamos consistencia */
@@ -187,9 +185,7 @@ h1,
 .site-header .current-menu-ancestor > a .item-navegacion span {
   color: inherit;
   font-weight: inherit;
-  text-decoration: inherit;
-  text-decoration-thickness: inherit;
-  text-underline-offset: inherit;
+  text-decoration: none;
 }
 
 /* Subitem seleccionado dentro de un ancestor (mantiene el mismo estilo) */
@@ -197,9 +193,7 @@ h1,
 .site-header .current-menu-ancestor .sub-menu .current-menu-item > a .item-navegacion span {
   color: var(--header-link-active);
   font-weight: 500;
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 6px;
+  text-decoration: none;
 }
 
 /* Subitems NO seleccionados dentro del dropdown:
@@ -224,7 +218,7 @@ h1,
   height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-bottom: 10px solid var(--breadcrumbs-bg);
+  border-bottom: 10px solid var(--primary50);
 }
 
 /* Ocultar triángulo en subitems (evita artefactos en dropdown) */
@@ -337,8 +331,13 @@ html:has(body.header-oscuro) {
 
 /*Breadcrumbs*/
 
+.nav-breadcrumb a {
+  text-decoration: none;
+}
+
 .nav-breadcrumb a:hover {
   color: var(--breadcrumbs-link-hover);
+  text-decoration: none;
 }
 
 
@@ -2420,9 +2419,7 @@ max-width: 320px;
   /* text-decoration: underline; */
   transition: all .3s ease-in ;
   color: var(--header-link-hover);
-  text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 6px;
+  text-decoration: none;
 
 }
 

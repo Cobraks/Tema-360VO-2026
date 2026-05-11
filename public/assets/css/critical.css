@@ -237,15 +237,17 @@ body.header-oscuro header.site-header {
   fill:currentColor;
 }
 
-/* .site-header__logo-img{
+.site-header__logo-img{
   display:block;
   width:auto;
   height:42px;
+  max-width: min(100%, 400px);
+  object-fit: contain;
 }
 
 .site-header__logo-img--mobile{
   height:36px;
-} */
+}
 
 @media (hover:hover) and (pointer:fine){
   .site-header__logo:hover{
@@ -352,7 +354,7 @@ body.header-oscuro header.site-header {
 .nav-breadcrumb a {
   color: var(--color_breadcrumbs);
   width: 100%;
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .nav-breadcrumb li {

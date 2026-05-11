@@ -31,6 +31,8 @@ class E360VO_AssetMinifier
             ['360vo-theme-style', '/style.css', '/style.min.css', 'css'],
             ['360vo-funciones-tema', '/public/assets/js/funciones_tema.js', '/public/assets/js/funciones_tema.min.js', 'js'],
             ['360vo-critical', '/public/assets/css/critical.css', '/public/assets/css/critical.min.css', 'css'],
+            ['360vo-front-page', '/public/assets/css/front-page.css', '/public/assets/css/front-page.min.css', 'css'],
+            ['360vo-front-page-js', '/public/assets/js/front-page.js', '/public/assets/js/front-page.min.js', 'js'],
             ['360vo-pages', '/public/assets/css/pages.css', '/public/assets/css/pages.min.css', 'css'],
             ['360vo-logged-in', '/public/assets/css/logged-in.css', '/public/assets/css/logged-in.min.css', 'css'],
             ['360vo-blog', '/public/assets/css/blog.css', '/public/assets/css/blog.min.css', 'css'],

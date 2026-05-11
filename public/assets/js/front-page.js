@@ -11,16 +11,13 @@
 	const prevButton = gallery.querySelector(".home-hero__control--prev");
 	const nextButton = gallery.querySelector(".home-hero__control--next");
 	const toggleButton = gallery.querySelector(".home-hero__control--toggle");
-	const dots = Array.from(gallery.querySelectorAll(".home-hero__dot"));
 	const panel = gallery.querySelector(".home-hero__vehicle-panel");
 	const logoBox = gallery.querySelector(".home-hero__vehicle-logo");
 	const titleEl = gallery.querySelector(".home-hero__vehicle-title");
 	const subtitleEl = gallery.querySelector(".home-hero__vehicle-subtitle");
 	const priceEl = gallery.querySelector(".home-hero__vehicle-price");
-	const priceLabelEl = gallery.querySelector(".home-hero__vehicle-price-label");
 	const linkEl = gallery.querySelector(".home-hero__vehicle-link");
 	const kickerEl = gallery.querySelector(".home-hero__vehicle-kicker");
-	const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 	let cars = [];
 	try {
@@ -33,7 +30,7 @@
 	const canRotate = slideCount > 1;
 	let currentIndex = 0;
 	let timer = null;
-	let isPaused = prefersReducedMotion.matches;
+	let isPaused = false;
 	let isTransitioning = false;
 
 	function setText(element, value) {
@@ -52,7 +49,24 @@
 	}
 
 	function getMonthlyText(car) {
-		return car && car.cuota ? "desde " + car.cuota + " al mes" : "Financiación a medida";
+		return car && car.cuota ? car.cuota : "Financiación a medida";
+	}
+
+	function setMonthlyPrice(element, value) {
+		if (!element) return;
+		element.textContent = "";
+		element.classList.toggle("home-hero__vehicle-price--fallback", !value || value === "Financiación a medida");
+
+		if (!value || value === "Financiación a medida") {
+			element.textContent = "Financiación a medida";
+			return;
+		}
+
+		const amount = document.createElement("span");
+		amount.textContent = value;
+		const suffix = document.createElement("small");
+		suffix.textContent = "/mes";
+		element.append(amount, suffix);
 	}
 
 	function renderLogo(car) {
@@ -82,8 +96,7 @@
 		setText(kickerEl, "");
 		setText(titleEl, getVehicleTitle(car));
 		setText(subtitleEl, car.version || "Vehículo revisado por Escarpa Motor");
-		setText(priceLabelEl, "Cuota mensual");
-		setText(priceEl, getMonthlyText(car));
+		setMonthlyPrice(priceEl, getMonthlyText(car));
 
 		if (linkEl) {
 			const fallbackHref = linkEl.getAttribute("href") || "/";
@@ -91,12 +104,6 @@
 			linkEl.setAttribute("aria-label", car.link ? "Ver ficha de " + getVehicleTitle(car) : "Ver vehículos disponibles");
 		}
 
-	}
-
-	function updateControls(index) {
-		dots.forEach((dot, dotIndex) => {
-			dot.setAttribute("aria-current", dotIndex === index ? "true" : "false");
-		});
 	}
 
 	function updateToggleButton() {
@@ -138,23 +145,22 @@
 		nextSlide.setAttribute("aria-hidden", "false");
 
 		currentIndex = normalizedIndex;
-		updateControls(currentIndex);
 		updatePanel(currentIndex);
 		preloadNextImage(currentIndex);
 
 		window.setTimeout(function () {
 			if (previousSlide) previousSlide.classList.remove("is-exiting");
 			isTransitioning = false;
-		}, prefersReducedMotion.matches ? 20 : 740);
+		}, 740);
 	}
 
 	function startAuto() {
 		clearTimer();
-		if (!canRotate || isPaused || prefersReducedMotion.matches) return;
+		if (!canRotate || isPaused) return;
 		timer = window.setTimeout(function () {
 			setActiveSlide(currentIndex + 1);
 			startAuto();
-		}, 6500);
+		}, 6200);
 	}
 
 	function pauseAuto(manual) {
@@ -166,7 +172,6 @@
 	}
 
 	function resumeAuto(manual) {
-		if (prefersReducedMotion.matches) return;
 		if (manual) {
 			isPaused = false;
 			updateToggleButton();
@@ -184,8 +189,6 @@
 			[prevButton, nextButton, toggleButton].forEach((button) => {
 				if (button) button.hidden = true;
 			});
-			const dotsWrap = gallery.querySelector(".home-hero__dots");
-			if (dotsWrap) dotsWrap.hidden = true;
 			return;
 		}
 
@@ -210,14 +213,6 @@
 				}
 			});
 		}
-
-		dots.forEach((dot) => {
-			dot.addEventListener("click", function () {
-				const index = Number.parseInt(dot.getAttribute("data-dot-index"), 10);
-				if (Number.isNaN(index)) return;
-				goTo(index);
-			});
-		});
 
 		if (viewport) {
 			viewport.addEventListener("keydown", function (event) {
@@ -259,7 +254,6 @@
 		});
 
 		updatePanel(0);
-		updateControls(0);
 		updateToggleButton();
 		setupControls();
 		startAuto();
@@ -278,22 +272,6 @@
 		}
 		startAuto();
 	});
-
-	function handleMotionPreferenceChange() {
-		isPaused = prefersReducedMotion.matches;
-		updateToggleButton();
-		if (isPaused) {
-			clearTimer();
-		} else {
-			startAuto();
-		}
-	}
-
-	if (typeof prefersReducedMotion.addEventListener === "function") {
-		prefersReducedMotion.addEventListener("change", handleMotionPreferenceChange);
-	} else if (typeof prefersReducedMotion.addListener === "function") {
-		prefersReducedMotion.addListener(handleMotionPreferenceChange);
-	}
 
 	window.addEventListener("pagehide", clearTimer);
 

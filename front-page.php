@@ -115,17 +115,8 @@ if (!$stock_url) {
     $stock_url = home_url('/coches-de-segunda-mano/');
 }
 
-$finance_page = get_page_by_path('coches-con-financiacion-segunda-mano');
-$finance_url = $finance_page ? get_permalink($finance_page) : home_url('/coches-con-financiacion-segunda-mano/');
-
-$phone_raw = function_exists('theme360_ctx_get') ? (string) theme360_ctx_get('phone_primary', '') : '';
-$phone_e164_raw = function_exists('theme360_ctx_get') ? (string) theme360_ctx_get('phone_e164', '') : '';
-$phone_digits = preg_replace('/\D+/', '', $phone_e164_raw ?: $phone_raw);
-if ($phone_digits && strlen($phone_digits) === 9) {
-    $phone_digits = '34' . $phone_digits;
-}
-$whatsapp_url = $phone_digits ? 'https://wa.me/' . $phone_digits . '?text=' . rawurlencode('Hola Escarpa Motor, quiero informacion sobre un coche de segunda mano.') : '';
-$whatsapp_cta_url = $whatsapp_url ?: ($phone_digits ? 'tel:+' . $phone_digits : $stock_url);
+$sell_car_page = get_page_by_path('vendemos-tu-coche');
+$sell_car_url = $sell_car_page ? get_permalink($sell_car_page) : home_url('/vendemos-tu-coche/');
 
 $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7l4-9.3c0.1-0.2,0-0.4-0.2-0.5c0,0-0.1,0-0.1,0H24.7c-0.2,0-0.4-0.2-0.4-0.4c0-0.1,0-0.1,0-0.2l1.6-3c0.2-0.3,0.5-0.5,0.9-0.5h17.9c3.1,0,5.9-1.8,7.1-4.7l4-9.2c0.1-0.2,0-0.4-0.2-0.5c0,0-0.1,0-0.1,0H13.3c-0.2,0-0.4-0.2-0.4-0.4c0-0.1,0-0.1,0-0.2l1.6-3c0.2-0.3,0.5-0.5,0.9-0.5h37.4c3.1,0,5.9-1.9,7.1-4.7l4.2-9.7c0.1-0.2,0-0.4-0.2-0.5c0,0-0.1,0-0.1,0h-63c-0.2,0-0.4,0.2-0.4,0.4c0,0,0,0.1,0,0.1L22.7,61.8z';
 ?>
@@ -158,17 +149,14 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
                 </div>
 
                 <div class="home-hero__actions" aria-label="Acciones principales">
+                    <a class="home-hero__button home-hero__button--secondary" href="<?php echo esc_url($sell_car_url); ?>">
+                        <span>Vender tu coche</span>
+                    </a>
                     <a class="home-hero__button home-hero__button--primary" href="<?php echo esc_url($stock_url); ?>">
                         <span>Ver coches disponibles</span>
                         <svg viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M5 12h12.17l-4.58-4.59L14 6l7 7-7 7-1.41-1.41L17.17 14H5v-2Z"></path>
                         </svg>
-                    </a>
-                    <a class="home-hero__button home-hero__button--secondary" href="<?php echo esc_url($whatsapp_cta_url); ?>"<?php echo $whatsapp_url ? ' target="_blank" rel="noopener noreferrer"' : ''; ?>>
-                        <span>Hablar por WhatsApp</span>
-                    </a>
-                    <a class="home-hero__text-link" href="<?php echo esc_url($finance_url); ?>">
-                        Calcular financiación
                     </a>
                 </div>
             </div>
@@ -224,15 +212,18 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
 
                                 <div class="home-hero__vehicle-side">
                                     <div class="home-hero__vehicle-price-wrap">
-                                        <span class="home-hero__vehicle-price-label">Cuota mensual</span>
-                                        <strong class="home-hero__vehicle-price"><?php echo !empty($active_car['cuota']) ? esc_html('desde ' . $active_car['cuota'] . ' al mes') : 'Financiación a medida'; ?></strong>
+                                        <?php if (!empty($active_car['cuota'])) : ?>
+                                            <strong class="home-hero__vehicle-price"><span><?php echo esc_html($active_car['cuota']); ?></span><small>/mes</small></strong>
+                                        <?php else : ?>
+                                            <strong class="home-hero__vehicle-price home-hero__vehicle-price--fallback">Financiación a medida</strong>
+                                        <?php endif; ?>
+                                        <a class="home-hero__vehicle-link" href="<?php echo esc_url($active_car['link'] ?? $stock_url); ?>">
+                                            <span>Ver ficha</span>
+                                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                                <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3ZM5 5h6v2H7v10h10v-4h2v6H5V5Z"></path>
+                                            </svg>
+                                        </a>
                                     </div>
-                                    <a class="home-hero__vehicle-link" href="<?php echo esc_url($active_car['link'] ?? $stock_url); ?>">
-                                        <span>Ver ficha</span>
-                                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                                            <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3ZM5 5h6v2H7v10h10v-4h2v6H5V5Z"></path>
-                                        </svg>
-                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -244,11 +235,6 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
                                 <path d="m15.4 7.4-1.4-1.4-6 6 6 6 1.4-1.4-4.6-4.6 4.6-4.6Z"></path>
                             </svg>
                         </button>
-                        <div class="home-hero__dots" aria-label="Selector de vehículo">
-                            <?php foreach ($hero_cars as $i => $_car) : ?>
-                                <button class="home-hero__dot" type="button" data-dot-index="<?php echo esc_attr((string) $i); ?>" aria-label="<?php echo esc_attr('Ver vehículo ' . ($i + 1)); ?>" aria-current="<?php echo $i === 0 ? 'true' : 'false'; ?>"></button>
-                            <?php endforeach; ?>
-                        </div>
                         <button class="home-hero__control home-hero__control--next" type="button" aria-label="Vehículo siguiente">
                             <svg viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="m8.6 16.6 1.4 1.4 6-6-6-6-1.4 1.4 4.6 4.6-4.6 4.6Z"></path>

@@ -38,6 +38,11 @@
 		element.textContent = value || "";
 	}
 
+	function setTransitionName(element, name) {
+		if (!element) return;
+		element.style.viewTransitionName = name || "";
+	}
+
 	function clearTimer() {
 		if (!timer) return;
 		window.clearTimeout(timer);
@@ -72,6 +77,7 @@
 	function renderLogo(car) {
 		if (!logoBox) return;
 		logoBox.textContent = "";
+		setTransitionName(logoBox, car && car.id ? "logo-" + car.id : "");
 		Array.from(logoBox.classList).forEach((className) => {
 			if (className.indexOf("home-hero__vehicle-logo--") === 0) {
 				logoBox.classList.remove(className);
@@ -105,6 +111,9 @@
 		setText(titleEl, getVehicleTitle(car));
 		setText(subtitleEl, car.version || "Vehículo revisado por Escarpa Motor");
 		setMonthlyPrice(priceEl, getMonthlyText(car));
+		setTransitionName(titleEl, car.id ? "title-" + car.id : "");
+		setTransitionName(subtitleEl, car.id ? "version-" + car.id : "");
+		setTransitionName(priceEl, car.id ? "price-contado-" + car.id : "");
 
 		if (linkEl) {
 			const fallbackHref = linkEl.getAttribute("href") || "/";

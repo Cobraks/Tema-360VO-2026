@@ -184,12 +184,13 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
                                             'fetchpriority' => $index === 0 ? 'high' : 'low',
                                             'sizes'         => '(max-width: 767px) 92vw, (max-width: 1199px) 84vw, 48vw',
                                             'alt'           => $car['imgAlt'],
+                                            'style'         => !empty($car['id']) ? 'view-transition-name: portada-' . (int) $car['id'] . ';' : '',
                                         ];
                                         ?>
                                         <?php if (!empty($car['imageId'])) : ?>
                                             <?php echo wp_get_attachment_image((int) $car['imageId'], 'gv360_w_980', false, $image_args); ?>
                                         <?php elseif (!empty($car['img'])) : ?>
-                                            <img class="home-hero__image" src="<?php echo esc_url($car['img']); ?>" alt="<?php echo esc_attr($car['imgAlt']); ?>" loading="<?php echo $index === 0 ? 'eager' : 'lazy'; ?>" decoding="async" fetchpriority="<?php echo $index === 0 ? 'high' : 'low'; ?>">
+                                            <img class="home-hero__image" src="<?php echo esc_url($car['img']); ?>" alt="<?php echo esc_attr($car['imgAlt']); ?>" loading="<?php echo $index === 0 ? 'eager' : 'lazy'; ?>" decoding="async" fetchpriority="<?php echo $index === 0 ? 'high' : 'low'; ?>"<?php echo !empty($car['id']) ? ' style="' . esc_attr('view-transition-name: portada-' . (int) $car['id'] . ';') . '"' : ''; ?>>
                                         <?php else : ?>
                                             <img class="home-hero__image" src="<?php echo esc_url(get_template_directory_uri() . '/public/assets/images/defaults/presentacion_azul.png'); ?>" alt="Coche de segunda mano preparado para entrega" loading="<?php echo $index === 0 ? 'eager' : 'lazy'; ?>" decoding="async">
                                         <?php endif; ?>
@@ -203,10 +204,11 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
                             <div class="home-hero__image-shade" aria-hidden="true"></div>
 
                             <?php $active_car = $hero_cars[0] ?? null; ?>
+                            <?php $active_transition_id = !empty($active_car['id']) ? (int) $active_car['id'] : 0; ?>
                             <div class="home-hero__vehicle-panel" aria-live="polite" aria-atomic="true">
                                 <div class="home-hero__vehicle-main">
                                     <?php $active_logo_shape = !empty($active_car['logoShape']) ? sanitize_html_class((string) $active_car['logoShape']) : 'default'; ?>
-                                    <div class="home-hero__vehicle-logo home-hero__vehicle-logo--<?php echo esc_attr($active_logo_shape); ?>" aria-hidden="true">
+                                    <div class="home-hero__vehicle-logo home-hero__vehicle-logo--<?php echo esc_attr($active_logo_shape); ?>" aria-hidden="true"<?php echo $active_transition_id ? ' style="' . esc_attr('view-transition-name: logo-' . $active_transition_id . ';') . '"' : ''; ?>>
                                         <?php if (!empty($active_car['logo'])) : ?>
                                             <img src="<?php echo esc_url($active_car['logo']); ?>" alt="" loading="lazy" decoding="async">
                                         <?php else : ?>
@@ -214,17 +216,17 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
                                         <?php endif; ?>
                                     </div>
                                     <div class="home-hero__vehicle-copy">
-                                        <strong class="home-hero__vehicle-title"><?php echo esc_html(trim(($active_car['marca'] ?? '') . ' ' . ($active_car['modelo'] ?? 'Vehículo destacado'))); ?></strong>
-                                        <span class="home-hero__vehicle-subtitle"><?php echo esc_html($active_car['version'] ?? 'Stock revisado y actualizado'); ?></span>
+                                        <strong class="home-hero__vehicle-title"<?php echo $active_transition_id ? ' style="' . esc_attr('view-transition-name: title-' . $active_transition_id . ';') . '"' : ''; ?>><?php echo esc_html(trim(($active_car['marca'] ?? '') . ' ' . ($active_car['modelo'] ?? 'Vehículo destacado'))); ?></strong>
+                                        <span class="home-hero__vehicle-subtitle"<?php echo $active_transition_id ? ' style="' . esc_attr('view-transition-name: version-' . $active_transition_id . ';') . '"' : ''; ?>><?php echo esc_html($active_car['version'] ?? 'Stock revisado y actualizado'); ?></span>
                                     </div>
                                 </div>
 
                                 <div class="home-hero__vehicle-side">
                                     <div class="home-hero__vehicle-price-wrap">
                                         <?php if (!empty($active_car['cuota'])) : ?>
-                                            <strong class="home-hero__vehicle-price"><span><?php echo esc_html($active_car['cuota']); ?></span><small>/mes</small></strong>
+                                            <strong class="home-hero__vehicle-price"<?php echo $active_transition_id ? ' style="' . esc_attr('view-transition-name: price-contado-' . $active_transition_id . ';') . '"' : ''; ?>><span><?php echo esc_html($active_car['cuota']); ?></span><small>/mes</small></strong>
                                         <?php else : ?>
-                                            <strong class="home-hero__vehicle-price home-hero__vehicle-price--fallback">Financiación a medida</strong>
+                                            <strong class="home-hero__vehicle-price home-hero__vehicle-price--fallback"<?php echo $active_transition_id ? ' style="' . esc_attr('view-transition-name: price-contado-' . $active_transition_id . ';') . '"' : ''; ?>>Financiación a medida</strong>
                                         <?php endif; ?>
                                     </div>
                                     <a class="home-hero__vehicle-link" href="<?php echo esc_url($active_car['link'] ?? $stock_url); ?>">
@@ -259,48 +261,68 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
             </div>
 
             <div class="home-hero__trust" aria-label="Compromisos de Escarpa Motor">
-                <a class="home-hero__trust-item" href="<?php echo esc_url($method_url); ?>">
+                <article class="home-hero__trust-item">
                     <span class="home-hero__trust-icon" aria-hidden="true">
                         <svg viewBox="0 0 64 64">
-                            <path d="M19 9h23l9 9v36H19z"></path>
-                            <path d="M42 9v10h10"></path>
-                            <path d="M27 30h18"></path>
-                            <path d="M27 39h10"></path>
-                            <path class="home-hero__trust-check" d="m18 39 6 6 13-15"></path>
+                            <path d="M18 18h22l8 8v26H18z"></path>
+                            <path d="M40 18v9h8"></path>
+                            <path d="M24 31h16"></path>
+                            <path d="M24 39h10"></path>
+                            <circle cx="42" cy="42" r="9"></circle>
+                            <path class="home-hero__trust-check" d="m38.5 42 2.5 2.5 5-6"></path>
                         </svg>
                     </span>
                     <div>
                         <strong>Revisión documentada</strong>
                         <span>Estado, historial y preparación visibles desde el primer contacto.</span>
+                        <a class="home-hero__trust-link" href="<?php echo esc_url($method_url); ?>">
+                            <span>Ver método</span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3ZM5 5h6v2H7v10h10v-4h2v6H5V5Z"></path>
+                            </svg>
+                        </a>
                     </div>
-                </a>
-                <a class="home-hero__trust-item" href="<?php echo esc_url($warranty_url); ?>">
+                </article>
+                <article class="home-hero__trust-item">
                     <span class="home-hero__trust-icon" aria-hidden="true">
                         <svg viewBox="0 0 64 64">
-                            <path d="M32 8 14 15v14c0 12 7.6 22.6 18 27 10.4-4.4 18-15 18-27V15z"></path>
-                            <path class="home-hero__trust-check" d="m23 32 6 6 13-15"></path>
+                            <path d="M32 7 14 15v14c0 12.4 7.3 22.7 18 27 10.7-4.3 18-14.6 18-27V15z"></path>
+                            <path d="M24 23h16"></path>
+                            <path d="M24 31h12"></path>
+                            <path class="home-hero__trust-check" d="m24 40 5 5 12-15"></path>
                         </svg>
                     </span>
                     <div>
                         <strong>Garantía clara</strong>
                         <span>Cobertura explicada antes de reservar, con la misma claridad que el precio.</span>
+                        <a class="home-hero__trust-link" href="<?php echo esc_url($warranty_url); ?>">
+                            <span>Ver garantía</span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3ZM5 5h6v2H7v10h10v-4h2v6H5V5Z"></path>
+                            </svg>
+                        </a>
                     </div>
-                </a>
-                <a class="home-hero__trust-item" href="<?php echo esc_url($finance_url); ?>">
+                </article>
+                <article class="home-hero__trust-item">
                     <span class="home-hero__trust-icon" aria-hidden="true">
                         <svg viewBox="0 0 64 64">
-                            <path d="M10 20h44v28H10z"></path>
-                            <path d="M16 28h14"></path>
-                            <path d="M16 38h22"></path>
-                            <path d="M44 29c4 0 7 3 7 7s-3 7-7 7-7-3-7-7 3-7 7-7z"></path>
-                            <path class="home-hero__trust-check" d="m40 36 3 3 6-7"></path>
+                            <rect x="14" y="12" width="36" height="42" rx="4"></rect>
+                            <path d="M22 22h20"></path>
+                            <path d="M23 33h4M31 33h4M39 33h4M23 42h4M31 42h4M39 42h4"></path>
+                            <path class="home-hero__trust-check" d="m25 51 4 4 9-11"></path>
                         </svg>
                     </span>
                     <div>
                         <strong>Financiación transparente</strong>
                         <span>Cuotas y condiciones explicadas con números claros antes de firmar.</span>
+                        <a class="home-hero__trust-link" href="<?php echo esc_url($finance_url); ?>">
+                            <span>Ver financiación</span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3ZM5 5h6v2H7v10h10v-4h2v6H5V5Z"></path>
+                            </svg>
+                        </a>
                     </div>
-                </a>
+                </article>
             </div>
         </div>
     </section>

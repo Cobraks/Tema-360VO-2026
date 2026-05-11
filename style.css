@@ -14,13 +14,14 @@ Domain Path: /languages
 
 
 
-/* @view-transition {
+@view-transition {
   navigation: auto;
-} */
+}
 
-/* ::view-transition-group(*) {
-  animation-duration: 1s;
-} */
+::view-transition-group(*) {
+  animation-duration: 0.72s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
 
 @font-face {
   font-family: "Source Sans 3";
@@ -2690,16 +2691,22 @@ max-width: 400px;
   grid-template-columns: minmax(0, 1fr);
   gap: clamp(1rem, 2vw, 1.5rem);
   width: 100%;
+  align-items: stretch;
+  justify-items: stretch;
 }
 
 .section--servicios .section__items--clasico.section__items--count-6 .section__item--borde {
   position: relative;
-  display: grid;
-  align-content: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   gap: 0.9rem;
+  grid-column: span 1 !important;
   min-width: 0;
   min-height: 100%;
   padding: clamp(1.25rem, 2vw, 2rem);
+  text-align: center;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--primary40) 14%, var(--color-border));
   border-radius: 0.5rem;
@@ -2779,10 +2786,24 @@ max-width: 400px;
   .section--servicios .section__items--clasico.section__items--count-6 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .section--servicios .section__items--clasico.section__items--count-6 .section__item--borde {
+    grid-column: span 1 !important;
+  }
 }
 
 @media (min-width: 1120px) {
   .section--servicios .section__items--clasico.section__items--count-6 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .section--servicios .section__items--clasico.section__items--count-6 .section__item--borde {
+    grid-column: span 1 !important;
+  }
+}
+
+@media (min-width: 1800px) {
+  .site-header .site-navigation ul li {
+    padding-inline: 1.25rem;
   }
 }

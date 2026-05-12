@@ -577,24 +577,16 @@ $logo_svg_safe = ($logo_svg_raw !== '') ? theme360_prepare_inline_logo_svg($logo
                         <?php if ($direccion_visible !== '' || !empty($header_schedule_lines)) : ?>
                             <div class="site-header__contact-panel-info">
                                 <?php if ($direccion_visible !== '') : ?>
-                                    <a class="site-header__contact-panel-detail" href="<?php echo esc_url('https://www.google.com/maps/search/?api=1&query=' . rawurlencode($direccion_maps !== '' ? $direccion_maps : $direccion_visible)); ?>" target="_blank" rel="noopener noreferrer">
-                                        <?php echo E360VO_Icon::get('location', array('aria-hidden' => 'true')); ?>
-                                        <span>
-                                            <strong><?php esc_html_e('Dónde estamos', '360vo-theme'); ?></strong>
-                                            <small><?php echo esc_html($direccion_visible); ?></small>
-                                        </span>
+                                    <a class="site-header__contact-panel-detail site-header__contact-panel-detail--address" href="<?php echo esc_url('https://www.google.com/maps/search/?api=1&query=' . rawurlencode($direccion_maps !== '' ? $direccion_maps : $direccion_visible)); ?>" target="_blank" rel="noopener noreferrer">
+                                        <small><?php echo esc_html($direccion_visible); ?></small>
                                     </a>
                                 <?php endif; ?>
 
                                 <?php if (!empty($header_schedule_lines)) : ?>
-                                    <div class="site-header__contact-panel-detail">
-                                        <?php echo E360VO_Icon::get('reloj', array('aria-hidden' => 'true')); ?>
-                                        <span>
-                                            <strong><?php esc_html_e('Horario', '360vo-theme'); ?></strong>
-                                            <?php foreach ($header_schedule_lines as $schedule_line) : ?>
-                                                <small><?php echo esc_html($schedule_line); ?></small>
-                                            <?php endforeach; ?>
-                                        </span>
+                                    <div class="site-header__contact-panel-detail site-header__contact-panel-detail--schedule">
+                                        <?php foreach ($header_schedule_lines as $schedule_line) : ?>
+                                            <small><?php echo esc_html($schedule_line); ?></small>
+                                        <?php endforeach; ?>
                                     </div>
                                 <?php endif; ?>
                             </div>

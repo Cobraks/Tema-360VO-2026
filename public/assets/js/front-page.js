@@ -68,10 +68,12 @@
 		}
 
 		const amount = document.createElement("span");
-		amount.textContent = value;
-		const suffix = document.createElement("small");
-		suffix.textContent = "/mes";
-		element.append(amount, suffix);
+		amount.textContent = String(value).replace(/\s*€/g, "").trim();
+		const currency = document.createElement("small");
+		currency.textContent = "€";
+		const suffix = document.createElement("em");
+		suffix.textContent = "al mes";
+		element.append(amount, currency, suffix);
 	}
 
 	function renderLogo(car) {

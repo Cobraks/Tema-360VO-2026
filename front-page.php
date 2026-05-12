@@ -156,6 +156,12 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
                     </p>
                 </div>
 
+                <div class="home-hero__rating" aria-label="Valoracion de clientes">
+                    <strong>4,9</strong>
+                    <span class="home-hero__rating-stars" aria-hidden="true">★★★★★</span>
+                    <span>(66) · Concesionario Arganda del Rey</span>
+                </div>
+
                 <div class="home-hero__actions" aria-label="Acciones principales">
                     <a class="home-hero__button home-hero__button--secondary" href="<?php echo esc_url($sell_car_url); ?>">
                         <span>Vender tu coche</span>
@@ -222,9 +228,10 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
                                 </div>
 
                                 <div class="home-hero__vehicle-side">
+                                    <?php $active_cuota_amount = !empty($active_car['cuota']) ? trim(str_replace('€', '', (string) $active_car['cuota'])) : ''; ?>
                                     <div class="home-hero__vehicle-price-wrap">
                                         <?php if (!empty($active_car['cuota'])) : ?>
-                                            <strong class="home-hero__vehicle-price"<?php echo $active_transition_id ? ' style="' . esc_attr('view-transition-name: price-contado-' . $active_transition_id . ';') . '"' : ''; ?>><span><?php echo esc_html($active_car['cuota']); ?></span><small>/mes</small></strong>
+                                            <strong class="home-hero__vehicle-price"<?php echo $active_transition_id ? ' style="' . esc_attr('view-transition-name: price-contado-' . $active_transition_id . ';') . '"' : ''; ?>><span><?php echo esc_html($active_cuota_amount); ?></span><small>€</small><em>al mes</em></strong>
                                         <?php else : ?>
                                             <strong class="home-hero__vehicle-price home-hero__vehicle-price--fallback"<?php echo $active_transition_id ? ' style="' . esc_attr('view-transition-name: price-contado-' . $active_transition_id . ';') . '"' : ''; ?>>Financiación a medida</strong>
                                         <?php endif; ?>

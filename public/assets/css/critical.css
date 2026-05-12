@@ -293,8 +293,8 @@ body.header-oscuro header.site-header {
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  border-radius: 0.75rem;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  border-radius: 0.65rem;
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
   -webkit-tap-highlight-color: transparent;
   background: var(--header-button-bg);
   color: var(--header-button-text);
@@ -313,6 +313,7 @@ body.header-oscuro header.site-header {
 
 .site-header__contact-button--contact {
   order: 1;
+  display: none;
 }
 
 .site-header__contact-button-text { display: none; margin-left: .35rem; white-space: nowrap; }
@@ -329,7 +330,7 @@ body.header-oscuro header.site-header {
 
 .site-header__contact-button:hover,
 .site-header__contact-button:focus-visible {
-  transform: translateY(-1px);
+  transform: translateY(-0.5px);
   outline: none;
 }
 
@@ -354,12 +355,12 @@ body.header-oscuro header.site-header {
   right: 0;
   z-index: 120;
   width: min(24rem, calc(100vw - 2rem));
-  padding: 1rem;
+  padding: 0.9rem;
   border: 1px solid color-mix(in srgb, var(--primary40) 14%, var(--color-border));
   border-radius: 0.9rem;
   background: color-mix(in srgb, var(--neutral99) 98%, transparent);
   color: var(--color-text);
-  box-shadow: 0 1.1rem 2rem color-mix(in srgb, var(--primary10) 12%, transparent);
+  box-shadow: 0 0.7rem 1.3rem color-mix(in srgb, var(--primary10) 8%, transparent);
 }
 
 .site-header__contact-panel[hidden] {
@@ -400,7 +401,7 @@ body.header-oscuro header.site-header {
 .site-header__contact-panel-actions,
 .site-header__contact-panel-info {
   display: grid;
-  gap: 0.55rem;
+  gap: 0.5rem;
 }
 
 .site-header__contact-panel-info {
@@ -412,23 +413,25 @@ body.header-oscuro header.site-header {
 .site-header__contact-panel-action,
 .site-header__contact-panel-detail {
   display: grid;
-  grid-template-columns: 2.35rem minmax(0, 1fr);
+  grid-template-columns: 2.5rem minmax(0, 1fr);
   align-items: center;
   gap: 0.7rem;
   min-width: 0;
-  padding: 0.7rem;
+  padding: 0.72rem;
   border-radius: 0.7rem;
   color: inherit;
   text-decoration: none;
 }
 
 .site-header__contact-panel-action {
-  border: 1px solid color-mix(in srgb, var(--primary40) 10%, var(--color-border));
-  background: color-mix(in srgb, var(--primary98) 54%, var(--neutral99));
+  border: 1px solid color-mix(in srgb, var(--primary40) 12%, var(--color-border));
+  background: var(--neutral99);
+  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.16s ease;
 }
 
 .site-header__contact-panel-detail {
-  padding-block: 0.45rem;
+  display: block;
+  padding: 0.05rem 0.2rem;
 }
 
 .site-header__contact-panel-action > svg,
@@ -439,6 +442,11 @@ body.header-oscuro header.site-header {
   border-radius: 0.65rem;
   background: var(--primary95);
   color: var(--primary30);
+}
+
+.site-header__contact-panel-detail > svg,
+.site-header__contact-panel-detail strong {
+  display: none;
 }
 
 .site-header__contact-panel-action span,
@@ -462,11 +470,17 @@ body.header-oscuro header.site-header {
   line-height: 1.25;
 }
 
+.site-header__contact-panel-detail small {
+  display: block;
+  font-size: 0.78rem;
+}
+
 .site-header__contact-panel-action:hover,
 .site-header__contact-panel-action:focus-visible,
 .site-header__contact-panel-detail:hover,
 .site-header__contact-panel-detail:focus-visible {
-  background: var(--primary95);
+  background: color-mix(in srgb, var(--primary95) 68%, var(--neutral99));
+  border-color: color-mix(in srgb, var(--primary50) 18%, var(--color-border));
   outline: none;
 }
 
@@ -590,6 +604,10 @@ body.header-oscuro header.site-header {
 /* =========================================================
    Media queries (sin refactor aún, solo limpieza mínima)
    ========================================================= */
+@media (min-width: 500px) {
+  .site-header__contact-button--contact { display: flex; }
+}
+
 @media (min-width: 540px) {
 
 .site-header .wrapper-header {
@@ -598,7 +616,6 @@ body.header-oscuro header.site-header {
 .site-header__logo {
   margin-right: auto;
 }
-  .site-header__contact-button--contact { display: flex; }
   #breadcrumb { font-size: 0.875rem; }
 }
 

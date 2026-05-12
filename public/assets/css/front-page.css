@@ -191,6 +191,33 @@
   line-height: 1.62;
 }
 
+.home-hero__rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: fit-content;
+  margin-top: 1.2rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--primary40) 10%, var(--color-border));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--neutral99) 86%, transparent);
+  color: var(--neutral20);
+  font-size: 0.9rem;
+  line-height: 1.1;
+}
+
+.home-hero__rating strong {
+  color: var(--primary15);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.home-hero__rating-stars {
+  color: var(--color-accent);
+  letter-spacing: 0.04em;
+  font-size: 0.86rem;
+}
+
 .home-hero__actions {
   display: flex;
   flex-wrap: wrap;
@@ -802,7 +829,7 @@
 
 @media (min-width: 1440px) {
   .home-hero__viewport {
-    min-height: 35rem;
+    min-height: 30.5rem;
   }
 }
 
@@ -818,7 +845,7 @@
 
 .home-hero__wash {
   display: block;
-  opacity: 0.32;
+  opacity: 0.42;
   filter: blur(8px);
   mix-blend-mode: multiply;
   will-change: transform, opacity;
@@ -844,7 +871,7 @@
 
 .home-hero__mark {
   display: block;
-  opacity: 0.1;
+  opacity: 0.14;
   filter: blur(0);
 }
 
@@ -853,7 +880,7 @@
   right: -2vw;
   width: clamp(22rem, 38vw, 48rem);
   color: var(--primary30);
-  opacity: 0.1;
+  opacity: 0.15;
   animation: homeHeroMarkFloatOne 30s ease-in-out infinite alternate;
 }
 
@@ -862,7 +889,7 @@
   bottom: 0;
   width: clamp(15rem, 26vw, 34rem);
   color: var(--color-accent);
-  opacity: 0.11;
+  opacity: 0.16;
   animation: homeHeroMarkFloatTwo 34s ease-in-out infinite alternate;
 }
 
@@ -927,13 +954,14 @@
 .home-hero__gallery-frame,
 .home-hero__viewport,
 .home-hero__gallery-frame::before {
-  clip-path: polygon(0 var(--home-hero-slant), 100% 0, 100% calc(100% - var(--home-hero-slant)), 0 100%);
-  border-radius: 0;
+  clip-path: none;
+  border-radius: clamp(1rem, 1.5vw, 1.35rem);
 }
 
 .home-hero__gallery-frame {
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--primary40) 16%, transparent);
+  background: var(--primary10);
 }
 
 .home-hero__gallery-frame::before {
@@ -942,7 +970,7 @@
 }
 
 .home-hero__viewport {
-  min-height: clamp(21rem, 30vw, 30rem);
+  min-height: clamp(19.5rem, 27vw, 28rem);
 }
 
 .home-hero__slide {
@@ -1039,28 +1067,42 @@
 }
 
 .home-hero__vehicle-price-wrap {
-  min-width: clamp(9.5rem, 14vw, 14rem);
-  gap: 0.45rem;
-  padding: clamp(0.9rem, 1.2vw, 1.25rem);
-  border-color: color-mix(in srgb, var(--neutral99) 22%, transparent);
-  border-radius: var(--home-hero-radius);
-  background: color-mix(in srgb, var(--primary10) 88%, transparent);
+  min-width: 0;
+  gap: 0.18rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  backdrop-filter: none;
   clip-path: none;
   pointer-events: auto;
-  transition: transform 0.24s ease, background-color 0.24s ease;
+  transition: transform 0.24s ease;
 }
 
 .home-hero__vehicle-price {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto auto;
   align-items: baseline;
-  gap: 0.22em;
-  font-size: clamp(1.9rem, 3vw, 3.25rem);
-  line-height: 0.9;
+  justify-content: end;
+  column-gap: 0.14em;
+  color: var(--neutral99);
+  font-size: clamp(1.45rem, 2.8vw, 3rem);
+  line-height: 0.92;
+  text-align: right;
 }
 
 .home-hero__vehicle-price small {
-  font-size: 0.36em;
+  font-size: 0.58em;
   font-weight: 800;
+}
+
+.home-hero__vehicle-price em {
+  grid-column: 1 / -1;
+  color: color-mix(in srgb, var(--neutral99) 82%, transparent);
+  font-size: clamp(0.9rem, 1.05vw, 1.12rem);
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.15;
 }
 
 .home-hero__vehicle-price--fallback {
@@ -1085,7 +1127,6 @@
 
 .home-hero__gallery:hover .home-hero__vehicle-price-wrap,
 .home-hero__gallery:focus-within .home-hero__vehicle-price-wrap {
-  background: var(--primary10);
   transform: translateY(-0.2rem);
 }
 
@@ -1261,26 +1302,29 @@
   align-items: center;
   gap: 0.35rem;
   margin-top: 0.85rem;
-  color: var(--primary25);
+  color: var(--primary30);
   font-size: 0.88rem;
   font-weight: 500;
   line-height: 1.2;
   text-decoration: underline;
+  text-decoration-color: currentColor;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.22em;
 }
 
 .home-hero__trust-link svg {
-  width: 1.15rem;
-  height: 1.15rem;
+  display: block;
+  width: 1.28rem;
+  height: 1.28rem;
   align-self: center;
   fill: currentColor;
+  transform: translateY(0.02em);
   transition: transform 0.18s ease;
 }
 
 .home-hero__trust-link:hover,
 .home-hero__trust-link:focus-visible {
-  color: var(--color-accent);
+  color: var(--primary10);
 }
 
 .home-hero__trust-link:hover svg,
@@ -1424,24 +1468,24 @@
 
 @keyframes homeHeroWashPrimary {
   0% {
-    opacity: 0.22;
+    opacity: 0.28;
     transform: translate3d(0, 0, 0) scale(0.96);
   }
 
   100% {
-    opacity: 0.38;
+    opacity: 0.48;
     transform: translate3d(-4vw, 5vh, 0) scale(1.12);
   }
 }
 
 @keyframes homeHeroWashAccent {
   0% {
-    opacity: 0.2;
+    opacity: 0.26;
     transform: translate3d(0, 0, 0) scale(0.92);
   }
 
   100% {
-    opacity: 0.4;
+    opacity: 0.5;
     transform: translate3d(5vw, -4vh, 0) scale(1.18);
   }
 }
@@ -1466,17 +1510,38 @@
     grid-template-columns: 1fr;
   }
 
+  .home-hero__rating {
+    flex-wrap: wrap;
+    border-radius: 0.85rem;
+  }
+
   .home-hero__viewport {
-    min-height: 22rem;
+    min-height: 21rem;
   }
 
   .home-hero__vehicle-panel {
     grid-template-columns: 1fr;
+    left: 0.9rem;
+    right: 0.9rem;
+    bottom: 0.9rem;
+    gap: 0.55rem;
+  }
+
+  .home-hero__vehicle-main {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .home-hero__vehicle-logo {
-    width: 6rem;
-    height: 2.75rem;
+    display: none;
+  }
+
+  .home-hero__vehicle-title {
+    font-size: clamp(1.35rem, 7vw, 2.25rem);
+  }
+
+  .home-hero__vehicle-subtitle {
+    -webkit-line-clamp: 1;
+    font-size: 0.88rem;
   }
 
   .home-hero__vehicle-side,
@@ -1484,8 +1549,12 @@
     justify-self: end;
   }
 
+  .home-hero__vehicle-price {
+    font-size: clamp(1.35rem, 7vw, 2.25rem);
+  }
+
   .home-hero__vehicle-link {
-    width: auto;
+    display: none;
   }
 
   .home-hero__gallery-controls {

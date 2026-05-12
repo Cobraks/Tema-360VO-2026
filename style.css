@@ -125,7 +125,7 @@ h1,
 /*Botones navegación*/
 
 
-.site-header__contact-button:not(.site-header__contact-button--contact):hover {
+.site-header__contact-button:not(.site-header__contact-button--contact):not(.site-header__contact-button--phone):hover {
   background-color: var(--header-button-hover-bg);
   color: var(--header-button-hover-text);
   border-color: var(--header-button-border);
@@ -137,6 +137,15 @@ h1,
   background: var(--primary40);
   border-color: var(--primary40);
   color: var(--neutral99);
+}
+
+@media (min-width: 1080px) {
+  .site-header__contact-button--phone:hover,
+  .site-header__contact-button--phone:focus-visible {
+    background-color: var(--header-button-hover-bg);
+    color: var(--header-button-hover-text);
+    border-color: var(--header-button-border);
+  }
 }
 
 

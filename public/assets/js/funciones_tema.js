@@ -7,30 +7,6 @@ let isTocAutoScrolling = false;
 let tocAutoScrollFrame = null;
 
 // =====================================================
-// Función: Inicializar popup del footer
-// =====================================================
-function initBotonFlotanteContacto() {
-	const popup = document.getElementById("popup");
-	const openBtn = document.getElementById("open-popup");
-	const closeBtn = document.getElementById("close-popup");
-
-	if (!popup || !openBtn || !closeBtn) return;
-
-	openBtn.addEventListener("click", () => {
-		popup.style.display = "flex";
-	});
-
-	closeBtn.addEventListener("click", () => {
-		popup.style.display = "none";
-	});
-
-	// Mejor: escuchar en popup, no en window (menos trabajo global)
-	popup.addEventListener("click", (event) => {
-		if (event.target === popup) popup.style.display = "none";
-	});
-}
-
-// =====================================================
 // Función: Animación de botones en el pie de página
 // =====================================================
 function initializeFooterButtonAnimations() {
@@ -823,8 +799,6 @@ function initCf7FilledState() {
 // Inicialización
 // =====================================================
 document.addEventListener("DOMContentLoaded", () => {
-	initBotonFlotanteContacto();
-
 	initializeFooterButtonAnimations();
 	removeHiddenClassWithDelay();
 	initializeMobileMenu();

@@ -430,31 +430,6 @@ body.header-oscuro header.site-header {
 .right-btn { right: 0; padding-left: 0.5rem; }
 
 /* =========================================================
-   Botón flotante (above-the-fold en tu caso)
-   ========================================================= */
-#open-popup {
-  position: sticky;
-  height: 4rem;
-  width: 4rem;
-  padding: 0.8rem;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: all 0.4s ease-out;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  border: none;
-  z-index: 8;
-  margin: 1.5rem 0;
-  bottom: 1rem;
-  margin-left: auto;
-  right: var(--wrapper-padding);
-
-  background: var(--primary30);
-  color: #fff;
-}
-
-
-
-/* =========================================================
    Media queries (sin refactor aún, solo limpieza mínima)
    ========================================================= */
 @media (min-width: 540px) {

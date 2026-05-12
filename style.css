@@ -1148,60 +1148,6 @@ width: 100%;
 }
 
 
-/*Botón flotante*/
-#open-popup:hover {
-  background: var(--primary60);
-}
-
-body.archive #open-popup {
-  bottom: 6rem;
-}
-
-.content-button-popup {
-  display: flex;
-  align-items: end;
-  position: sticky;
-  bottom: 16rem;
-  right: 2.4rem;
-  justify-content: end;
-  z-index: 99;
-  margin-bottom: 2.4rem;
-  margin-top: 2.4rem;
-  bottom: 2.4rem;
-}
-
-.popup {
-  display: none;
-  position: fixed;
-  z-index: 10000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow:
-auto;
-  background-color: rgba(0, 0, 0, 0.6);
-  align-items: center;
-}
-
-/*Interfiere con me interesa en ficha*/
-.popup-content--whatsapp {
-  margin:15% auto;
-  margin-right: auto;
-  margin-bottom: 15%;
-  margin-left: auto;
-  padding:2.4rem;
-  width: 90%;
-  border-radius:.8rem;
-  max-height: 80vh;
-  background-color: var(--neutral99);
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
-  position: relative;
-
-}
-
-
-
 /*Nuevo footer*/
 
 .footer-section {
@@ -2124,45 +2070,6 @@ p.marcas__item-text{
 
 /*FIN BLOG FOOTER*/
 
-.popup .close {
-  color: black;
-  float: right;
-  font-size: 2.5rem;
-  font-weight: 600;
-  position: absolute;
-  right: 1rem;
-  top: 0;
-  cursor: pointer;
-  transition: all .3s ease-out;
-}
-
-.popup .close:hover {
-  color: red;
-transition: all .1s ease-in;
-}
-
-.popup-contact__button, .popup-contact__button:visited {
-  height: 3rem;
-  border-radius:.75rem;
-background: var(--color-accent);
-  color: white;
-  width: fit-content;
-  padding-inline: 1rem;
-  text-decoration: none;
-}
-
-.popup-contact__button--whatsapp {
-  background:#103928;
-}
-
-.popup-contact__button svg {
-  margin-right: .5rem;
-}
-
-
-
-
-
 .wp-block-buttons.is-content-justification-center {
   gap: 1rem;
 }
@@ -2231,15 +2138,6 @@ grid-template-columns: repeat(12, minmax(0, 1fr));
 }
 
 
-/* Localizar. Interfiere con me interesa de ficha*/
-
- .popup-content--whatsapp {
-    max-height: 80vh;
-    margin-left: auto;
-    margin-right: 4rem;
-    margin-bottom: 1.6rem;
-    max-width: 380px;
-  }
 }
 
 @media (min-width:783px) {
@@ -2505,10 +2403,6 @@ border-radius: 0;
   grid-column: span 8;
 }
 
-
-body.archive #open-popup {
-  bottom: 1rem;
-}
 
 .footer__claim-wrapper {
    margin-top: var(--wrapper-padding);

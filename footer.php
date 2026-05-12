@@ -291,16 +291,6 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
 }
 ?>
 
-<button id="open-popup" class="boton-telefono" aria-label="<?php echo esc_attr(sprintf(__('Contacta con %s', '360vo-theme'), get_bloginfo('name'))); ?>">
-  <?php
-  echo E360VO_Icon::get('contacto_centralita', array(
-    'aria-label' => __('Contacta con nosotros', '360vo-theme'),
-    'width'      => 72,
-    'height'     => 48,
-  ));
-  ?>
-</button>
-
 <footer>
   <section class="footer-section flex">
 
@@ -603,26 +593,6 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
     </div>
   </section>
 
-  <?php if ($telefono_principal !== '') : ?>
-    <div id="popup" class="popup" style="display: none;">
-      <div class="popup-content--whatsapp">
-        <span id="close-popup" class="close">×</span>
-        <h3><?php esc_html_e('¿Estás buscando un coche?', '360vo-theme'); ?></h3>
-
-        <a class="popup-contact__button popup-contact__button--whatsapp flex items-center justify-center" href="<?php echo esc_url('https://wa.me/' . preg_replace('/\D+/', '', ltrim($telefono_e164 !== '' ? $telefono_e164 : $telefono_principal, '+')) . '?text=' . rawurlencode('Estoy buscando un coche en ' . get_bloginfo('name'))); ?>" target="_blank" rel="noopener noreferrer">
-          <?php echo E360VO_Icon::get('whatsapp'); ?>
-          <span class="phone-contact"><?php esc_html_e('Mándanos un WhatsApp', '360vo-theme'); ?></span>
-        </a>
-
-        <p><?php esc_html_e('O llámanos por teléfono:', '360vo-theme'); ?></p>
-
-        <a class="popup-contact__button flex items-center justify-center" href="<?php echo esc_url('tel:' . preg_replace('/\s+/', '', ($telefono_e164 !== '' ? $telefono_e164 : $telefono_principal))); ?>">
-          <?php echo E360VO_Icon::get('call'); ?>
-          <span class="phone-contact"><?php echo esc_html($telefono_display !== '' ? $telefono_display : $telefono_principal); ?></span>
-        </a>
-      </div>
-    </div>
-  <?php endif; ?>
 </footer>
 
 <?php wp_footer(); ?>

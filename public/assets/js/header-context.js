@@ -127,6 +127,42 @@ function initializeHeaderContextSwitcher() {
 	});
 }
 
+function initializeHeaderContactPanel() {
+	const header = document.querySelector(".site-header");
+	const toggle = header?.querySelector("[data-header-contact-toggle]");
+	const panel = header?.querySelector("[data-header-contact-panel]");
+
+	if (!header || !toggle || !panel) return;
+
+	const setOpen = (isOpen) => {
+		toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+		panel.hidden = !isOpen;
+		panel.classList.toggle("is-open", isOpen);
+	};
+
+	toggle.addEventListener("click", (event) => {
+		event.preventDefault();
+		event.stopPropagation();
+		setOpen(toggle.getAttribute("aria-expanded") !== "true");
+	});
+
+	panel.addEventListener("click", (event) => {
+		event.stopPropagation();
+	});
+
+	document.addEventListener("click", (event) => {
+		if (panel.hidden || header.contains(event.target)) return;
+		setOpen(false);
+	});
+
+	document.addEventListener("keydown", (event) => {
+		if (event.key !== "Escape" || panel.hidden) return;
+		setOpen(false);
+		toggle.focus({ preventScroll: true });
+	});
+}
+
 document.addEventListener("DOMContentLoaded", () => {
 	initializeHeaderContextSwitcher();
+	initializeHeaderContactPanel();
 });

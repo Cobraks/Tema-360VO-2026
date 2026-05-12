@@ -283,33 +283,191 @@ body.header-oscuro header.site-header {
 
 /* Header contact buttons */
 .site-header__contact-buttons {
+  position: relative;
   column-gap: 1rem;
   margin-left: 1rem;
 }
 
 .site-header__contact-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   text-decoration: none;
-  border-radius: 5rem;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0.75rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
   -webkit-tap-highlight-color: transparent;
   background: var(--header-button-bg);
   color: var(--header-button-text);
   border: 1px solid var(--header-button-border);
   height: 3rem;
   width: 3rem;
+  padding: 0;
 }
 
-.site-header__contact-button-text { display: none; margin-left: .25rem }
-
-.site-header__contact-button--email {
-  display: none;
+.site-header__contact-button--phone {
+  order: 2;
+  background: var(--primary50);
+  color: var(--neutral99);
+  border-color: var(--primary50);
 }
+
+.site-header__contact-button--contact {
+  order: 1;
+}
+
+.site-header__contact-button-text { display: none; margin-left: .35rem; white-space: nowrap; }
 
 .site-header__contact-button-icon svg {
   color: currentColor;
   height: 28px;
   width: auto;
+}
 
+.site-header__contact-button-icon--contact svg {
+  height: 30px;
+}
+
+.site-header__contact-button:hover,
+.site-header__contact-button:focus-visible {
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.site-header__contact-button--phone:hover,
+.site-header__contact-button--phone:focus-visible {
+  background: var(--primary40);
+  border-color: var(--primary40);
+  color: var(--neutral99);
+}
+
+.site-header__contact-button--contact:hover,
+.site-header__contact-button--contact:focus-visible,
+.site-header__contact-button--contact[aria-expanded="true"] {
+  background: var(--primary40);
+  border-color: var(--primary40);
+  color: var(--neutral99);
+}
+
+.site-header__contact-panel {
+  position: absolute;
+  top: calc(100% + 0.85rem);
+  right: 0;
+  z-index: 120;
+  width: min(24rem, calc(100vw - 2rem));
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--primary40) 14%, var(--color-border));
+  border-radius: 0.9rem;
+  background: color-mix(in srgb, var(--neutral99) 98%, transparent);
+  color: var(--color-text);
+  box-shadow: 0 1.1rem 2rem color-mix(in srgb, var(--primary10) 12%, transparent);
+}
+
+.site-header__contact-panel[hidden] {
+  display: none;
+}
+
+.site-header__contact-panel::before {
+  content: "";
+  position: absolute;
+  top: -0.45rem;
+  right: 1.2rem;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-top: 1px solid color-mix(in srgb, var(--primary40) 14%, var(--color-border));
+  border-left: 1px solid color-mix(in srgb, var(--primary40) 14%, var(--color-border));
+  background: inherit;
+  transform: rotate(45deg);
+}
+
+.site-header__contact-panel-header {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.25rem 0.25rem 0.85rem;
+}
+
+.site-header__contact-panel-header strong {
+  color: var(--primary15);
+  font-size: 1rem;
+  line-height: 1.15;
+}
+
+.site-header__contact-panel-header span {
+  color: var(--color-text-2);
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.site-header__contact-panel-actions,
+.site-header__contact-panel-info {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.site-header__contact-panel-info {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.site-header__contact-panel-action,
+.site-header__contact-panel-detail {
+  display: grid;
+  grid-template-columns: 2.35rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 0;
+  padding: 0.7rem;
+  border-radius: 0.7rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.site-header__contact-panel-action {
+  border: 1px solid color-mix(in srgb, var(--primary40) 10%, var(--color-border));
+  background: color-mix(in srgb, var(--primary98) 54%, var(--neutral99));
+}
+
+.site-header__contact-panel-detail {
+  padding-block: 0.45rem;
+}
+
+.site-header__contact-panel-action > svg,
+.site-header__contact-panel-detail > svg {
+  width: 2.35rem;
+  height: 2.35rem;
+  padding: 0.52rem;
+  border-radius: 0.65rem;
+  background: var(--primary95);
+  color: var(--primary30);
+}
+
+.site-header__contact-panel-action span,
+.site-header__contact-panel-detail span {
+  display: grid;
+  gap: 0.14rem;
+  min-width: 0;
+}
+
+.site-header__contact-panel-action strong,
+.site-header__contact-panel-detail strong {
+  color: var(--primary15);
+  font-size: 0.94rem;
+  line-height: 1.15;
+}
+
+.site-header__contact-panel-action small,
+.site-header__contact-panel-detail small {
+  color: var(--color-text-2);
+  font-size: 0.82rem;
+  line-height: 1.25;
+}
+
+.site-header__contact-panel-action:hover,
+.site-header__contact-panel-action:focus-visible,
+.site-header__contact-panel-detail:hover,
+.site-header__contact-panel-detail:focus-visible {
+  background: var(--primary95);
+  outline: none;
 }
 
 .site-header .site-navigation,
@@ -440,7 +598,7 @@ body.header-oscuro header.site-header {
 .site-header__logo {
   margin-right: auto;
 }
-  .site-header__contact-button--email { display: flex; }
+  .site-header__contact-button--contact { display: flex; }
   #breadcrumb { font-size: 0.875rem; }
 }
 
@@ -457,7 +615,7 @@ body.header-oscuro header.site-header {
     display: flex;
   }
 
-   .site-header__contact-button--email .site-header__contact-button-text {
+   .site-header__contact-button--contact .site-header__contact-button-text {
     display: none;
   }
 
@@ -480,13 +638,13 @@ body.header-oscuro header.site-header {
     --altura-header: 5rem;
   }
 
-  .site-header__contact-button--email {
+  .site-header__contact-button--contact {
     column-gap: 0.25rem;
     padding-inline: 0.8rem;
     width: fit-content;
   }
 
-.site-header__contact-button--email .site-header__contact-button-text {
+.site-header__contact-button--contact .site-header__contact-button-text {
     display: flex;
     /* font-size: 1rem; */
   }
@@ -513,11 +671,11 @@ body.header-oscuro header.site-header {
   .site-header--logo-wide9 .custom-logo { max-width: 200px; }
 
   .site-header__contact-button--phone,
-  .site-header__contact-button--email, .site-header__contact-button-text {
+  .site-header__contact-button--contact, .site-header__contact-button-text {
     display: none;
   }
 
-  .site-header__contact-button--email {
+  .site-header__contact-button--contact {
     width: 2.75rem;
     height: 2.75rem;
     /* padding-inline: 0; */
@@ -578,13 +736,27 @@ body.header-oscuro header.site-header {
 
 }
 
-.site-header__contact-button--phone, .site-header__contact-button--email {
+.site-header__contact-button--phone, .site-header__contact-button--contact {
   display: flex;
   width: 2.75rem;
         height: 2.75rem;
 }
 
-.site-header__contact-button--email .site-header__contact-button-text,
+.site-header__contact-button--phone {
+  order: 1;
+  background: var(--header-button-bg);
+  color: var(--header-button-text);
+  border-color: var(--header-button-border);
+}
+
+.site-header__contact-button--contact {
+  order: 2;
+  background: var(--primary50);
+  color: var(--neutral99);
+  border-color: var(--primary50);
+}
+
+.site-header__contact-button--contact .site-header__contact-button-text,
 .site-header__contact-button--phone .site-header__contact-button-text
 
 {
@@ -675,14 +847,14 @@ nav.site-navigation {
   }
 
   .site-header__contact-button--phone, .site-header__contact-button-text,
-    .site-header__contact-button--email .site-header__contact-button-text {
+    .site-header__contact-button--contact .site-header__contact-button-text {
     display: flex;
   }
 
   
   /* .site-header .custom-logo { max-height: 3.5rem; } */
 
-.site-header__contact-button--email {
+.site-header__contact-button--contact {
 width: fit-content;
 }
 
@@ -712,13 +884,13 @@ width: fit-content;
     --espacioTarjeta: 1.125rem;
   }
 
-  .site-header__contact-button--email {
+  .site-header__contact-button--contact {
     width: fit-content;
     padding-inline: 0.8rem;
     column-gap: 0.25rem;
   }
 
-  .site-header__contact-button--email, .site-header__contact-button-text {
+  .site-header__contact-button--contact, .site-header__contact-button-text {
     display: flex;
   }
 }

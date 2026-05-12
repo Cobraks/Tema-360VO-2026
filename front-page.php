@@ -152,7 +152,7 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
 
                 <div class="home-hero__copy">
                     <p class="home-hero__lead">
-                        En Escarpa Motor hemos creado una forma más clara, cuidada y segura de comprar un coche de segunda mano en Madrid: vehículos revisados, garantía clara, financiación transparente y una entrega preparada al detalle.
+                        En Escarpa Motor hemos desarrollado una forma más transparente, cuidada y segura de comprar un coche de segunda mano en Madrid: vehículos revisados, garantía explicada, financiación sencilla de entender y una entrega preparada al detalle.
                     </p>
                 </div>
 
@@ -276,7 +276,7 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
                         <strong>Revisión documentada</strong>
                         <span>Estado, historial y preparación visibles desde el primer contacto.</span>
                         <a class="home-hero__trust-link" href="<?php echo esc_url($method_url); ?>">
-                            <span>Ver método</span>
+                            <span>Conoce el Método Escarpa</span>
                             <svg viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3ZM5 5h6v2H7v10h10v-4h2v6H5V5Z"></path>
                             </svg>
@@ -296,7 +296,7 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
                         <strong>Garantía clara</strong>
                         <span>Cobertura explicada antes de reservar, con la misma claridad que el precio.</span>
                         <a class="home-hero__trust-link" href="<?php echo esc_url($warranty_url); ?>">
-                            <span>Ver garantía</span>
+                            <span>Qué cubre la garantía</span>
                             <svg viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3ZM5 5h6v2H7v10h10v-4h2v6H5V5Z"></path>
                             </svg>
@@ -316,7 +316,7 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
                         <strong>Financiación transparente</strong>
                         <span>Cuotas y condiciones explicadas con números claros antes de firmar.</span>
                         <a class="home-hero__trust-link" href="<?php echo esc_url($finance_url); ?>">
-                            <span>Ver financiación</span>
+                            <span>Calcular financiación</span>
                             <svg viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3ZM5 5h6v2H7v10h10v-4h2v6H5V5Z"></path>
                             </svg>

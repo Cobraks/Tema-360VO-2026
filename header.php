@@ -25,11 +25,18 @@ if (!function_exists('theme360_ctx_get')) {
             $map = array(
                 'email'         => 'correo_y_telefono_correo_principal',
                 'phone_primary' => 'correo_y_telefono_telefono_principal',
+                'phone_display' => 'correo_y_telefono_telefono_principal',
                 'instagram_url' => 'social_insta',
                 'facebook_url'  => 'social_face',
                 'twitter_url'   => 'social_twitter',
                 'youtube_url'   => 'social_youtube',
                 'tiktok_url'    => 'social_tiktok',
+                'show_address'  => 'direccion_del_concesionario_mostrar_direccion',
+                'direccion'     => 'direccion_del_concesionario_direccion',
+                'postal_code'   => 'direccion_del_concesionario_codigo_postal',
+                'localidad'     => 'direccion_del_concesionario_localidad',
+                'provincia'     => 'direccion_del_concesionario_provincia',
+                'maps_name'     => 'direccion_del_concesionario_nombre_en_maps',
             );
 
             if (isset($map[$key])) {
@@ -78,10 +85,89 @@ if (!function_exists('theme360_social_repeater_name')) {
     }
 }
 
+if (!function_exists('theme360_header_schedule_lines')) {
+    function theme360_header_schedule_lines(array $horario): array
+    {
+        if (empty($horario)) {
+            return array();
+        }
+
+        $conf_horario = isset($horario['conf_horario']) && is_array($horario['conf_horario']) ? $horario['conf_horario'] : array();
+        if (!empty($conf_horario['horario_alt'])) {
+            return array();
+        }
+
+        $format_range = static function (array $data, string $start_key, string $end_key, string $split_key = '', string $start_pm_key = '', string $end_pm_key = ''): string {
+            $start = isset($data[$start_key]) ? trim((string) $data[$start_key]) : '';
+            $end = isset($data[$end_key]) ? trim((string) $data[$end_key]) : '';
+            if ($start === '' || $end === '') {
+                return '';
+            }
+
+            $range = $start . ' - ' . $end;
+            if ($split_key !== '' && !empty($data[$split_key])) {
+                $start_pm = isset($data[$start_pm_key]) ? trim((string) $data[$start_pm_key]) : '';
+                $end_pm = isset($data[$end_pm_key]) ? trim((string) $data[$end_pm_key]) : '';
+                if ($start_pm !== '' && $end_pm !== '') {
+                    $range .= ' y ' . $start_pm . ' - ' . $end_pm;
+                }
+            }
+
+            return $range;
+        };
+
+        $weekdays = isset($horario['lunes_a_viernes']) && is_array($horario['lunes_a_viernes']) ? $horario['lunes_a_viernes'] : array();
+        $saturday = isset($horario['horario_sabado']) && is_array($horario['horario_sabado']) ? $horario['horario_sabado'] : array();
+
+        $lines = array();
+        $weekday_range = $format_range($weekdays, 'entrada_lun_vier', 'salida_lun_vier', 'horario_tarde', 'entrada_lun_vier_tarde', 'salida_lun_vier_tarde');
+        if ($weekday_range !== '') {
+            $lines[] = sprintf(__('Lunes a viernes: %s', '360vo-theme'), $weekday_range);
+        }
+
+        if (!empty($saturday['abierto_sabados'])) {
+            $saturday_range = $format_range($saturday, 'entrada_sab', 'salida_sab', 'horario_tarde_sab', 'entrada_sab_tarde', 'salida_sab_tarde');
+            if ($saturday_range !== '') {
+                $lines[] = sprintf(__('Sábado: %s', '360vo-theme'), $saturday_range);
+            }
+        }
+
+        return $lines;
+    }
+}
+
 $email_principal    = trim((string) theme360_ctx_get('email', ''));
 $telefono_principal = trim((string) theme360_ctx_get('phone_primary', ''));
 $telefono_e164      = trim((string) theme360_ctx_get('phone_e164', ''));
 $telefono_display   = trim((string) theme360_ctx_get('phone_display', $telefono_principal));
+$telefono_href      = $telefono_principal !== '' ? preg_replace('/\s+/', '', ($telefono_e164 !== '' ? $telefono_e164 : $telefono_principal)) : '';
+$whatsapp_href      = $telefono_principal !== '' ? 'https://wa.me/' . preg_replace('/\D+/', '', ltrim($telefono_e164 !== '' ? $telefono_e164 : $telefono_principal, '+')) . '?text=' . rawurlencode('Estoy buscando un coche en ' . get_bloginfo('name')) : '';
+
+$mostrar_direccion = in_array(strtolower((string) theme360_ctx_get('show_address', '1')), array('1', 'true', 'yes', 'on'), true);
+$direccion         = trim((string) theme360_ctx_get('direccion', ''));
+$codigo_postal     = trim((string) theme360_ctx_get('postal_code', ''));
+$localidad         = trim((string) theme360_ctx_get('localidad', ''));
+$provincia         = trim((string) theme360_ctx_get('provincia', ''));
+$nombre_en_maps    = trim((string) theme360_ctx_get('maps_name', ''));
+$direccion_visible = $mostrar_direccion ? implode(', ', array_filter(array($direccion, trim($codigo_postal . ' ' . $localidad), $provincia))) : '';
+$direccion_maps    = implode(', ', array_filter(array($nombre_en_maps, $direccion, $codigo_postal, $localidad, $provincia)));
+
+$horario = array();
+$schedule_json = (string) theme360_ctx_get('schedule_json', '');
+if ($schedule_json !== '') {
+    $decoded_schedule = json_decode($schedule_json, true);
+    if (is_array($decoded_schedule)) {
+        $horario = $decoded_schedule;
+    }
+}
+if (empty($horario) && function_exists('get_field')) {
+    $raw_horario = get_field('horario', 'option');
+    if (is_array($raw_horario)) {
+        $horario = $raw_horario;
+    }
+}
+$header_schedule_lines = theme360_header_schedule_lines($horario);
+$has_header_contact_panel = ($email_principal !== '' || $telefono_principal !== '' || $direccion_visible !== '' || !empty($header_schedule_lines));
 
 $insta_url   = trim((string) theme360_ctx_get('instagram_url', ''));
 $face_url    = trim((string) theme360_ctx_get('facebook_url', ''));
@@ -428,24 +514,92 @@ $logo_svg_safe = ($logo_svg_raw !== '') ? theme360_prepare_inline_logo_svg($logo
             </div>
 
             <div class="site-header__contact-buttons flex">
-                <?php if ($email_principal !== '') : ?>
-                    <a
-                        class="site-header__contact-button site-header__contact-button--email button--round-s border flex items-center justify-center"
-                        href="<?php echo esc_url('mailto:' . antispambot($email_principal)); ?>"
-                        aria-label="<?php esc_attr_e('Enviar correo electrónico', '360vo-theme'); ?>">
-                        <span class="site-header__contact-button-icon site-header__contact-button-icon--email"><?php echo E360VO_Icon::get('email_new', array('class' => 'flex justify-center items-center')); ?></span>
-                        <span class="site-header__contact-button-text"><?php echo esc_html($email_principal); ?></span>
-                    </a>
+                <?php if ($has_header_contact_panel) : ?>
+                    <button
+                        class="site-header__contact-button site-header__contact-button--contact button--round-s border flex items-center justify-center"
+                        type="button"
+                        aria-label="<?php echo esc_attr(sprintf(__('Ver opciones de contacto de %s', '360vo-theme'), $site_name)); ?>"
+                        aria-expanded="false"
+                        aria-controls="site-header-contact-panel"
+                        data-header-contact-toggle>
+                        <span class="site-header__contact-button-icon site-header__contact-button-icon--contact"><?php echo E360VO_Icon::get('contacto_centralita', array('class' => 'flex justify-center items-center')); ?></span>
+                        <span class="site-header__contact-button-text"><?php esc_html_e('Contacto', '360vo-theme'); ?></span>
+                    </button>
                 <?php endif; ?>
 
                 <?php if ($telefono_principal !== '') : ?>
                     <a
                         class="site-header__contact-button site-header__contact-button--phone button--round-s border flex items-center justify-center"
-                        href="<?php echo esc_url('tel:' . preg_replace('/\s+/', '', ($telefono_e164 !== '' ? $telefono_e164 : $telefono_principal))); ?>"
+                        href="<?php echo esc_url('tel:' . $telefono_href); ?>"
                         aria-label="<?php echo esc_attr(sprintf(__('Llamar a %s', '360vo-theme'), $site_name)); ?>">
                         <span class="site-header__contact-button-icon site-header__contact-button-icon--phone"><?php echo E360VO_Icon::get('call_new', array('class' => 'flex justify-center items-center')); ?></span>
                         <span class="site-header__contact-button-text"><?php echo esc_html($telefono_display); ?></span>
                     </a>
+                <?php endif; ?>
+
+                <?php if ($has_header_contact_panel) : ?>
+                    <div class="site-header__contact-panel" id="site-header-contact-panel" data-header-contact-panel hidden>
+                        <div class="site-header__contact-panel-header">
+                            <strong><?php esc_html_e('Hablemos de tu próximo coche', '360vo-theme'); ?></strong>
+                            <span><?php esc_html_e('Te atendemos de forma directa y sin rodeos.', '360vo-theme'); ?></span>
+                        </div>
+
+                        <div class="site-header__contact-panel-actions" aria-label="<?php esc_attr_e('Opciones de contacto', '360vo-theme'); ?>">
+                            <?php if ($telefono_principal !== '') : ?>
+                                <a class="site-header__contact-panel-action" href="<?php echo esc_url('tel:' . $telefono_href); ?>">
+                                    <?php echo E360VO_Icon::get('call_new', array('aria-hidden' => 'true')); ?>
+                                    <span>
+                                        <strong><?php esc_html_e('Llamar ahora', '360vo-theme'); ?></strong>
+                                        <small><?php echo esc_html($telefono_display); ?></small>
+                                    </span>
+                                </a>
+
+                                <a class="site-header__contact-panel-action" href="<?php echo esc_url($whatsapp_href); ?>" target="_blank" rel="noopener noreferrer">
+                                    <?php echo E360VO_Icon::get('whatsapp', array('aria-hidden' => 'true')); ?>
+                                    <span>
+                                        <strong><?php esc_html_e('Enviar WhatsApp', '360vo-theme'); ?></strong>
+                                        <small><?php esc_html_e('Respuesta rápida del equipo comercial', '360vo-theme'); ?></small>
+                                    </span>
+                                </a>
+                            <?php endif; ?>
+
+                            <?php if ($email_principal !== '') : ?>
+                                <a class="site-header__contact-panel-action" href="<?php echo esc_url('mailto:' . antispambot($email_principal)); ?>">
+                                    <?php echo E360VO_Icon::get('email_new', array('aria-hidden' => 'true')); ?>
+                                    <span>
+                                        <strong><?php esc_html_e('Enviar email', '360vo-theme'); ?></strong>
+                                        <small><?php echo esc_html($email_principal); ?></small>
+                                    </span>
+                                </a>
+                            <?php endif; ?>
+                        </div>
+
+                        <?php if ($direccion_visible !== '' || !empty($header_schedule_lines)) : ?>
+                            <div class="site-header__contact-panel-info">
+                                <?php if ($direccion_visible !== '') : ?>
+                                    <a class="site-header__contact-panel-detail" href="<?php echo esc_url('https://www.google.com/maps/search/?api=1&query=' . rawurlencode($direccion_maps !== '' ? $direccion_maps : $direccion_visible)); ?>" target="_blank" rel="noopener noreferrer">
+                                        <?php echo E360VO_Icon::get('location', array('aria-hidden' => 'true')); ?>
+                                        <span>
+                                            <strong><?php esc_html_e('Dónde estamos', '360vo-theme'); ?></strong>
+                                            <small><?php echo esc_html($direccion_visible); ?></small>
+                                        </span>
+                                    </a>
+                                <?php endif; ?>
+
+                                <?php if (!empty($header_schedule_lines)) : ?>
+                                    <div class="site-header__contact-panel-detail">
+                                        <?php echo E360VO_Icon::get('reloj', array('aria-hidden' => 'true')); ?>
+                                        <span>
+                                            <strong><?php esc_html_e('Horario', '360vo-theme'); ?></strong>
+                                            <?php foreach ($header_schedule_lines as $schedule_line) : ?>
+                                                <small><?php echo esc_html($schedule_line); ?></small>
+                                            <?php endforeach; ?>
+                                        </span>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>

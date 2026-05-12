@@ -818,8 +818,8 @@
 
 .home-hero__wash {
   display: block;
-  opacity: 0.22;
-  filter: blur(10px);
+  opacity: 0.32;
+  filter: blur(8px);
   mix-blend-mode: multiply;
   will-change: transform, opacity;
 }
@@ -844,8 +844,8 @@
 
 .home-hero__mark {
   display: block;
-  opacity: 0.065;
-  filter: blur(0.15px);
+  opacity: 0.1;
+  filter: blur(0);
 }
 
 .home-hero__mark--one {
@@ -853,6 +853,7 @@
   right: -2vw;
   width: clamp(22rem, 38vw, 48rem);
   color: var(--primary30);
+  opacity: 0.1;
   animation: homeHeroMarkFloatOne 30s ease-in-out infinite alternate;
 }
 
@@ -861,7 +862,7 @@
   bottom: 0;
   width: clamp(15rem, 26vw, 34rem);
   color: var(--color-accent);
-  opacity: 0.06;
+  opacity: 0.11;
   animation: homeHeroMarkFloatTwo 34s ease-in-out infinite alternate;
 }
 
@@ -1262,14 +1263,17 @@
   margin-top: 0.85rem;
   color: var(--primary25);
   font-size: 0.88rem;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.2;
-  text-decoration: none;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
 }
 
 .home-hero__trust-link svg {
-  width: 1rem;
-  height: 1rem;
+  width: 1.15rem;
+  height: 1.15rem;
+  align-self: center;
   fill: currentColor;
   transition: transform 0.18s ease;
 }
@@ -1386,58 +1390,58 @@
 
 @keyframes homeHeroMarkFloatOne {
   0% {
-    opacity: 0.045;
+    opacity: 0.075;
     transform: translate3d(0, 0, 0) rotate(-13deg) scale(0.94);
   }
 
   45% {
-    opacity: 0.075;
+    opacity: 0.14;
     transform: translate3d(-1.6rem, 1.2rem, 0) rotate(-8deg) scale(1.08);
   }
 
   100% {
-    opacity: 0.055;
+    opacity: 0.09;
     transform: translate3d(1.2rem, 2.1rem, 0) rotate(-16deg) scale(1.16);
   }
 }
 
 @keyframes homeHeroMarkFloatTwo {
   0% {
-    opacity: 0.035;
+    opacity: 0.07;
     transform: translate3d(0, 0, 0) rotate(17deg) scale(0.98);
   }
 
   50% {
-    opacity: 0.072;
+    opacity: 0.14;
     transform: translate3d(1.4rem, -1.8rem, 0) rotate(12deg) scale(1.12);
   }
 
   100% {
-    opacity: 0.045;
+    opacity: 0.085;
     transform: translate3d(-1.2rem, -2.4rem, 0) rotate(20deg) scale(1.2);
   }
 }
 
 @keyframes homeHeroWashPrimary {
   0% {
-    opacity: 0.16;
+    opacity: 0.22;
     transform: translate3d(0, 0, 0) scale(0.96);
   }
 
   100% {
-    opacity: 0.28;
+    opacity: 0.38;
     transform: translate3d(-4vw, 5vh, 0) scale(1.12);
   }
 }
 
 @keyframes homeHeroWashAccent {
   0% {
-    opacity: 0.14;
+    opacity: 0.2;
     transform: translate3d(0, 0, 0) scale(0.92);
   }
 
   100% {
-    opacity: 0.3;
+    opacity: 0.4;
     transform: translate3d(5vw, -4vh, 0) scale(1.18);
   }
 }

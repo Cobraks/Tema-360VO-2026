@@ -125,10 +125,18 @@ h1,
 /*Botones navegación*/
 
 
-.site-header__contact-button:hover {
+.site-header__contact-button:not(.site-header__contact-button--contact):hover {
   background-color: var(--header-button-hover-bg);
   color: var(--header-button-hover-text);
   border-color: var(--header-button-border);
+}
+
+.site-header__contact-button--contact:hover,
+.site-header__contact-button--contact:focus-visible,
+.site-header__contact-button--contact[aria-expanded="true"] {
+  background: var(--primary40);
+  border-color: var(--primary40);
+  color: var(--neutral99);
 }
 
 

@@ -164,15 +164,20 @@
 
 .home-hero__title {
   margin: 0;
-  max-width: 11ch;
+  max-width: 20ch;
   color: var(--primary15);
-  font-size: clamp(2.4rem, 6.8vw, 5.35rem);
+  font-size: clamp(2.45rem, 9.6vw, 4.9rem);
   font-weight: 800;
-  line-height: 0.94;
+  line-height: 0.98;
   letter-spacing: 0;
 }
 
-.home-hero__title span {
+.home-hero__title-line {
+  display: block;
+  white-space: nowrap;
+}
+
+.home-hero__title-line:last-child {
   color: var(--primary40);
 }
 
@@ -198,12 +203,18 @@
   width: fit-content;
   margin-top: 1.2rem;
   padding: 0.45rem 0.7rem;
-  border: 1px solid color-mix(in srgb, var(--primary40) 10%, var(--color-border));
+  border: 0;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--neutral99) 86%, transparent);
+  background: var(--neutral99);
   color: var(--neutral20);
-  font-size: 0.9rem;
+  font-size: 1rem;
   line-height: 1.1;
+}
+
+.home-hero__rating-logo {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: 0 0 auto;
 }
 
 .home-hero__rating strong {
@@ -912,11 +923,11 @@
 
 .home-hero__title {
   max-width: 20ch;
-  font-size: clamp(2.4rem, 4.9vw, 5.35rem);
+  font-size: clamp(2.45rem, 4.7vw, 5.05rem);
   line-height: 0.96;
 }
 
-.home-hero__title span {
+.home-hero__title-line {
   display: block;
   white-space: nowrap;
 }
@@ -1012,8 +1023,8 @@
 }
 
 .home-hero__vehicle-logo {
-  width: clamp(3.5rem, 4.8vw, 5.5rem);
-  height: clamp(3.2rem, 4.4vw, 4.9rem);
+  width: clamp(4.4rem, 5.8vw, 6.6rem);
+  height: clamp(3.4rem, 4.6vw, 5.2rem);
   border: 0;
   background: transparent;
   clip-path: none;
@@ -1024,19 +1035,19 @@
 .home-hero__vehicle-logo--horizontal_largo,
 .home-hero__vehicle-logo--horizontal-corto,
 .home-hero__vehicle-logo--horizontal_corto {
-  width: clamp(5.6rem, 7.2vw, 8rem);
-  height: clamp(2.4rem, 3.2vw, 3.3rem);
+  width: clamp(7rem, 9vw, 10.5rem);
+  height: clamp(2.65rem, 3.45vw, 3.7rem);
 }
 
 .home-hero__vehicle-logo--vertical {
-  width: clamp(3rem, 3.9vw, 4.4rem);
-  height: clamp(4rem, 5.1vw, 5.8rem);
+  width: clamp(3.6rem, 4.6vw, 5.3rem);
+  height: clamp(4.3rem, 5.5vw, 6.3rem);
 }
 
 .home-hero__vehicle-logo--circular,
 .home-hero__vehicle-logo--circle {
-  width: clamp(3.4rem, 4.3vw, 4.8rem);
-  height: clamp(3.4rem, 4.3vw, 4.8rem);
+  width: clamp(4rem, 5vw, 5.7rem);
+  height: clamp(4rem, 5vw, 5.7rem);
 }
 
 .home-hero__vehicle-logo img {
@@ -1057,7 +1068,7 @@
 }
 
 .home-hero__vehicle-subtitle {
-  font-size: clamp(0.9rem, 1.05vw, 1.12rem);
+  font-size: clamp(1rem, 1.14vw, 1.22rem);
 }
 
 .home-hero__vehicle-side {
@@ -1081,26 +1092,29 @@
 
 .home-hero__vehicle-price {
   display: grid;
-  grid-template-columns: auto auto;
-  align-items: baseline;
-  justify-content: end;
-  column-gap: 0.14em;
+  justify-items: end;
+  gap: 0.16rem;
   color: var(--neutral99);
-  font-size: clamp(1.45rem, 2.8vw, 3rem);
-  line-height: 0.92;
   text-align: right;
 }
 
-.home-hero__vehicle-price small {
+.home-hero__vehicle-price-amount {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.14em;
+  font-size: clamp(1.45rem, 2.8vw, 3rem);
+  font-weight: 800;
+  line-height: 0.92;
+}
+
+.home-hero__vehicle-price-amount span:last-child {
   font-size: 0.58em;
   font-weight: 800;
 }
 
-.home-hero__vehicle-price em {
-  grid-column: 1 / -1;
+.home-hero__vehicle-price-period {
   color: color-mix(in srgb, var(--neutral99) 82%, transparent);
-  font-size: clamp(0.9rem, 1.05vw, 1.12rem);
-  font-style: normal;
+  font-size: clamp(1rem, 1.14vw, 1.22rem);
   font-weight: 700;
   line-height: 1.15;
 }
@@ -1112,17 +1126,25 @@
 }
 
 .home-hero__vehicle-link {
-  max-height: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 9;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
   min-height: 0;
-  padding: 0;
-  overflow: hidden;
+  padding: 0.65rem 0.95rem;
   border-radius: 999px;
-  background: var(--color-accent);
+  background: color-mix(in srgb, var(--primary5) 26%, transparent);
+  border: 1px solid color-mix(in srgb, var(--neutral99) 34%, transparent);
   color: var(--neutral99);
-  box-shadow: 0 0.75rem 1.4rem color-mix(in srgb, var(--color-accent) 18%, transparent);
-  opacity: 0;
-  transform: translateY(0.55rem);
-  transition: max-height 0.24s ease, padding 0.24s ease, opacity 0.24s ease, transform 0.24s ease, background-color 0.24s ease;
+  box-shadow: none;
+  opacity: 0.92;
+  transform: translate(-50%, -50%);
+  backdrop-filter: blur(10px);
+  transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .home-hero__gallery:hover .home-hero__vehicle-price-wrap,
@@ -1132,10 +1154,10 @@
 
 .home-hero__gallery:hover .home-hero__vehicle-link,
 .home-hero__gallery:focus-within .home-hero__vehicle-link {
-  max-height: 3rem;
-  padding: 0.75rem 1rem;
   opacity: 1;
-  transform: translateY(0);
+  transform: translate(-50%, -50%) scale(1.03);
+  background: color-mix(in srgb, var(--primary5) 38%, transparent);
+  border-color: color-mix(in srgb, var(--neutral99) 52%, transparent);
 }
 
 .home-hero__gallery-controls {
@@ -1166,8 +1188,9 @@
 }
 
 .home-hero__control svg {
-  width: 1.65rem;
-  height: 1.65rem;
+  width: 2.35rem;
+  height: 2.35rem;
+  display: block;
 }
 
 .home-hero__control--prev,
@@ -1193,8 +1216,8 @@
 }
 
 .home-hero__control--toggle svg {
-  width: 1.9rem;
-  height: 1.9rem;
+  width: 2.35rem;
+  height: 2.35rem;
 }
 
 .home-hero__gallery:hover .home-hero__control,
@@ -1503,7 +1526,7 @@
 @media (max-width: 600px) {
   .home-hero__title {
     max-width: 100%;
-    font-size: clamp(2.35rem, 12vw, 4rem);
+    font-size: clamp(2rem, 8.8vw, 3.1rem);
   }
 
   .home-hero__actions {
@@ -1511,8 +1534,8 @@
   }
 
   .home-hero__rating {
-    flex-wrap: wrap;
-    border-radius: 0.85rem;
+    flex-wrap: nowrap;
+    border-radius: 999px;
   }
 
   .home-hero__viewport {
@@ -1554,7 +1577,8 @@
   }
 
   .home-hero__vehicle-link {
-    display: none;
+    padding: 0.55rem 0.78rem;
+    font-size: 0.84rem;
   }
 
   .home-hero__gallery-controls {
@@ -1569,6 +1593,12 @@
 
   .featured-services__title {
     max-width: 100%;
+  }
+}
+
+@media (min-width: 1600px) {
+  .home-hero__title {
+    font-size: 5.35rem;
   }
 }
 

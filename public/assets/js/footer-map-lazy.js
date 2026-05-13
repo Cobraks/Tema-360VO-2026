@@ -21,8 +21,6 @@
 	function warmUpMapOrigins() {
 		ensureLink("dns-prefetch", "//www.google.com");
 		ensureLink("dns-prefetch", "//www.gstatic.com");
-		ensureLink("preconnect", "https://www.google.com", "anonymous");
-		ensureLink("preconnect", "https://www.gstatic.com", "anonymous");
 	}
 
 	function init() {

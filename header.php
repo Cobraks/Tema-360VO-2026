@@ -404,6 +404,7 @@ $logo_svg_safe = ($logo_svg_raw !== '') ? theme360_prepare_inline_logo_svg($logo
     <!-- Theme / PWA-ish -->
     <meta name="theme-color" content="<?php echo esc_attr($theme_color); ?>">
     <meta name="color-scheme" content="light">
+    <meta name="mobile-web-app-capable" content="yes">
 
     <!-- iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">

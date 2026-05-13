@@ -145,8 +145,7 @@ $hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7
         <div class="home-hero__container">
             <div class="home-hero__content">
                 <h1 id="hero-title" class="home-hero__title">
-                    <span class="home-hero__title-line">El coche que deseas,</span>
-                    <span class="home-hero__title-line">sin sorpresas.</span>
+                    El coche que deseas, <span class="home-hero__title-nowrap">sin sorpresas.</span>
                 </h1>
 
                 <div class="home-hero__rating" aria-label="Valoracion de clientes">

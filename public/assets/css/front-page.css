@@ -194,6 +194,7 @@
   font-size: clamp(1.03rem, 1.7vw, 1.22rem);
   font-weight: 500;
   line-height: 1.62;
+  text-wrap: pretty;
 }
 
 .home-hero__rating {
@@ -926,20 +927,21 @@
 }
 
 .home-hero__container {
-  max-width: 1760px;
+  max-width: 1880px;
   min-height: 0;
   gap: clamp(1.4rem, 3.2vw, 3.75rem);
   align-items: start;
 }
 
 .home-hero__content {
-  max-width: 40rem;
+  max-width: 44rem;
 }
 
 .home-hero__title {
-  max-width: 15ch;
-  font-size: clamp(2.65rem, 3.72vw, 4.35rem);
+  max-width: none;
+  font-size: clamp(2.55rem, 3.45vw, 4.1rem);
   line-height: 1;
+  text-wrap: balance;
 }
 
 .home-hero__title-nowrap {
@@ -996,9 +998,9 @@
 }
 
 .home-hero__viewport {
-  height: clamp(20rem, 26vw, 28rem);
+  height: clamp(22rem, 30vw, 34rem);
   min-height: 0;
-  max-height: min(44vh, 28rem);
+  max-height: min(62vh, 34rem);
   aspect-ratio: auto;
 }
 
@@ -1335,9 +1337,10 @@
   grid-template-columns: auto minmax(0, 1fr);
   padding: clamp(0.95rem, 1.35vw, 1.35rem);
   overflow: hidden;
-  border-color: color-mix(in srgb, var(--primary40) 18%, var(--color-border));
+  border-color: transparent;
   background:
-    linear-gradient(120deg, color-mix(in srgb, var(--primary98) 88%, transparent), transparent 58%),
+    linear-gradient(128deg, color-mix(in srgb, var(--primary98) 96%, transparent), transparent 62%),
+    radial-gradient(circle at 100% 0, color-mix(in srgb, var(--primary80) 24%, transparent), transparent 36%),
     var(--neutral99);
   color: inherit;
   box-shadow: none;
@@ -1356,26 +1359,41 @@
 }
 
 .home-hero__trust-icon {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   place-self: center;
-  width: clamp(3.6rem, 4.2vw, 4.85rem);
-  height: clamp(3.6rem, 4.2vw, 4.85rem);
-  border-radius: var(--home-hero-radius);
+  width: clamp(3.8rem, 4.6vw, 5.35rem);
+  height: clamp(3.8rem, 4.6vw, 5.35rem);
+  border-radius: 1.05rem;
   background:
-    radial-gradient(circle at 36% 28%, color-mix(in srgb, var(--neutral99) 80%, transparent), transparent 38%),
-    color-mix(in srgb, var(--primary95) 84%, var(--neutral99));
-  color: var(--primary25);
+    linear-gradient(145deg, var(--neutral99), color-mix(in srgb, var(--primary95) 82%, var(--neutral99))),
+    color-mix(in srgb, var(--primary95) 90%, var(--neutral99));
+  color: var(--primary30);
   transition: transform 0.28s ease, background-color 0.28s ease, color 0.28s ease;
 }
 
+.home-hero__trust-icon::before {
+  content: "";
+  position: absolute;
+  inset: 0.45rem;
+  border-radius: 0.8rem;
+  background:
+    linear-gradient(135deg, transparent 0 48%, color-mix(in srgb, var(--primary50) 18%, transparent) 48% 52%, transparent 52%),
+    color-mix(in srgb, var(--primary98) 86%, transparent);
+  opacity: 0.9;
+  transition: transform 0.28s ease, opacity 0.28s ease;
+}
+
 .home-hero__trust-icon svg {
-  width: 62%;
-  height: 62%;
+  position: relative;
+  z-index: 1;
+  width: 66%;
+  height: 66%;
   fill: none;
   stroke: currentColor;
-  stroke-width: 3.2;
+  stroke-width: 2.8;
   stroke-linecap: round;
   stroke-linejoin: round;
   transition: transform 0.28s ease;
@@ -1394,7 +1412,7 @@
 
 .home-hero__trust-item:hover,
 .home-hero__trust-item:focus-within {
-  border-color: color-mix(in srgb, var(--primary50) 34%, var(--primary80));
+  border-color: transparent;
   box-shadow: none;
   transform: translateY(-0.18rem);
 }
@@ -1409,12 +1427,19 @@
   transform: rotate(-2deg) scale(1.06);
 }
 
+.home-hero__trust-item:hover .home-hero__trust-icon::before,
+.home-hero__trust-item:focus-within .home-hero__trust-icon::before {
+  opacity: 1;
+  transform: scale(0.92) rotate(-4deg);
+}
+
 .home-hero__trust-item strong {
   font-size: clamp(1rem, 1.08vw, 1.22rem);
 }
 
 .home-hero__trust-item span {
   font-size: clamp(0.9rem, 0.95vw, 1rem);
+  text-wrap: pretty;
 }
 
 .home-hero__trust-link {
@@ -1656,7 +1681,9 @@
   }
 
   .home-hero__viewport {
-    min-height: 21rem;
+    height: clamp(21rem, 88vw, 28rem);
+    min-height: 0;
+    max-height: none;
   }
 
   .home-hero__vehicle-panel {
@@ -1741,7 +1768,9 @@
 
 @media (min-width: 784px) and (max-width: 1079px) {
   .home-hero__viewport {
-    min-height: clamp(24rem, 48vw, 29rem);
+    height: clamp(25rem, 54vw, 33rem);
+    min-height: 0;
+    max-height: none;
   }
 
   .home-hero__vehicle-panel {
@@ -1773,8 +1802,17 @@
 }
 
 @media (min-width: 1600px) {
+  .home-hero__container {
+    grid-template-columns: minmax(0, 0.92fr) minmax(42rem, 1.08fr);
+  }
+
   .home-hero__title {
-    font-size: 4.25rem;
+    font-size: 4.05rem;
+  }
+
+  .home-hero__media {
+    justify-self: end;
+    width: min(100%, 60rem);
   }
 }
 
@@ -1786,21 +1824,21 @@
   }
 
   .home-hero__container {
-    grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+    grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
     grid-template-rows: auto auto;
-    column-gap: clamp(1.75rem, 3vw, 3.5rem);
+    column-gap: clamp(2rem, 3.2vw, 4rem);
     row-gap: clamp(1rem, 1.8vw, 1.45rem);
-    align-items: start;
+    align-items: end;
   }
 
   .home-hero__content {
-    max-width: 37rem;
-    padding-top: clamp(1.5rem, 4vw, 4.5rem);
+    max-width: 44rem;
+    padding-top: 0;
   }
 
   .home-hero__content,
   .home-hero__media {
-    align-self: start;
+    align-self: end;
   }
 
   .home-hero__media {
@@ -1814,13 +1852,13 @@
 
 @media (min-width: 1360px) {
   .home-hero__content {
-    max-width: 35rem;
-    padding-top: clamp(1.25rem, 2.4vw, 3.1rem);
+    max-width: 43rem;
+    padding-top: 0;
   }
 
   .home-hero__title {
-    max-width: 14.8ch;
-    font-size: clamp(3.2rem, 3.18vw, 4rem);
+    max-width: none;
+    font-size: clamp(3rem, 2.9vw, 3.7rem);
   }
 
   .home-hero__lead {
@@ -1841,13 +1879,27 @@
   }
 
   .home-hero__viewport {
-    height: clamp(20rem, 23.5vw, 25.5rem);
-    max-height: min(40vh, 25.5rem);
+    height: clamp(27rem, 34vw, 35rem);
+    max-height: min(66vh, 35rem);
   }
 }
 
 @media (min-width: 1800px) {
+  .home-hero__container {
+    grid-template-columns: minmax(0, 0.95fr) minmax(44rem, 1.05fr);
+  }
+
   .home-hero__title {
-    font-size: 4.5rem;
+    font-size: 4.3rem;
+  }
+
+  .home-hero__media {
+    justify-self: end;
+    width: min(100%, 62rem);
+  }
+
+  .home-hero__viewport {
+    height: clamp(31rem, 32vw, 38rem);
+    max-height: min(68vh, 38rem);
   }
 }

@@ -240,7 +240,8 @@ body.header-oscuro header.site-header {
 .site-header__logo-img{
   display:block;
   width:auto;
-  height:60px;
+  height:auto;
+  max-height:40px;
   max-width: none;
   object-fit: contain;
 }
@@ -669,6 +670,10 @@ body.header-oscuro header.site-header {
   #breadcrumb{
     font-size: 1rem;
   }
+
+  .site-header__logo-img {
+    max-height: 48px;
+  }
 }
 
 @media (min-width: 1080px) {
@@ -809,6 +814,10 @@ body.header-oscuro header.site-header {
 
   .site-header .custom-logo { max-height: 2.8rem; }
 
+  .site-header__logo-img {
+    max-height: 52px;
+  }
+
   .site-header .site-navigation ul li { font-size: 1rem; 
   padding-inline: 1rem;}
 
@@ -877,6 +886,10 @@ width: fit-content;
 
 .site-header__logo {
   max-width: none;
+}
+
+.site-header__logo-img {
+  max-height: 56px;
 }
 
 }

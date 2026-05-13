@@ -30,6 +30,7 @@
 	const canRotate = slideCount > 1;
 	let currentIndex = 0;
 	let timer = null;
+	let panelSwapTimer = null;
 	let isPaused = false;
 	let isTransitioning = false;
 
@@ -109,9 +110,8 @@
 		logoBox.appendChild(fallback);
 	}
 
-	function updatePanel(index) {
+	function applyPanelData(car) {
 		if (!panel) return;
-		const car = cars[index] || {};
 
 		renderLogo(car);
 		setText(kickerEl, "");
@@ -127,7 +127,27 @@
 			linkEl.href = car.link || fallbackHref;
 			linkEl.setAttribute("aria-label", car.link ? "Ver ficha de " + getVehicleTitle(car) : "Ver vehículos disponibles");
 		}
+	}
 
+	function updatePanel(index, animated) {
+		if (!panel) return;
+		const car = cars[index] || {};
+
+		if (!animated) {
+			applyPanelData(car);
+			return;
+		}
+
+		window.clearTimeout(panelSwapTimer);
+		panel.classList.add("is-changing");
+
+		panelSwapTimer = window.setTimeout(function () {
+			applyPanelData(car);
+
+			window.requestAnimationFrame(function () {
+				panel.classList.remove("is-changing");
+			});
+		}, 210);
 	}
 
 	function updateToggleButton() {
@@ -169,7 +189,7 @@
 		nextSlide.setAttribute("aria-hidden", "false");
 
 		currentIndex = normalizedIndex;
-		updatePanel(currentIndex);
+		updatePanel(currentIndex, true);
 		preloadNextImage(currentIndex);
 
 		window.setTimeout(function () {

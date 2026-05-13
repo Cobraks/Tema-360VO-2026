@@ -860,22 +860,22 @@
   background:
     repeating-linear-gradient(
       116deg,
-      transparent 0 4.2rem,
-      color-mix(in srgb, var(--primary50) 5%, transparent) 4.2rem 4.35rem,
-      transparent 4.35rem 8.8rem
+      transparent 0 5.5rem,
+      color-mix(in srgb, var(--neutral60) 6%, transparent) 5.5rem 5.62rem,
+      transparent 5.62rem 11.5rem
     ),
-    linear-gradient(116deg, transparent 0 42%, color-mix(in srgb, var(--primary90) 52%, transparent) 42% 43%, transparent 63%),
-    linear-gradient(90deg, transparent, color-mix(in srgb, var(--primary95) 56%, transparent));
+    linear-gradient(116deg, transparent 0 46%, color-mix(in srgb, var(--primary95) 44%, transparent) 46% 47%, transparent 66%),
+    linear-gradient(90deg, transparent, color-mix(in srgb, var(--neutral95) 58%, transparent));
   background-size: 120% 120%, 100% 100%, 100% 100%;
-  mask-image: linear-gradient(100deg, rgba(0, 0, 0, 0.7), transparent 78%);
-  opacity: 0.88;
-  animation: homeHeroSpeedLines 22s linear infinite;
+  mask-image: linear-gradient(102deg, rgba(0, 0, 0, 0.46), transparent 76%);
+  opacity: 0.72;
+  animation: homeHeroSpeedLines 30s linear infinite;
 }
 
 .home-hero__wash {
   display: block;
-  opacity: 0.5;
-  filter: blur(14px);
+  opacity: 0.34;
+  filter: blur(18px);
   mix-blend-mode: multiply;
   will-change: transform, opacity;
 }
@@ -885,8 +885,8 @@
   right: -18vw;
   height: 64%;
   background:
-    radial-gradient(circle at 42% 42%, color-mix(in srgb, var(--neutral99) 34%, transparent), transparent 28%),
-    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--primary80) 42%, transparent), transparent 68%);
+    radial-gradient(circle at 42% 42%, color-mix(in srgb, var(--neutral99) 42%, transparent), transparent 30%),
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--primary85) 32%, transparent), transparent 70%);
   clip-path: none;
   animation: homeHeroWashPrimary 24s ease-in-out infinite alternate;
 }
@@ -896,8 +896,8 @@
   bottom: -12%;
   height: 48%;
   background:
-    radial-gradient(circle at 38% 48%, color-mix(in srgb, var(--neutral99) 34%, transparent), transparent 30%),
-    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--color-accent) 28%, transparent), transparent 70%);
+    radial-gradient(circle at 38% 48%, color-mix(in srgb, var(--neutral99) 42%, transparent), transparent 30%),
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--primary85) 24%, transparent), transparent 72%);
   clip-path: none;
   animation: homeHeroWashAccent 28s ease-in-out infinite alternate;
 }
@@ -921,8 +921,8 @@
   left: -7rem;
   bottom: -3rem;
   width: clamp(17rem, 30vw, 38rem);
-  color: var(--color-accent);
-  opacity: 0.18;
+  color: var(--primary40);
+  opacity: 0.1;
   animation: homeHeroMarkFloatTwo 36s ease-in-out infinite alternate;
 }
 
@@ -1328,6 +1328,7 @@
 
 .home-hero__trust {
   gap: clamp(0.85rem, 1.5vw, 1.25rem);
+  padding-top: clamp(0.75rem, 1.4vw, 1.5rem);
 }
 
 .home-hero__trust-item {
@@ -1348,14 +1349,7 @@
 }
 
 .home-hero__trust-item::before {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 0.22rem;
-  background: linear-gradient(180deg, var(--primary50), color-mix(in srgb, var(--color-accent) 72%, var(--primary50)));
-  transform: scaleY(0.45);
-  transform-origin: 50% 50%;
-  transition: transform 0.24s ease;
+  content: none;
 }
 
 .home-hero__trust-icon {
@@ -1368,22 +1362,15 @@
   height: clamp(3.8rem, 4.6vw, 5.35rem);
   border-radius: 1.05rem;
   background:
-    linear-gradient(145deg, var(--neutral99), color-mix(in srgb, var(--primary95) 82%, var(--neutral99))),
-    color-mix(in srgb, var(--primary95) 90%, var(--neutral99));
+    radial-gradient(circle at 34% 26%, var(--neutral99), transparent 38%),
+    linear-gradient(145deg, color-mix(in srgb, var(--primary98) 88%, var(--neutral99)), color-mix(in srgb, var(--primary92) 78%, var(--neutral99)));
   color: var(--primary30);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary50) 9%, transparent);
   transition: transform 0.28s ease, background-color 0.28s ease, color 0.28s ease;
 }
 
 .home-hero__trust-icon::before {
-  content: "";
-  position: absolute;
-  inset: 0.45rem;
-  border-radius: 0.8rem;
-  background:
-    linear-gradient(135deg, transparent 0 48%, color-mix(in srgb, var(--primary50) 18%, transparent) 48% 52%, transparent 52%),
-    color-mix(in srgb, var(--primary98) 86%, transparent);
-  opacity: 0.9;
-  transition: transform 0.28s ease, opacity 0.28s ease;
+  content: none;
 }
 
 .home-hero__trust-icon svg {
@@ -1417,20 +1404,9 @@
   transform: translateY(-0.18rem);
 }
 
-.home-hero__trust-item:hover::before,
-.home-hero__trust-item:focus-within::before {
-  transform: scaleY(1);
-}
-
 .home-hero__trust-item:hover .home-hero__trust-icon svg,
 .home-hero__trust-item:focus-within .home-hero__trust-icon svg {
   transform: rotate(-2deg) scale(1.06);
-}
-
-.home-hero__trust-item:hover .home-hero__trust-icon::before,
-.home-hero__trust-item:focus-within .home-hero__trust-icon::before {
-  opacity: 1;
-  transform: scale(0.92) rotate(-4deg);
 }
 
 .home-hero__trust-item strong {
@@ -1596,17 +1572,17 @@
 
 @keyframes homeHeroMarkFloatTwo {
   0% {
-    opacity: 0.09;
+    opacity: 0.045;
     transform: translate3d(0, 0, 0) rotate(17deg) scale(0.94);
   }
 
   50% {
-    opacity: 0.19;
+    opacity: 0.085;
     transform: translate3d(2.1rem, -2.2rem, 0) rotate(11deg) scale(1.1);
   }
 
   100% {
-    opacity: 0.11;
+    opacity: 0.055;
     transform: translate3d(-1.8rem, -3rem, 0) rotate(21deg) scale(1.22);
   }
 }
@@ -1630,17 +1606,17 @@
 
 @keyframes homeHeroWashAccent {
   0% {
-    opacity: 0.22;
+    opacity: 0.14;
     transform: translate3d(0, 0, 0) scale(0.88);
   }
 
   48% {
-    opacity: 0.48;
+    opacity: 0.26;
     transform: translate3d(6vw, -5vh, 0) scale(1.2);
   }
 
   100% {
-    opacity: 0.3;
+    opacity: 0.18;
     transform: translate3d(3vw, -2vh, 0) scale(1.08);
   }
 }
@@ -1801,21 +1777,6 @@
   }
 }
 
-@media (min-width: 1600px) {
-  .home-hero__container {
-    grid-template-columns: minmax(0, 0.92fr) minmax(42rem, 1.08fr);
-  }
-
-  .home-hero__title {
-    font-size: 4.05rem;
-  }
-
-  .home-hero__media {
-    justify-self: end;
-    width: min(100%, 60rem);
-  }
-}
-
 @media (min-width: 1080px) {
   .home-hero,
   .logged-in .home-hero {
@@ -1839,6 +1800,10 @@
   .home-hero__content,
   .home-hero__media {
     align-self: end;
+  }
+
+  .home-hero__content {
+    align-self: center;
   }
 
   .home-hero__media {
@@ -1881,6 +1846,26 @@
   .home-hero__viewport {
     height: clamp(27rem, 34vw, 35rem);
     max-height: min(66vh, 35rem);
+  }
+}
+
+@media (min-width: 1600px) {
+  .home-hero__container {
+    grid-template-columns: minmax(0, 0.92fr) minmax(42rem, 1.08fr);
+  }
+
+  .home-hero__title {
+    font-size: 4.05rem;
+  }
+
+  .home-hero__lead {
+    font-size: clamp(1.06rem, 0.72vw, 1.18rem);
+    line-height: 1.6;
+  }
+
+  .home-hero__media {
+    justify-self: end;
+    width: min(100%, 60rem);
   }
 }
 

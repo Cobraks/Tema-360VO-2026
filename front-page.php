@@ -46,9 +46,12 @@ if ($hero_query->have_posts()) {
         // ACF
         $version = get_field('datos_generales_version', $car_id);
         $precio  = get_field('precio_y_descuentos_precio', $car_id);
+        $cuota   = get_field('financiacion_cuota_minima', $car_id);
 
         $precio_num = is_numeric($precio) ? (float) $precio : 0.0;
         $precio_formateado = $precio_num ? number_format($precio_num, 0, ',', '.') . ' €' : '';
+        $cuota_num = is_numeric($cuota) ? (float) $cuota : 0.0;
+        $cuota_formateada = $cuota_num ? number_format($cuota_num, 0, ',', '.') . '€' : '';
 
         // Portada
         $image_id = get_field('otros_datos_portada_coche', $car_id);
@@ -59,7 +62,19 @@ if ($hero_query->have_posts()) {
             $image_id = get_post_thumbnail_id($car_id);
         }
 
-        $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : '';
+        if (is_array($image_id)) {
+            $image_id = (int) ($image_id['ID'] ?? $image_id['id'] ?? 0);
+        } else {
+            $image_id = (int) $image_id;
+        }
+
+        $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'gv360_w_980') : '';
+        if (!$image_url && $image_id) {
+            $image_url = wp_get_attachment_image_url($image_id, 'large');
+        }
+        if (!$image_url && $image_id) {
+            $image_url = wp_get_attachment_image_url($image_id, 'full');
+        }
         $image_alt = $image_id ? get_post_meta($image_id, '_wp_attachment_image_alt', true) : '';
 
         if (empty($image_alt)) {
@@ -69,6 +84,7 @@ if ($hero_query->have_posts()) {
         // Logo marca
         $logo_marca_white_id = $marca_term ? get_field('logo_marca_white', $marca_term) : null;
         $logo_marca_id       = $marca_term ? get_field('logo_marca', $marca_term) : null;
+        $logo_marca_shape    = $marca_term ? sanitize_html_class((string) get_field('forma_del_logo', $marca_term)) : '';
 
         $logo_url = '';
         if (!empty($logo_marca_white_id)) {
@@ -84,235 +100,250 @@ if ($hero_query->have_posts()) {
             'modelo'  => $nombre_modelo,
             'version' => (string) $version,
             'precio'  => $precio_formateado,
+            'cuota'   => $cuota_formateada,
             'img'     => $image_url,
             'imgAlt'  => $image_alt,
             'logo'    => $logo_url,
+            'logoShape' => $logo_marca_shape ?: 'default',
+            'imageId' => $image_id,
         ];
     }
     wp_reset_postdata();
 }
 
 $hero_cars_json = wp_json_encode($hero_cars);
+$stock_url = get_post_type_archive_link('coche');
+if (!$stock_url) {
+    $stock_url = home_url('/coches-de-segunda-mano/');
+}
+
+$sell_car_page = get_page_by_path('vendemos-tu-coche');
+$sell_car_url = $sell_car_page ? get_permalink($sell_car_page) : home_url('/vendemos-tu-coche/');
+$method_page = get_page_by_path('metodo-escarpa');
+$method_url = $method_page ? get_permalink($method_page) : home_url('/metodo-escarpa/');
+$warranty_page = get_page_by_path('coches-de-segunda-mano-con-garantia');
+$warranty_url = $warranty_page ? get_permalink($warranty_page) : home_url('/coches-de-segunda-mano-con-garantia/');
+$finance_page = get_page_by_path('coches-con-financiacion-segunda-mano');
+$finance_url = $finance_page ? get_permalink($finance_page) : home_url('/coches-con-financiacion-segunda-mano/');
+
+$hero_mark_path = 'M22.7,61.8c0.1,0.1,0.2,0.2,0.4,0.2h13.6c3.1,0,5.9-1.8,7.1-4.7l4-9.3c0.1-0.2,0-0.4-0.2-0.5c0,0-0.1,0-0.1,0H24.7c-0.2,0-0.4-0.2-0.4-0.4c0-0.1,0-0.1,0-0.2l1.6-3c0.2-0.3,0.5-0.5,0.9-0.5h17.9c3.1,0,5.9-1.8,7.1-4.7l4-9.2c0.1-0.2,0-0.4-0.2-0.5c0,0-0.1,0-0.1,0H13.3c-0.2,0-0.4-0.2-0.4-0.4c0-0.1,0-0.1,0-0.2l1.6-3c0.2-0.3,0.5-0.5,0.9-0.5h37.4c3.1,0,5.9-1.9,7.1-4.7l4.2-9.7c0.1-0.2,0-0.4-0.2-0.5c0,0-0.1,0-0.1,0h-63c-0.2,0-0.4,0.2-0.4,0.4c0,0,0,0.1,0,0.1L22.7,61.8z';
 ?>
 
 <main id="main" class="main">
-    <!-- Hero Section -->
-
-    <!-- BOTÓN DE SCROLL MEJORADO -->
-    <button class="hero-section__scroll-indicator" aria-label="Desplazar hacia abajo para ver más contenido">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
-        </svg>
-    </button>
-    <section class="hero-section" aria-labelledby="hero-title">
-        <div class="hero-section__background" aria-hidden="true">
-            <div class="hero-section__gradient"></div>
-            <div class="hero-section__pattern"></div>
+    <section class="home-hero home-hero--front" aria-labelledby="hero-title">
+        <div class="home-hero__background" aria-hidden="true">
+            <span class="home-hero__wash home-hero__wash--primary"></span>
+            <span class="home-hero__wash home-hero__wash--accent"></span>
+            <svg class="home-hero__mark home-hero__mark--one" viewBox="0 0 65 64" focusable="false">
+                <path d="<?php echo esc_attr($hero_mark_path); ?>"></path>
+            </svg>
+            <svg class="home-hero__mark home-hero__mark--two" viewBox="0 0 65 64" focusable="false">
+                <path d="<?php echo esc_attr($hero_mark_path); ?>"></path>
+            </svg>
         </div>
 
-        <div class="hero-section__container">
-            <!-- Visual: slider de últimos coches -->
-            <div class="hero-section__visual">
-                <div class="hero-section__image-wrapper" data-hero-cars='<?php echo esc_attr($hero_cars_json); ?>'>
-                    <div class="hero-section__slider" aria-label="Galería de vehículos recientes" role="group" tabindex="0">
-                        <?php if (!empty($hero_cars)) : ?>
-                            <?php foreach ($hero_cars as $index => $car) : ?>
-                                <div class="hero-section__slide <?php echo $index === 0 ? 'is-active' : ''; ?>" data-slide-index="<?php echo esc_attr((string)$index); ?>">
-                                    <?php if (!empty($car['img'])) : ?>
-                                        <img
-                                            src="<?php echo esc_url($car['img']); ?>"
-                                            alt="<?php echo esc_attr($car['imgAlt']); ?>"
-                                            loading="<?php echo $index === 0 ? 'eager' : 'lazy'; ?>"
-                                            decoding="async"
-                                            fetchpriority="<?php echo $index === 0 ? 'high' : 'low'; ?>" />
-                                    <?php else : ?>
-                                        <img
-                                            src="<?php echo esc_url(get_template_directory_uri() . '/public/assets/images/defaults/presentacion_azul.png'); ?>"
-                                            alt="Vehículo de segunda mano en exposición"
-                                            loading="<?php echo $index === 0 ? 'eager' : 'lazy'; ?>"
-                                            decoding="async" />
-                                    <?php endif; ?>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php else : ?>
-                            <div class="hero-section__slide is-active" data-slide-index="0">
-                                <img
-                                    src="https://www.stoic-archimedes.31-170-100-104.plesk.page/wp-content/uploads/2026/02/WhatsApp-Image-2025-07-02-at-09.16.05.jpeg"
-                                    alt="Vehículo premium en exposición - Concesionario EdreamsCars Alicante"
-                                    loading="eager"
-                                    decoding="async" />
-                            </div>
-                        <?php endif; ?>
-                        <div class="hero-section__image-overlay"></div>
-
-                        <!-- Controles -->
-                        <div class="hero-section__slider-controls" aria-hidden="false">
-                            <button class="hero-section__slider-btn hero-section__slider-btn--prev" type="button" aria-label="Coche anterior">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
-                                </svg>
-                            </button>
-                            <button class="hero-section__slider-btn hero-section__slider-btn--next" type="button" aria-label="Coche siguiente">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="m8.59 16.59 1.41 1.41 6-6-6-6-1.41 1.41L13.17 12z"></path>
-                                </svg>
-                            </button>
-
-                            <button class="hero-section__slider-toggle" type="button" aria-label="Pausar reproducción" aria-pressed="false">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path>
-                                </svg>
-                            </button>
-                        </div>
-
-                        <!-- Badge dinámico dividido -->
-                        <div class="hero-section__car-badge" aria-live="polite" aria-atomic="true">
-                            <?php if (!empty($hero_cars) && count($hero_cars) > 1) : ?>
-                                <div class="hero-section__dots" aria-label="Selector de coche">
-                                    <?php foreach ($hero_cars as $i => $_car) : ?>
-                                        <button
-                                            type="button"
-                                            class="hero-section__dot"
-                                            data-dot-index="<?php echo esc_attr((string)$i); ?>"
-                                            aria-label="<?php echo esc_attr('Ir al coche ' . ($i + 1)); ?>"
-                                            aria-current="<?php echo $i === 0 ? 'true' : 'false'; ?>"></button>
-                                    <?php endforeach; ?>
-                                </div>
-                            <?php endif; ?>
-
-                            <div class="hero-section__car-badge-content">
-                                <!-- Parte izquierda: Logo e información del coche -->
-                                <div class="hero-section__car-info">
-                                    <div class="hero-section__car-logo" aria-hidden="true">
-                                        <img src="" alt="" />
-                                    </div>
-                                    <div class="hero-section__car-text">
-                                        <span class="hero-section__car-title"></span>
-                                        <span class="hero-section__car-subtitle"></span>
-                                    </div>
-                                </div>
-
-                                <!-- Parte derecha: Precio y CTA -->
-                                <div class="hero-section__car-actions">
-                                    <div class="hero-section__car-price-wrap">
-                                        <div class="hero-section__car-price"></div>
-                                        <div class="hero-section__car-price-note">Financiado</div>
-                                    </div>
-
-                                    <a class="hero-section__car-cta" href="#" aria-label="Ver ficha del vehículo">
-                                        <span>Ver ficha</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h6v2H7v10h10v-4h2v6H5V5z" />
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Features debajo de la imagen en desktop -->
-                <div class="hero-section__features">
-                    <div class="hero-section__feature">
-                        <svg class="hero-section__feature-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
-                            <path d="M824-80 716-188q-22 13-46 20.5t-50 7.5q-75 0-127.5-52.5T440-340q0-75 52.5-127.5T620-520q75 0 127.5 52.5T800-340q0 26-7.5 50T772-244l108 108-56 56ZM691-269q29-29 29-71t-29-71q-29-29-71-29t-71 29q-29 29-29 71t29 71q29 29 71 29t71-29Zm149-291h-80v-200h-80v120H280v-120h-80v560h200v80H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h167q11-35 43-57.5t70-22.5q40 0 71.5 22.5T594-840h166q33 0 56.5 23.5T840-760v200ZM508.5-771.5Q520-783 520-800t-11.5-28.5Q497-840 480-840t-28.5 11.5Q440-817 440-800t11.5 28.5Q463-760 480-760t28.5-11.5Z" />
-                        </svg>
-
-                        <div>
-                            <div class="hero-section__feature-title">Revisión completa</div>
-                            <div class="hero-section__feature-desc">Proceso profesional</div>
-                        </div>
-                    </div>
-
-                    <div class="hero-section__feature">
-                        <svg class="hero-section__feature-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M480-80q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Zm0-84q104-33 172-132t68-220v-189l-240-90-240 90v189q0 121 68 220t172 132Zm0-316Z" />
-                        </svg>
-                        <div>
-                            <div class="hero-section__feature-title">Garantía</div>
-                            <div class="hero-section__feature-desc">Hasta 3 años</div>
-                        </div>
-                    </div>
-
-                    <div class="hero-section__feature">
-                        <svg class="hero-section__feature-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-155.5t86-127Q252-817 325-848.5T480-880q83 0 155.5 31.5t127 86q54.5 54.5 86 127T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480-80Zm0-240q60 0 117 17.5T704-252q46-46 71-104.5T800-480q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 65 24.5 124T256-252q50-33 107-50.5T480-320Zm0 80q-41 0-80 10t-74 30q35 20 74 30t80 10q41 0 80-10t74-30q-35-20-74-30t-80-10ZM280-520q17 0 28.5-11.5T320-560q0-17-11.5-28.5T280-600q-17 0-28.5 11.5T240-560q0 17 11.5 28.5T280-520Zm120-120q17 0 28.5-11.5T440-680q0-17-11.5-28.5T400-720q-17 0-28.5 11.5T360-680q0 17 11.5 28.5T400-640Zm280 120q17 0 28.5-11.5T720-560q0-17-11.5-28.5T680-600q-17 0-28.5 11.5T640-560q0 17 11.5 28.5T680-520ZM480-400q33 0 56.5-23.5T560-480q0-13-4-25.5T544-528l54-136q7-16 .5-31.5T576-718q-15-7-30.5-.5T524-696l-54 136q-30 5-50 27.5T400-480q0 33 23.5 56.5T480-400Zm0 80Zm0-206Zm0 286Z"></path>
-                        </svg>
-                        <div>
-                            <div class="hero-section__feature-title">Historial verificado</div>
-                            <div class="hero-section__feature-desc">Kilómetros certificados</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Contenido - Segundo en móvil -->
-            <div class="hero-section__content">
-                <div class="hero-section__badge">
-                    <svg class="hero-section__badge-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
-                        <path d="M160-160v-640 292-12 360Zm40-356v264q0 14 9 23t23 9h16q14 0 23-9t9-23v-48h167q5-22 12.5-41.5T478-380H280v-120h336q34-14 71-18t73 1l-66-191q-5-14-16.5-23t-25.5-9H308q-14 0-25.5 9T266-708l-66 192Zm106-64 28-80h292l28 80H306Zm82.5 168.5Q400-423 400-440t-11.5-28.5Q377-480 360-480t-28.5 11.5Q320-457 320-440t11.5 28.5Q343-400 360-400t28.5-11.5ZM692-150l142-142-30-30-112 112-56-56-30 30 86 86Zm169.5-231.5Q920-323 920-240T861.5-98.5Q803-40 720-40T578.5-98.5Q520-157 520-240t58.5-141.5Q637-440 720-440t141.5 58.5ZM160-80q-33 0-56.5-23.5T80-160v-640q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v331q-18-13-38-22.5T800-508v-292H160v640h292q7 22 16.5 42T491-80H160Z" />
-                    </svg>
-                    <span>Concesionario certificado</span>
-                </div>
-
-                <h1 id="hero-title" class="hero-section__title">
-                    <span class="hero-section__title-highlight">Concesionario</span> de confianza en Alicante
+        <div class="home-hero__container">
+            <div class="home-hero__content">
+                <h1 id="hero-title" class="home-hero__title">
+                    El coche que deseas, <span class="home-hero__title-nowrap">sin sorpresas.</span>
                 </h1>
 
-                <p class="hero-section__description">
-                    En EdreamsCars te ayudamos a encontrar el coche que encaja contigo.
-                    Vehículos de segunda mano revisados, con <strong>kilómetros certificados</strong>
-                    y <strong>garantía de hasta 3 años</strong>.
-                    <em>Lujo accesible, calidad entera.</em>
-                </p>
-
-                <div class="hero-section__stats">
-                    <div class="hero-section__stat">
-                        <div class="hero-section__stat-number">1er año</div>
-                        <div class="hero-section__stat-label">Mantenimiento gratis</div>
-                    </div>
-                    <div class="hero-section__stat">
-                        <div class="hero-section__stat-number">100%</div>
-                        <div class="hero-section__stat-label">Kilómetros certificados</div>
-                    </div>
-                    <div class="hero-section__stat">
-                        <div class="hero-section__stat-number">3 años</div>
-                        <div class="hero-section__stat-label">Garantía incluida</div>
-                    </div>
+                <div class="home-hero__copy">
+                    <p class="home-hero__lead">
+                        En Escarpa Motor hemos desarrollado una forma más transparente, cuidada y segura de comprar un coche de segunda mano en Madrid: vehículos revisados, garantía explicada, financiación sencilla de entender y una entrega preparada al detalle.
+                    </p>
                 </div>
 
-                <div class="hero-section__cta-group">
-                    <a href="https://www.stoic-archimedes.31-170-100-104.plesk.page/coches-baratos-segunda-mano/"
-                        class="hero-section__cta hero-section__cta--secondary"
-                        aria-label="Vender mi coche a EdreamsCars">
-                        <span>Compramos tu coche</span>
-                        <svg class="hero-section__cta-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"></path>
-                        </svg>
+                <div class="home-hero__rating" aria-label="Valoracion de clientes">
+                    <svg class="home-hero__rating-logo" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" aria-hidden="true" focusable="false"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/><path d="M1 1h22v22H1z" fill="none"/></svg>
+                    <strong>4,9</strong>
+                    <span class="home-hero__rating-stars" aria-hidden="true">★★★★★</span>
+                    <span>(66 reseñas)</span>
+                </div>
+
+                <div class="home-hero__actions" aria-label="Acciones principales">
+                    <a class="home-hero__button home-hero__button--secondary" href="<?php echo esc_url($sell_car_url); ?>">
+                        <span>Vender tu coche</span>
                     </a>
-                    <a href="https://www.stoic-archimedes.31-170-100-104.plesk.page/coches-baratos-segunda-mano/"
-                        class="hero-section__cta hero-section__cta--primary"
-                        aria-label="Ver todos nuestros vehículos disponibles">
-                        <span>Ver vehículos</span>
-                        <svg class="hero-section__cta-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                            <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"></path>
+                    <a class="home-hero__button home-hero__button--primary" href="<?php echo esc_url($stock_url); ?>">
+                        <span>Ver coches disponibles</span>
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M5 12h12.17l-4.58-4.59L14 6l7 7-7 7-1.41-1.41L17.17 14H5v-2Z"></path>
                         </svg>
                     </a>
                 </div>
             </div>
+
+            <div class="home-hero__media">
+                <div class="home-hero__gallery" data-home-hero-cars='<?php echo esc_attr($hero_cars_json); ?>'>
+                    <div class="home-hero__gallery-frame">
+                        <div class="home-hero__viewport" aria-label="Galería de vehículos recientes" role="group" tabindex="0">
+                            <?php if (!empty($hero_cars)) : ?>
+                                <?php foreach ($hero_cars as $index => $car) : ?>
+                                    <article class="home-hero__slide <?php echo $index === 0 ? 'is-active' : ''; ?>" data-slide-index="<?php echo esc_attr((string) $index); ?>" aria-hidden="<?php echo $index === 0 ? 'false' : 'true'; ?>">
+                                        <?php
+                                        $image_args = [
+                                            'class'         => 'home-hero__image',
+                                            'loading'       => $index === 0 ? 'eager' : 'lazy',
+                                            'decoding'      => 'async',
+                                            'fetchpriority' => $index === 0 ? 'high' : 'low',
+                                            'sizes'         => '(max-width: 767px) 92vw, (max-width: 1199px) 84vw, 48vw',
+                                            'alt'           => $car['imgAlt'],
+                                            'style'         => !empty($car['id']) ? 'view-transition-name: portada-' . (int) $car['id'] . ';' : '',
+                                        ];
+                                        ?>
+                                        <?php if (!empty($car['imageId'])) : ?>
+                                            <?php echo wp_get_attachment_image((int) $car['imageId'], 'gv360_w_980', false, $image_args); ?>
+                                        <?php elseif (!empty($car['img'])) : ?>
+                                            <img class="home-hero__image" src="<?php echo esc_url($car['img']); ?>" alt="<?php echo esc_attr($car['imgAlt']); ?>" loading="<?php echo $index === 0 ? 'eager' : 'lazy'; ?>" decoding="async" fetchpriority="<?php echo $index === 0 ? 'high' : 'low'; ?>"<?php echo !empty($car['id']) ? ' style="' . esc_attr('view-transition-name: portada-' . (int) $car['id'] . ';') . '"' : ''; ?>>
+                                        <?php else : ?>
+                                            <img class="home-hero__image" src="<?php echo esc_url(get_template_directory_uri() . '/public/assets/images/defaults/presentacion_azul.png'); ?>" alt="Coche de segunda mano preparado para entrega" loading="<?php echo $index === 0 ? 'eager' : 'lazy'; ?>" decoding="async">
+                                        <?php endif; ?>
+                                    </article>
+                                <?php endforeach; ?>
+                            <?php else : ?>
+                                <article class="home-hero__slide is-active" data-slide-index="0" aria-hidden="false">
+                                    <img class="home-hero__image" src="<?php echo esc_url(get_template_directory_uri() . '/public/assets/images/defaults/presentacion_azul.png'); ?>" alt="Coche de segunda mano preparado para entrega" loading="eager" decoding="async">
+                                </article>
+                            <?php endif; ?>
+                            <div class="home-hero__image-shade" aria-hidden="true"></div>
+
+                            <?php $active_car = $hero_cars[0] ?? null; ?>
+                            <?php $active_transition_id = !empty($active_car['id']) ? (int) $active_car['id'] : 0; ?>
+                            <div class="home-hero__vehicle-panel" aria-live="polite" aria-atomic="true">
+                                <div class="home-hero__vehicle-main">
+                                    <?php $active_logo_shape = !empty($active_car['logoShape']) ? sanitize_html_class((string) $active_car['logoShape']) : 'default'; ?>
+                                    <div class="home-hero__vehicle-logo home-hero__vehicle-logo--<?php echo esc_attr($active_logo_shape); ?>" aria-hidden="true"<?php echo $active_transition_id ? ' style="' . esc_attr('view-transition-name: logo-' . $active_transition_id . ';') . '"' : ''; ?>>
+                                        <?php if (!empty($active_car['logo'])) : ?>
+                                            <img src="<?php echo esc_url($active_car['logo']); ?>" alt="" loading="lazy" decoding="async">
+                                        <?php else : ?>
+                                            <span><?php echo esc_html(substr((string) ($active_car['marca'] ?? 'E'), 0, 1)); ?></span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="home-hero__vehicle-copy">
+                                        <strong class="home-hero__vehicle-title"<?php echo $active_transition_id ? ' style="' . esc_attr('view-transition-name: title-' . $active_transition_id . ';') . '"' : ''; ?>><?php echo esc_html(trim(($active_car['marca'] ?? '') . ' ' . ($active_car['modelo'] ?? 'Vehículo destacado'))); ?></strong>
+                                        <span class="home-hero__vehicle-subtitle"<?php echo $active_transition_id ? ' style="' . esc_attr('view-transition-name: version-' . $active_transition_id . ';') . '"' : ''; ?>><?php echo esc_html($active_car['version'] ?? 'Stock revisado y actualizado'); ?></span>
+                                    </div>
+                                </div>
+
+                                <div class="home-hero__vehicle-side">
+                                    <?php $active_cuota_amount = !empty($active_car['cuota']) ? trim(str_replace('€', '', (string) $active_car['cuota'])) : ''; ?>
+                                    <div class="home-hero__vehicle-price-wrap">
+                                        <?php if (!empty($active_car['cuota'])) : ?>
+                                            <div class="home-hero__vehicle-price"<?php echo $active_transition_id ? ' style="' . esc_attr('view-transition-name: price-contado-' . $active_transition_id . ';') . '"' : ''; ?>>
+                                                <span class="home-hero__vehicle-price-amount"><span><?php echo esc_html($active_cuota_amount); ?></span><span>€</span></span>
+                                                <span class="home-hero__vehicle-price-period">al mes</span>
+                                            </div>
+                                        <?php else : ?>
+                                            <div class="home-hero__vehicle-price home-hero__vehicle-price--fallback"<?php echo $active_transition_id ? ' style="' . esc_attr('view-transition-name: price-contado-' . $active_transition_id . ';') . '"' : ''; ?>>Financiación a medida</div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a class="home-hero__vehicle-link" href="<?php echo esc_url($active_car['link'] ?? $stock_url); ?>">
+                                <span>Ver ficha</span>
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3ZM5 5h6v2H7v10h10v-4h2v6H5V5Z"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="home-hero__gallery-controls" aria-label="Controles de vehículos destacados">
+                        <button class="home-hero__control home-hero__control--prev" type="button" aria-label="Vehículo anterior">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="m15.4 7.4-1.4-1.4-6 6 6 6 1.4-1.4-4.6-4.6 4.6-4.6Z"></path>
+                            </svg>
+                        </button>
+                        <button class="home-hero__control home-hero__control--next" type="button" aria-label="Vehículo siguiente">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="m8.6 16.6 1.4 1.4 6-6-6-6-1.4 1.4 4.6 4.6-4.6 4.6Z"></path>
+                            </svg>
+                        </button>
+                        <button class="home-hero__control home-hero__control--toggle" type="button" aria-label="Pausar galería" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M6 5h4v14H6V5Zm8 0h4v14h-4V5Z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="home-hero__trust" aria-label="Compromisos de Escarpa Motor">
+                <article class="home-hero__trust-item">
+                    <span class="home-hero__trust-icon" aria-hidden="true">
+                        <svg viewBox="0 0 64 64">
+                            <path d="M18 18h22l8 8v26H18z"></path>
+                            <path d="M40 18v9h8"></path>
+                            <path d="M24 31h16"></path>
+                            <path d="M24 39h10"></path>
+                            <circle cx="42" cy="42" r="9"></circle>
+                            <path class="home-hero__trust-check" d="m38.5 42 2.5 2.5 5-6"></path>
+                        </svg>
+                    </span>
+                    <div>
+                        <strong>Revisión documentada</strong>
+                        <span>Estado, historial y preparación visibles desde el primer contacto.</span>
+                        <a class="home-hero__trust-link" href="<?php echo esc_url($method_url); ?>">
+                            <span>Conoce el Método Escarpa</span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3ZM5 5h6v2H7v10h10v-4h2v6H5V5Z"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+                <article class="home-hero__trust-item">
+                    <span class="home-hero__trust-icon" aria-hidden="true">
+                        <svg viewBox="0 0 64 64">
+                            <path d="M32 7 14 15v14c0 12.4 7.3 22.7 18 27 10.7-4.3 18-14.6 18-27V15z"></path>
+                            <path d="M24 23h16"></path>
+                            <path d="M24 31h12"></path>
+                            <path class="home-hero__trust-check" d="m24 40 5 5 12-15"></path>
+                        </svg>
+                    </span>
+                    <div>
+                        <strong>Garantía clara</strong>
+                        <span>Cobertura explicada antes de reservar, con la misma claridad que el precio.</span>
+                        <a class="home-hero__trust-link" href="<?php echo esc_url($warranty_url); ?>">
+                            <span>Qué cubre la garantía</span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3ZM5 5h6v2H7v10h10v-4h2v6H5V5Z"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+                <article class="home-hero__trust-item">
+                    <span class="home-hero__trust-icon" aria-hidden="true">
+                        <svg viewBox="0 0 64 64">
+                            <rect x="14" y="12" width="36" height="42" rx="4"></rect>
+                            <path d="M22 22h20"></path>
+                            <path d="M23 33h4M31 33h4M39 33h4M23 42h4M31 42h4M39 42h4"></path>
+                            <path class="home-hero__trust-check" d="m25 51 4 4 9-11"></path>
+                        </svg>
+                    </span>
+                    <div>
+                        <strong>Financiación transparente</strong>
+                        <span>Cuotas y condiciones explicadas con números claros antes de firmar.</span>
+                        <a class="home-hero__trust-link" href="<?php echo esc_url($finance_url); ?>">
+                            <span>Calcular financiación</span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3ZM5 5h6v2H7v10h10v-4h2v6H5V5Z"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+            </div>
         </div>
-
-
     </section>
 
     <!-- SERVICIOS DESTACADOS -->
     <section class="featured-services" aria-labelledby="services-title">
         <div class="featured-services__container">
             <div class="featured-services__header">
-                <h2 id="services-title" class="featured-services__title">Coches segunda mano Alicante: nuestros servicios</h2>
+                <h2 id="services-title" class="featured-services__title">Servicios para comprar tu coche de segunda mano en Madrid</h2>
                 <p class="featured-services__description">
-                    En EdreamsCars no solo vendemos coches, te acompañamos durante todo el proceso de compra
-                    con servicios diseñados para tu tranquilidad y satisfacción.
+                    En Escarpa Motor te acompañamos antes, durante y después de la compra con procesos pensados para que todo sea claro desde el primer momento.
                 </p>
             </div>
 
@@ -323,10 +354,9 @@ $hero_cars_json = wp_json_encode($hero_cars);
                             <path d="M480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-155.5t86-127Q252-817 325-848.5T480-880q83 0 155.5 31.5t127 86q54.5 54.5 86 127T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480-80Zm0-240q60 0 117 17.5T704-252q46-46 71-104.5T800-480q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 65 24.5 124T256-252q50-33 107-50.5T480-320Zm0 80q-41 0-80 10t-74 30q35 20 74 30t80 10q41 0 80-10t74-30q-35-20-74-30t-80-10ZM280-520q17 0 28.5-11.5T320-560q0-17-11.5-28.5T280-600q-17 0-28.5 11.5T240-560q0 17 11.5 28.5T280-520Zm120-120q17 0 28.5-11.5T440-680q0-17-11.5-28.5T400-720q-17 0-28.5 11.5T360-680q0 17 11.5 28.5T400-640Zm280 120q17 0 28.5-11.5T720-560q0-17-11.5-28.5T680-600q-17 0-28.5 11.5T640-560q0 17 11.5 28.5T680-520ZM480-400q33 0 56.5-23.5T560-480q0-13-4-25.5T544-528l54-136q7-16 .5-31.5T576-718q-15-7-30.5-.5T524-696l-54 136q-30 5-50 27.5T400-480q0 33 23.5 56.5T480-400Zm0 80Zm0-206Zm0 286Z"></path>
                         </svg>
                     </div>
-                    <h3 class="service-card__title">Kilómetros certificados</h3>
+                    <h3 class="service-card__title">Historial y kilómetros claros</h3>
                     <p class="service-card__description">
-                        Transparencia total con historial verificado y kilómetros certificados mediante
-                        sistemas oficiales. Tu tranquilidad es nuestra prioridad.
+                        Revisamos la documentación disponible, el kilometraje y el estado real del vehículo para que puedas decidir con información fiable.
                     </p>
                 </article>
 
@@ -336,10 +366,9 @@ $hero_cars_json = wp_json_encode($hero_cars);
                             <path d="M440-80v-120H160v-80h640v80H520v120h-80Zm-51.5-431.5Q400-523 400-540t-11.5-28.5Q377-580 360-580t-28.5 11.5Q320-557 320-540t11.5 28.5Q343-500 360-500t28.5-11.5Zm240 0Q640-523 640-540t-11.5-28.5Q617-580 600-580t-28.5 11.5Q560-557 560-540t11.5 28.5Q583-500 600-500t28.5-11.5ZM200-616l66-192q5-14 16.5-23t25.5-9h344q14 0 25.5 9t16.5 23l66 192v264q0 14-9 23t-23 9h-16q-14 0-23-9t-9-23v-48H280v48q0 14-9 23t-23 9h-16q-14 0-23-9t-9-23v-264Zm106-64h348l-28-80H334l-28 80Zm-26 80v120-120Zm0 120h400v-120H280v120Z" />
                         </svg>
                     </div>
-                    <h3 class="service-card__title">Revisiones completas</h3>
+                    <h3 class="service-card__title">Revisión y preparación</h3>
                     <p class="service-card__description">
-                        142 puntos de revisión en motor, suspensión, frenos, electrónica y seguridad.
-                        Taller propio con certificación oficial.
+                        Cada coche pasa por una preparación cuidada de mecánica, seguridad, limpieza y entrega para que llegue a tus manos como debe.
                     </p>
                 </article>
 
@@ -349,17 +378,16 @@ $hero_cars_json = wp_json_encode($hero_cars);
                             <path d="m387-412 35-114-92-74h114l36-112 36 112h114l-93 74 35 114-92-71-93 71ZM240-40v-309q-38-42-59-96t-21-115q0-134 93-227t227-93q134 0 227 93t93 227q0 61-21 115t-59 96v309l-240-80-240 80Zm410-350q70-70 70-170t-70-170q-70-70-170-70t-170 70q-70 70-70 170t70 170q70 70 170 70t170-70ZM320-159l160-41 160 41v-124q-35 20-75.5 31.5T480-240q-44 0-84.5-11.5T320-283v124Zm160-62Z" />
                         </svg>
                     </div>
-                    <h3 class="service-card__title">Garantía 3 años</h3>
+                    <h3 class="service-card__title">Garantía y financiación</h3>
                     <p class="service-card__description">
-                        Cobertura extendida que protege tu inversión. Disfruta de tu coche con la seguridad
-                        de estar respaldado por profesionales.
+                        Te explicamos la garantía y las opciones de financiación con números claros, sin compromisos que no entiendas antes de firmar.
                     </p>
                 </article>
             </div>
 
             <div class="featured-services__footer">
-                <a href="https://www.stoic-archimedes.31-170-100-104.plesk.page/importar-coches/" class="featured-services__link items-center justify-center button">
-                    <span>Descubre todos nuestros servicios</span>
+                <a href="<?php echo esc_url($stock_url); ?>" class="featured-services__link items-center justify-center button">
+                    <span>Ver stock disponible</span>
                     <?php echo E360VO_Icon::get('chevron-right', array('class' => 'flex justify-center  items-center')); ?>
                 </a>
             </div>

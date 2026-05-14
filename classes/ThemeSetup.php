@@ -18,6 +18,7 @@ class E360VO_ThemeSetup
         add_action('init', [$this, 'init_blog_slug'], 5);
         add_action('init', [$this, 'setup_dynamic_rewrites'], 20);
         add_action('init', [$this, 'add_post_link_filters'], 10);
+        add_action('pre_get_posts', [$this, 'filter_blog_brand_archive_query']);
 
         add_action('after_switch_theme', [$this, 'create_default_home_page']);
         add_action('after_switch_theme', [$this, 'mark_rewrites_to_flush']);
@@ -30,6 +31,8 @@ class E360VO_ThemeSetup
         add_filter('wp_nav_menu_objects', [$this, 'capitalize_menu_titles'], 10, 2);
         add_filter('category_link', [$this, 'filter_category_link'], 10, 2);
         add_filter('nav_menu_item_title', [$this, 'add_dropdown_icon_to_menu'], 10, 4);
+        add_filter('query_vars', [$this, 'register_query_vars']);
+        add_filter('template_include', [$this, 'filter_blog_brand_template'], 20);
     }
 
     public function init_blog_slug()
@@ -98,6 +101,19 @@ class E360VO_ThemeSetup
             'top'
         );
 
+        // Archivos editoriales de marca dentro del blog
+        add_rewrite_rule(
+            '^' . preg_quote($blog_slug, '/') . '/marca/([^/]+)/?$',
+            'index.php?th360_post_brand=$matches[1]',
+            'top'
+        );
+
+        add_rewrite_rule(
+            '^' . preg_quote($blog_slug, '/') . '/marca/([^/]+)/page/([0-9]+)/?$',
+            'index.php?th360_post_brand=$matches[1]&paged=$matches[2]',
+            'top'
+        );
+
         // Categorías simples
         add_rewrite_rule(
             '^' . preg_quote($blog_slug, '/') . '/([^/]+)/?$',
@@ -149,6 +165,59 @@ class E360VO_ThemeSetup
         return $link;
     }
 
+    public function register_query_vars($vars)
+    {
+        $vars[] = 'th360_post_brand';
+        return $vars;
+    }
+
+    public function filter_blog_brand_archive_query($query)
+    {
+        if (is_admin() || !$query instanceof WP_Query || !$query->is_main_query()) {
+            return;
+        }
+
+        $brand_slug = $query->get('th360_post_brand');
+        if (!is_scalar($brand_slug) || trim((string) $brand_slug) === '') {
+            return;
+        }
+
+        $brand = get_term_by('slug', sanitize_title((string) $brand_slug), 'marca');
+
+        $query->is_home = false;
+        $query->is_archive = true;
+        $query->is_category = false;
+        $query->is_singular = false;
+
+        $query->set('post_type', 'post');
+        $query->set('post_status', 'publish');
+        $query->set('ignore_sticky_posts', true);
+
+        if (!$brand instanceof WP_Term || is_wp_error($brand)) {
+            $query->set('post__in', [0]);
+            return;
+        }
+
+        $meta_query = function_exists('th360_get_blog_brand_meta_query')
+            ? th360_get_blog_brand_meta_query($brand)
+            : [];
+
+        if (!empty($meta_query)) {
+            $query->set('meta_query', $meta_query);
+        }
+    }
+
+    public function filter_blog_brand_template($template)
+    {
+        $brand_slug = get_query_var('th360_post_brand');
+        if (!is_scalar($brand_slug) || trim((string) $brand_slug) === '') {
+            return $template;
+        }
+
+        $brand_template = locate_template('category.php');
+        return $brand_template ?: $template;
+    }
+
     public function filter_post_link($permalink, $post)
     {
         if (!is_object($post) || !isset($post->post_type, $post->post_status)) {
@@ -159,16 +228,13 @@ class E360VO_ThemeSetup
             return $permalink;
         }
 
-        $blog_slug  = self::get_blog_slug();
-        $categories = get_the_category($post->ID);
+        $blog_slug = self::get_blog_slug();
+        $category  = function_exists('th360_get_post_primary_category')
+            ? th360_get_post_primary_category((int) $post->ID)
+            : null;
 
-        if (empty($categories) || !is_array($categories)) {
-            return home_url("/{$blog_slug}/sin-categoria/{$post->post_name}/");
-        }
-
-        $category = reset($categories);
         if (!$category instanceof WP_Term) {
-            return $permalink;
+            return home_url("/{$blog_slug}/sin-categoria/{$post->post_name}/");
         }
 
         return home_url("/{$blog_slug}/{$category->slug}/{$post->post_name}/");
@@ -181,7 +247,6 @@ class E360VO_ThemeSetup
         add_theme_support('html5', ['search-form', 'gallery', 'caption', 'script', 'style']);
         add_theme_support('title-tag');
         add_theme_support('yoast-seo-breadcrumbs');
-        add_editor_style('style.css');
 
         add_theme_support('custom-logo', [
             'height'      => 68,

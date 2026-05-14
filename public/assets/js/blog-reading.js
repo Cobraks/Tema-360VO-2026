@@ -1,0 +1,102 @@
+(() => {
+	"use strict";
+
+	const root = document.querySelector("[data-reading-progress]");
+	const bar = root?.querySelector("[data-reading-progress-bar]");
+	const target = document.querySelector("[data-reading-progress-target]");
+	const startTarget = document.querySelector("main.main--blog");
+	const endTarget = target?.closest(".post-card") || target;
+	const shell = document.querySelector(".blog-shell");
+
+	if (!root || !bar || !target || !startTarget || !endTarget || !shell) {
+		return;
+	}
+
+	let startTop = 0;
+	let endTop = 0;
+	let endHeight = 0;
+	let shellBottom = 0;
+	let viewportHeight = window.innerHeight;
+	let ticking = false;
+
+	const readCssVar = (name) => {
+		const raw = window
+			.getComputedStyle(document.documentElement)
+			.getPropertyValue(name)
+			.trim();
+		const value = Number.parseFloat(raw);
+		return Number.isFinite(value) ? value : 0;
+	};
+
+	const getTopOffset = () => {
+		const headerHeight = readCssVar("--altura-header");
+		const breadcrumbsHeight = document.body.classList.contains("hidden")
+			? 0
+			: readCssVar("--altura-breadcrumbs");
+		const adminBarHeight = document.body.classList.contains("logged-in")
+			? readCssVar("--altura-WpAdminBar")
+			: 0;
+
+		return headerHeight + breadcrumbsHeight + adminBarHeight;
+	};
+
+	const measure = () => {
+		const startRect = startTarget.getBoundingClientRect();
+		const endRect = endTarget.getBoundingClientRect();
+		const shellRect = shell.getBoundingClientRect();
+		startTop = window.scrollY + startRect.top;
+		endTop = window.scrollY + endRect.top;
+		endHeight = endTarget.offsetHeight;
+		shellBottom = window.scrollY + shellRect.bottom;
+		viewportHeight = window.innerHeight;
+	};
+
+	const render = () => {
+		ticking = false;
+
+		const topOffset = getTopOffset();
+		const start = Math.max(0, startTop - topOffset);
+		const end = Math.max(
+			start + 1,
+			endTop + endHeight - viewportHeight + topOffset,
+		);
+		const progress = Math.min(
+			1,
+			Math.max(0, (window.scrollY - start) / (end - start)),
+		);
+		const shouldHideNearFooter =
+			shellBottom - window.scrollY <= topOffset + 40;
+
+		bar.style.transform = `scaleX(${progress})`;
+		root.setAttribute("aria-valuenow", String(Math.round(progress * 100)));
+		root.classList.add("is-ready");
+		root.classList.toggle("is-near-footer", shouldHideNearFooter);
+	};
+
+	const requestRender = () => {
+		if (ticking) return;
+		ticking = true;
+		window.requestAnimationFrame(render);
+	};
+
+	const handleResize = () => {
+		measure();
+		requestRender();
+	};
+
+	measure();
+	render();
+
+	window.addEventListener("scroll", requestRender, { passive: true });
+	window.addEventListener("resize", handleResize, { passive: true });
+	window.addEventListener("load", handleResize);
+
+	if ("ResizeObserver" in window) {
+		const resizeObserver = new ResizeObserver(handleResize);
+		resizeObserver.observe(startTarget);
+		if (endTarget !== startTarget) {
+			resizeObserver.observe(endTarget);
+		}
+		resizeObserver.observe(shell);
+	}
+})();

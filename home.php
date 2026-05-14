@@ -42,11 +42,53 @@ if (!function_exists('th360_get_image_caption')) {
     }
 }
 
+if (!function_exists('th360_get_blog_home_intro_html')) {
+    function th360_get_blog_home_intro_html($post): string
+    {
+        if (!$post instanceof WP_Post) {
+            return '';
+        }
+
+        $raw_content = trim((string) $post->post_content);
+        if ($raw_content === '') {
+            return '';
+        }
+
+        if (function_exists('parse_blocks') && function_exists('render_block')) {
+            $blocks = parse_blocks($raw_content);
+
+            if (is_array($blocks)) {
+                foreach ($blocks as $block) {
+                    $block_html = trim((string) render_block($block));
+
+                    if (wp_strip_all_tags($block_html) !== '') {
+                        return $block_html;
+                    }
+                }
+            }
+        }
+
+        return trim((string) apply_filters('the_content', $raw_content));
+    }
+}
+
 /**
  * URLs "estratégicas"
  */
 $inventory_url = home_url('/coches-segunda-mano/');
 $search_q = get_search_query();
+
+$blog_home_page_id = (int) get_option('page_for_posts');
+if ($blog_home_page_id <= 0) {
+    $blog_home_page_id = (int) get_queried_object_id();
+}
+
+$blog_home_page = $blog_home_page_id > 0 ? get_post($blog_home_page_id) : null;
+$blog_home_title = $blog_home_page instanceof WP_Post
+    ? trim((string) get_the_title($blog_home_page))
+    : '';
+$blog_home_title = $blog_home_title !== '' ? $blog_home_title : 'Blog';
+$blog_home_intro = th360_get_blog_home_intro_html($blog_home_page);
 
 /**
  * Featured (editorial)
@@ -117,6 +159,12 @@ $categories = get_categories([
     'number'     => 10,
 ]);
 
+$all_categories = get_categories([
+    'hide_empty' => true,
+    'orderby'    => 'name',
+    'order'      => 'ASC',
+]);
+
 $base_url = get_permalink();
 $pp_url_base = remove_query_arg(['pp', 'paged', 'page', 'orderby'], $base_url);
 
@@ -158,16 +206,22 @@ function th360_get_category_icon($category_name)
         <div class="blog-hero__inner">
             <div class="blog-hero__grid">
                 <div class="blog-hero__content">
-                    <p class="blog-hero__kicker">
-                        <span class="blog-hero__dot" aria-hidden="true"></span>
-                        Noticias y guías · EdreamsCars
+                    <h1 class="blog-hero__title" id="blog-hero-title"><?php echo esc_html($blog_home_title); ?></h1>
+                    <?php if ($blog_home_intro !== '') : ?>
+                        <div class="blog-hero__subtitle">
+                            <?php echo wp_kses_post($blog_home_intro); ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (false) : ?>
+
+                    <h1 class="blog-hero__title" id="blog-hero-title">Blog de compra inteligente de coche de ocasión</h1>
+                    <p class="blog-hero__subtitle">
+                        Análisis claros, comparativas útiles y recomendaciones prácticas para decidir mejor.
+                        <a class="inline-link" href="<?php echo esc_url($inventory_url); ?>">Ver catálogo de coches de ocasión</a> revisados con garantía.
                     </p>
 
-                    <h1 class="blog-hero__title" id="blog-hero-title">Consejos prácticos para comprar coche de segunda mano</h1>
-                    <p class="blog-hero__subtitle">
-                        Análisis, comparativas y guías para evaluar vehículos y evitar riesgos en tu compra.
-                        <a class="inline-link" href="<?php echo esc_url($inventory_url); ?>">Visita nuestro catálogo de coches de ocasión</a> revisados con garantía.
-                    </p>
+                    <?php endif; ?>
 
                     <?php if (!empty($categories)) : ?>
                         <nav class="topics" aria-label="Temas principales">
@@ -200,7 +254,7 @@ function th360_get_category_icon($category_name)
                             </svg>
                             <input id="blog-search" class="search__input" type="search" name="s" placeholder="Buscar noticias y guías…" value="<?php echo esc_attr($search_q); ?>" />
                         </div>
-                        <div class="search__hint" aria-hidden="true">Ej.: "garantía", "cambio automático", "diésel", "ITV"</div>
+                        
                     </form>
                 </aside>
             </div>
@@ -212,8 +266,8 @@ function th360_get_category_icon($category_name)
         <?php if ($featured_posts->have_posts()) : ?>
             <section id="destacadas" class="section">
                 <header class="section__header">
-                    <h2 class="section__title">Guías destacadas</h2>
-                    <p class="section__subtitle">Contenido esencial para empezar con buen criterio.</p>
+                    <h2 class="section__title">Destacados</h2>
+                    <p class="section__subtitle">Una selección editorial para empezar por lo importante.</p>
                 </header>
 
                 <div class="featured">
@@ -251,22 +305,17 @@ function th360_get_category_icon($category_name)
                                 <div class="card__body">
                                     <div class="meta">
                                         <time class="meta__date" datetime="<?php echo esc_attr(get_the_date('c')); ?>"><?php echo esc_html(get_the_date('j M, Y')); ?></time>
-                                        <?php if ($cat_name) : ?>
-                                            <span class="meta__chip">
-                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                                    <path d="<?php echo esc_attr(th360_get_category_icon($cat_name)); ?>" />
-                                                </svg>
-                                                <?php echo esc_html($cat_name); ?>
-                                            </span>
-                                        <?php endif; ?>
                                         <?php if ($reading) : ?>
                                             <span class="meta__muted"><?php echo esc_html($reading); ?></span>
+                                        <?php endif; ?>
+                                        <?php if ($cat_name) : ?>
+                                            <span class="meta__chip"><?php echo esc_html($cat_name); ?></span>
                                         <?php endif; ?>
                                     </div>
 
                                     <h3 class="card__title"><?php the_title(); ?></h3>
                                     <p class="card__excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), $is_big ? 30 : 18, '…')); ?></p>
-                                    <span class="card__cta" aria-hidden="true">Leer guía →</span>
+                                    <span class="card__cta" aria-hidden="true">Leer artículo →</span>
                                 </div>
                             </a>
                         </article>
@@ -287,7 +336,7 @@ function th360_get_category_icon($category_name)
                 <header class="section__header section__header--row">
                     <div>
                         <h2 class="section__title">Últimas publicaciones</h2>
-                        <p class="section__subtitle">Noticias, análisis y consejos prácticos para tu compra.</p>
+                        <p class="section__subtitle">Publicaciones recientes del blog.</p>
                     </div>
 
                     <div class="toolbar" aria-label="Controles del listado">
@@ -364,15 +413,10 @@ function th360_get_category_icon($category_name)
 
                                 <div class="meta">
                                     <time class="meta__date" datetime="<?php echo esc_attr(get_the_date('c')); ?>"><?php echo esc_html(get_the_date('j M, Y')); ?></time>
-                                    <?php if ($latest_cat) : ?>
-                                        <span class="meta__chip">
-                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                                <path d="<?php echo esc_attr(th360_get_category_icon($latest_cat)); ?>" />
-                                            </svg>
-                                            <?php echo esc_html($latest_cat); ?>
-                                        </span>
-                                    <?php endif; ?>
                                     <?php if ($latest_read) : ?><span class="meta__muted"><?php echo esc_html($latest_read); ?></span><?php endif; ?>
+                                    <?php if ($latest_cat) : ?>
+                                        <span class="meta__chip"><?php echo esc_html($latest_cat); ?></span>
+                                    <?php endif; ?>
                                 </div>
 
                                 <h3 class="lead__title">
@@ -382,20 +426,14 @@ function th360_get_category_icon($category_name)
                                 <p class="lead__excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 40, '…')); ?></p>
 
                                 <div class="lead__actions" aria-label="Acciones del artículo">
-                                    <a class="lead__read" href="<?php the_permalink(); ?>">Leer →</a>
+                                    <a class="lead__read" href="<?php the_permalink(); ?>">Leer artículo →</a>
 
                                     <div class="lead__tools" role="group" aria-label="Herramientas">
                                         <button class="icon-btn" type="button" data-action="save" data-id="<?php echo (int) $latest_id; ?>" aria-pressed="false" aria-label="Guardar artículo" title="Guardar">
-                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                                <path d="M6 3h12a1 1 0 011 1v17l-7-4-7 4V4a1 1 0 011-1z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
-                                            </svg>
+                                            <?php echo E360VO_Icon::get('shield', ['aria-hidden' => 'true', 'width' => 24, 'height' => 24]); ?>
                                         </button>
                                         <button class="icon-btn" type="button" data-action="share" data-url="<?php echo esc_url(get_permalink($latest_id)); ?>" aria-label="Compartir artículo" title="Compartir">
-                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                                <path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                                                <path d="M16 6l-4-4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                                <path d="M12 2v13" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                                            </svg>
+                                            <?php echo E360VO_Icon::get('open_new', ['aria-hidden' => 'true', 'width' => 24, 'height' => 24]); ?>
                                         </button>
                                     </div>
                                 </div>
@@ -435,22 +473,17 @@ function th360_get_category_icon($category_name)
                                     <div class="tile__body">
                                         <div class="meta">
                                             <time class="meta__date" datetime="<?php echo esc_attr(get_the_date('c')); ?>"><?php echo esc_html(get_the_date('j M')); ?></time>
-                                            <?php if ($cat) : ?>
-                                                <span class="meta__chip">
-                                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                                        <path d="<?php echo esc_attr(th360_get_category_icon($cat)); ?>" />
-                                                    </svg>
-                                                    <?php echo esc_html($cat); ?>
-                                                </span>
-                                            <?php endif; ?>
                                             <?php if ($read) : ?><span class="meta__muted"><?php echo esc_html($read); ?></span><?php endif; ?>
+                                            <?php if ($cat) : ?>
+                                                <span class="meta__chip"><?php echo esc_html($cat); ?></span>
+                                            <?php endif; ?>
                                         </div>
 
                                         <h3 class="tile__title"><?php the_title(); ?></h3>
                                         <p class="tile__excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 18, '…')); ?></p>
 
                                         <div class="tile__footer">
-                                            <span class="tile__cta">Leer →</span>
+                                            <span class="tile__cta">Leer artículo →</span>
                                         </div>
                                     </div>
                                 </a>
@@ -495,26 +528,66 @@ function th360_get_category_icon($category_name)
             </section>
 
             <aside class="aside" aria-label="Panel lateral">
-                <section class="panel panel--subscribe" aria-label="Recibe novedades">
-                    <h2 class="panel__title">Recibe novedades</h2>
-                    <p class="panel__text">Te avisamos cuando publiquemos contenido nuevo. Sin spam.</p>
-
+                <section class="panel panel--subscribe newsletter-panel" data-newsletter-panel aria-label="Recibe novedades">
+                    <div class="panel__title-row newsletter-panel__header">
+                        <h2 class="panel__title">Recibe novedades</h2>
+                        <button type="button" class="ayuda_garantia__button ayuda_garantia__button--mantenimiento panel__help-btn" aria-label="Más información sobre la newsletter" data-tip-toggle aria-expanded="false" aria-controls="newsletter-tip-home">
+                            <?php echo E360VO_Icon::get('icon-help_outline', ['class' => 'ayuda_garantia__icon', 'aria-hidden' => 'true']); ?>
+                        </button>
+                        <button type="button" class="newsletter-panel__trigger" data-newsletter-toggle aria-expanded="false" aria-controls="newsletter-form-shell-home">
+                            Suscribete
+                        </button>
+                    </div>
+                    <p class="panel__tip" id="newsletter-tip-home" hidden>Te enviaremos un correo cuando publiquemos contenido relevante para ti. Sin spam.</p>
+                    <div class="newsletter-panel__form-shell" id="newsletter-form-shell-home" data-newsletter-form hidden>
                     <?php
-                    $newsletter_shortcode = (string) apply_filters('th360_newsletter_shortcode', '');
-                    if ($newsletter_shortcode !== '' && function_exists('do_shortcode')) {
+                    $newsletter_shortcode = (string) apply_filters('th360_newsletter_shortcode', '[contact-form-7 id="04d14f1" title="Newsletter"]');
+                    if (
+                        $newsletter_shortcode !== ''
+                        && function_exists('do_shortcode')
+                        && function_exists('shortcode_exists')
+                        && shortcode_exists('contact-form-7')
+                    ) {
+                        echo '<div class="newsletter-panel__form">';
                         echo do_shortcode($newsletter_shortcode);
+                        echo '</div>';
                     } else {
                     ?>
-                        <form class="panel__form" action="#" method="post" novalidate>
-                            <label class="sr-only" for="side-sub-email">Email</label>
-                            <input id="side-sub-email" class="panel__input" type="email" placeholder="Tu email" autocomplete="email" inputmode="email" required>
-                            <button class="btn btn--primary btn--full" type="submit">Suscribirme</button>
-                        </form>
                         <p class="panel__note">
-                            Para activarlo: crea un formulario en Contact Form 7 y conéctalo con el filtro <code>th360_newsletter_shortcode</code>.
+                            Activa Contact Form 7 para mostrar el formulario de suscripción.
                         </p>
                     <?php } ?>
+                    </div>
                 </section>
+
+                <?php if (!empty($all_categories)) : ?>
+                    <details class="panel blog-home-topics" aria-label="Categorias del blog">
+                        <summary class="blog-home-topics__summary">
+                            <span class="blog-home-topics__summary-copy">
+                                <span class="blog-home-topics__eyebrow">Explora</span>
+                                <span class="blog-home-topics__title">Categorias del blog</span>
+                            </span>
+                            <span class="blog-home-topics__summary-action" aria-hidden="true">Ver todas</span>
+                        </summary>
+
+                        <div class="blog-home-topics__body">
+                            <div class="topics__list blog-home-topics__list">
+                                <?php foreach ($all_categories as $cat) :
+                                    $name = trim((string) $cat->name);
+                                    if ($name === '' || preg_match('/^categor[iÃ­]a\s*\d+$/i', $name)) continue;
+                                    $icon_path = th360_get_category_icon($name);
+                                ?>
+                                    <a class="topics__link" href="<?php echo esc_url(get_category_link($cat)); ?>">
+                                        <svg class="topics__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <path d="<?php echo esc_attr($icon_path); ?>" />
+                                        </svg>
+                                        <span><?php echo esc_html($name); ?></span>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </details>
+                <?php endif; ?>
             </aside>
         </div>
     </div>

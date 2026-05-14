@@ -227,7 +227,7 @@ $add_social_link = static function (array &$items, string $url, string $label, s
   );
 };
 
-$add_social_link($social_links, $insta_url, 'Instagram', 'icon-font', 'icon-instagram');
+$add_social_link($social_links, $insta_url, 'Instagram', 'theme-icon', 'instagram');
 $add_social_link($social_links, $face_url, 'Facebook', 'theme-icon', 'facebook');
 $add_social_link($social_links, $twitter_url, 'Twitter', 'svg', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true"><path opacity="1" fill="currentColor" d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"></path></svg>');
 $add_social_link($social_links, $youtube_url, 'YouTube', 'svg', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" aria-hidden="true"><path fill="currentColor" d="M7.2,11.6V6.4L12,9.1L7.2,11.6z M17.8,5.3c0,0-0.2-1.2-0.7-1.8c-0.7-0.7-1.4-0.7-1.8-0.8C12.8,2.6,9,2.6,9,2.6 s-3.8,0-6.3,0.2c-0.3,0-1.1,0-1.8,0.8C0.4,4.1,0.2,5.3,0.2,5.3S0,6.8,0,8.2v1.5c0,1.5,0.2,2.9,0.2,2.9s0.2,1.2,0.7,1.8 c0.7,0.7,1.6,0.7,2,0.8c1.4,0.1,5.9,0.2,6.1,0.2c0,0,3.8,0,6.3-0.2c0.3,0,1.1,0,1.8-0.8c0.5-0.5,0.7-1.8,0.7-1.8S18,11.2,18,9.8V8.2 C18,6.8,17.8,5.3,17.8,5.3z"></path></svg>');
@@ -290,16 +290,6 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
   $url_mapa = 'https://www.google.com/maps/embed/v1/place?key=' . rawurlencode($api_key_maps) . '&q=' . rawurlencode($direccion_completa) . '&zoom=10';
 }
 ?>
-
-<button id="open-popup" class="boton-telefono" aria-label="<?php echo esc_attr(sprintf(__('Contacta con %s', '360vo-theme'), get_bloginfo('name'))); ?>">
-  <?php
-  echo E360VO_Icon::get('contacto_centralita', array(
-    'aria-label' => __('Contacta con nosotros', '360vo-theme'),
-    'width'      => 72,
-    'height'     => 48,
-  ));
-  ?>
-</button>
 
 <footer>
   <section class="footer-section flex">
@@ -603,26 +593,6 @@ if ($direccion_completa !== '' && $api_key_maps !== '') {
     </div>
   </section>
 
-  <?php if ($telefono_principal !== '') : ?>
-    <div id="popup" class="popup" style="display: none;">
-      <div class="popup-content--whatsapp">
-        <span id="close-popup" class="close">×</span>
-        <h3><?php esc_html_e('¿Estás buscando un coche?', '360vo-theme'); ?></h3>
-
-        <a class="popup-contact__button popup-contact__button--whatsapp flex items-center justify-center" href="<?php echo esc_url('https://wa.me/' . preg_replace('/\D+/', '', ltrim($telefono_e164 !== '' ? $telefono_e164 : $telefono_principal, '+')) . '?text=' . rawurlencode('Estoy buscando un coche en ' . get_bloginfo('name'))); ?>" target="_blank" rel="noopener noreferrer">
-          <?php echo E360VO_Icon::get('whatsapp'); ?>
-          <span class="phone-contact"><?php esc_html_e('Mándanos un WhatsApp', '360vo-theme'); ?></span>
-        </a>
-
-        <p><?php esc_html_e('O llámanos por teléfono:', '360vo-theme'); ?></p>
-
-        <a class="popup-contact__button flex items-center justify-center" href="<?php echo esc_url('tel:' . preg_replace('/\s+/', '', ($telefono_e164 !== '' ? $telefono_e164 : $telefono_principal))); ?>">
-          <?php echo E360VO_Icon::get('call'); ?>
-          <span class="phone-contact"><?php echo esc_html($telefono_display !== '' ? $telefono_display : $telefono_principal); ?></span>
-        </a>
-      </div>
-    </div>
-  <?php endif; ?>
 </footer>
 
 <?php wp_footer(); ?>

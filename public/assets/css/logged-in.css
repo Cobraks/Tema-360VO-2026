@@ -39,8 +39,12 @@
 }
 
 /* Sticky logged-in (añade AdminBar) */
-.logged-in #toc-container {
+.logged-in #toc-container.sticky {
   top: calc(var(--altura-breadcrumbsYheader) + var(--altura-WpAdminBar) + 1rem);
+}
+
+.logged-in.hidden #toc-container.sticky {
+  top: calc(var(--altura-header) + var(--altura-WpAdminBar) + 1rem);
 }
 
 
@@ -75,6 +79,16 @@
   height: calc(100% - var(--altura-WpAdminBar));
 }
 
+}
+
+@media (min-width:783px) {
+  .logged-in #toc-container {
+    top: calc(var(--altura-breadcrumbsYheader) + var(--altura-WpAdminBar) + 1rem);
+  }
+
+  .logged-in.hidden #toc-container {
+    top: calc(2rem + var(--altura-header) + var(--altura-WpAdminBar));
+  }
 }
 
 @media (min-width:1080px) { 

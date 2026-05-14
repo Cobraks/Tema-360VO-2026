@@ -111,6 +111,7 @@ class E360VO_EnqueueScripts
             || is_tag()
             || is_author()
             || is_date()
+            || (function_exists('th360_is_blog_brand_archive') && th360_is_blog_brand_archive())
         ) {
             $pages = E360VO_AssetHelper::get_asset_info('/public/assets/css/pages', 'css');
             wp_enqueue_style('360vo-pages', $pages['url'], ['360vo-theme-style'], $pages['version']);
@@ -132,7 +133,7 @@ class E360VO_EnqueueScripts
             wp_enqueue_style(
                 '360vo-blog',
                 $blog_css['url'],
-                ['360vo-theme-style'], // usa variables/estilos globales
+                ['360vo-theme-style', '360vo-pages'], // pages.css debe cargar antes para que blog pueda modularlo
                 $blog_css['version']
             );
 
@@ -145,11 +146,72 @@ class E360VO_EnqueueScripts
                 true
             );
         }
+
+        if (is_singular('post')) {
+            $reading_css = E360VO_AssetHelper::get_asset_info('/public/assets/css/blog-reading', 'css');
+            wp_enqueue_style(
+                '360vo-blog-reading',
+                $reading_css['url'],
+                ['360vo-theme-style', '360vo-blog'],
+                $reading_css['version']
+            );
+
+            $reading_js = E360VO_AssetHelper::get_asset_info('/public/assets/js/blog-reading', 'js');
+            wp_enqueue_script(
+                '360vo-blog-reading',
+                $reading_js['url'],
+                [],
+                $reading_js['version'],
+                true
+            );
+        }
+
+        $should_load_header_context_assets = !is_admin();
+
+        if ($should_load_header_context_assets) {
+            $header_context_css = E360VO_AssetHelper::get_asset_info('/public/assets/css/header-context', 'css');
+            wp_enqueue_style(
+                '360vo-header-context',
+                $header_context_css['url'],
+                ['360vo-theme-style'],
+                $header_context_css['version']
+            );
+
+            $header_context_js = E360VO_AssetHelper::get_asset_info('/public/assets/js/header-context', 'js');
+            wp_enqueue_script(
+                '360vo-header-context',
+                $header_context_js['url'],
+                [],
+                $header_context_js['version'],
+                true
+            );
+        }
+
+        if (is_page() || is_singular('post')) {
+            $scroll_top_css = E360VO_AssetHelper::get_asset_info('/public/assets/css/scroll-top', 'css');
+            wp_enqueue_style(
+                '360vo-scroll-top',
+                $scroll_top_css['url'],
+                ['360vo-theme-style'],
+                $scroll_top_css['version']
+            );
+
+            $scroll_top_js = E360VO_AssetHelper::get_asset_info('/public/assets/js/scroll-top', 'js');
+            wp_enqueue_script(
+                '360vo-scroll-top',
+                $scroll_top_js['url'],
+                [],
+                $scroll_top_js['version'],
+                true
+            );
+        }
     }
 
 
     private function is_blog_context(): bool
     {
+        if (function_exists('th360_is_blog_brand_archive') && th360_is_blog_brand_archive()) return true;
+
         // Blog listing como Page Template
         if (is_page_template('home.php')) return true;
 
@@ -172,11 +234,7 @@ class E360VO_EnqueueScripts
         }
 
         $media_attr = ($media && $media !== 'all') ? ' media="' . esc_attr($media) . '"' : '';
-
-        $out  = '<link rel="preload" as="style" href="' . esc_url($href) . '" onload="this.onload=null;this.rel=\'stylesheet\'"' . $media_attr . '>' . "\n";
-        $out .= '<noscript><link rel="stylesheet" href="' . esc_url($href) . '"' . $media_attr . '></noscript>' . "\n";
-
-        return $out;
+        return '<link rel="stylesheet" id="' . esc_attr($handle) . '-css" href="' . esc_url($href) . '"' . $media_attr . '>' . "\n";
     }
 
     private function should_load_footer_map_lazy(): bool

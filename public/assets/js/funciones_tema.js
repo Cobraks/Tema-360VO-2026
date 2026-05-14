@@ -808,12 +808,72 @@ function initCf7FilledState() {
 }
 
 // =====================================================
+// Header: indicador activo de navegación
+// =====================================================
+function initializeHeaderNavIndicator() {
+	const navs = document.querySelectorAll(".site-header .site-navigation");
+	if (!navs.length) return;
+
+	navs.forEach((nav) => {
+		if (nav.dataset.navIndicatorBound === "1") return;
+		nav.dataset.navIndicatorBound = "1";
+
+		const items = Array.from(nav.querySelectorAll(".menu > li"));
+		if (!items.length) return;
+
+		const indicator = document.createElement("span");
+		indicator.className = "site-navigation__indicator";
+		indicator.setAttribute("aria-hidden", "true");
+		nav.appendChild(indicator);
+
+		const getActiveItem = () =>
+			items.find((item) =>
+				item.classList.contains("current-menu-item") ||
+				item.classList.contains("current-menu-ancestor") ||
+				item.classList.contains("current_page_item")
+			) || null;
+
+		const moveTo = (item) => {
+			const target = item?.querySelector(".item-navegacion") || item?.querySelector("a");
+			if (!target) {
+				nav.style.setProperty("--nav-indicator-opacity", "0");
+				return;
+			}
+
+			const navRect = nav.getBoundingClientRect();
+			const targetRect = target.getBoundingClientRect();
+			nav.style.setProperty("--nav-indicator-x", `${targetRect.left - navRect.left}px`);
+			nav.style.setProperty("--nav-indicator-width", `${targetRect.width}px`);
+			nav.style.setProperty("--nav-indicator-opacity", "1");
+		};
+
+		const restore = () => moveTo(getActiveItem());
+
+		items.forEach((item) => {
+			item.addEventListener("mouseenter", () => moveTo(item));
+			item.addEventListener("focusin", () => moveTo(item));
+			item.addEventListener("mouseleave", restore);
+			item.addEventListener("focusout", () => {
+				window.setTimeout(() => {
+					if (!nav.contains(document.activeElement)) restore();
+				}, 0);
+			});
+		});
+
+		window.addEventListener("resize", restore, { passive: true });
+		window.addEventListener("load", restore, { once: true });
+		restore();
+	});
+}
+
+// =====================================================
 // Inicialización
 // =====================================================
 document.addEventListener("DOMContentLoaded", () => {
 	initializeFooterButtonAnimations();
 	removeHiddenClassWithDelay();
 	initializeMobileMenu();
+	initializeHeaderNavIndicator();
 	handleScrollBehavior();
 	toggleScrolledLoggedIn();
 

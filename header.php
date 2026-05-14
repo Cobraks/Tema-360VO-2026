@@ -195,7 +195,7 @@ $header_logo_class = ' site-header--logo-' . sanitize_html_class($logo_shape);
 // Theme color dinámico (seguro)
 $color_scheme = (string) get_theme_mod('th360_color_scheme', 'azul');
 $theme_color_map = [
-    'azul'        => '#3d73ff',
+    'azul'        => '#fafafa',
     'rojo'        => '#d13b3b',
     'verde'       => '#258a57',
     'morado'      => '#7d43b6',

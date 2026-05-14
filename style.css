@@ -208,19 +208,9 @@ h1,
   text-decoration: none;
 }
 
-/* Triángulo indicador en top-level (como lo tenías) */
 .site-header .current-menu-item::after,
 .site-header .current-menu-ancestor::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid var(--primary50);
+  display: none;
 }
 
 /* Ocultar triángulo en subitems (evita artefactos en dropdown) */
@@ -2308,9 +2298,7 @@ max-height: 40vh;
 
 .footer-section {
   gap: 2rem;
-  padding-block: 5rem;
-
-  padding-top: 0;
+  padding-block: 0 5rem;
 }
 
 .footer-section__item--ubicacion {
@@ -2362,6 +2350,23 @@ max-width: 320px;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+      --nav-indicator-x: 0px;
+      --nav-indicator-width: 0px;
+      --nav-indicator-opacity: 0;
+    }
+
+    .site-header .site-navigation__indicator {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: var(--nav-indicator-width);
+      height: 3px;
+      border-radius: 999px 999px 0 0;
+      background: var(--header-link-active);
+      opacity: var(--nav-indicator-opacity);
+      pointer-events: none;
+      transform: translateX(var(--nav-indicator-x));
+      transition: transform .24s ease, width .24s ease, opacity .16s ease, background-color .16s ease;
     }
     
 
@@ -2392,6 +2397,12 @@ max-width: 320px;
   color: var(--header-link-hover);
   text-decoration: none;
 
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header .site-navigation__indicator {
+    transition: none;
+  }
 }
 
   .site-header .site-navigation ul li.menu-item-has-children > a > span {
@@ -2477,8 +2488,7 @@ border-radius: 0;
 @media (min-width:1200px) {
 
 .footer-section {
-  padding-block: 6rem;
-  padding-top: 0;
+  padding-block: 0 6rem;
 }
 
 body .is-layout-flex {
@@ -2529,8 +2539,7 @@ text-align: right;
   }
 
   .footer-section {
-    padding-block: 5rem;
-    padding-top: 0;
+    padding-block: 0 5rem;
   }
 
       .section__section--services .item__title {
@@ -2590,8 +2599,7 @@ text-align: right;
 }
 
 .footer-section {
-  padding-block: 6.5rem;
-  padding-top: 0;
+  padding-block: 0 6.5rem;
 }
 
 
